@@ -111,6 +111,26 @@ ENTRIES=[
  dict(v="St Luke's School (FACTS)",cat='School/Tuition',d='2026-06-08',a=116.00,n='Tutoring $100 + After Care $16 (invoice 704723238)',inv='704723238'),
  dict(v="St Luke's School (FACTS)",cat='School/Tuition',d='2026-06-15',a=14.64,n='Library book replacement (invoice 707380812)',inv='707380812'),
  dict(v="St Luke's School (FACTS)",cat='School/Tuition',d='2026-06-30',a=627.00,n='Remaining tuition payment-plan balance (statement 6/30/26; treated as paid)',inv='SL-BAL-0630'),
+ # --- Missing-months recovery (Gmail sweep 2026-07-19) ---
+ # Entergy current-period charges (no inv tag -> month-dedup protects against PC overlap)
+ dict(v='Entergy (Electric)',cat='Utilities',d='2026-05-07',a=347.00,n='Electric current charges (bill 5/7/26; total due incl. arrears excluded)'),
+ dict(v='Entergy (Electric)',cat='Utilities',d='2026-06-06',a=435.76,n='Electric current charges (bill 6/6/26)'),
+ dict(v='Entergy (Electric)',cat='Utilities',d='2026-07-08',a=519.07,n='Electric current charges (bill 7/8/26; arrears excluded)'),
+ dict(v='Atmos (Gas)',cat='Utilities',d='2026-04-13',a=51.74,n='Gas current charges (bill 4/13/26; May showed credit balance)'),
+ dict(v='AT&T Internet',cat='Utilities',d='2024-11-09',a=80.92,n='Home internet acct 310682407 (original home acct per Ned records; predecessor of 322444580)'),
+ dict(v='AT&T Internet',cat='Utilities',d='2025-01-28',a=115.40,n='Internet monthly charge (bill 1/28/25)'),
+ dict(v='AT&T Internet',cat='Utilities',d='2026-06-27',a=125.42,n='Internet monthly charge (bill 6/27/26)'),
+ # BR Water - amounts from payment confirmations (bills are password-locked PDFs)
+ dict(v='BR Water',cat='Utilities',d='2024-08-09',a=281.73,n='Water/Sewer Aug 2024 (SpeedPay payment, acct *2506)',inv='BRW-2024-08-P'),
+ dict(v='BR Water',cat='Utilities',d='2025-01-08',a=361.21,n='Water/Sewer Sep-Dec 2024 balance (catch-up payment 1/8/25, acct *2506)',inv='BRW-2024-FALL-P'),
+ dict(v='BR Water',cat='Utilities',d='2026-07-08',a=90.57,n='Water/Sewer Jul 2026 current (payment 7/8/26; separate $400 arrears payment excluded as already-billed)',inv='BRW-2026-07-P'),
+ dict(v='BR Water',cat='Utilities',d='2025-01-08',a=21.87,n='Irrigation late-2024 balance (catch-up payment 1/8/25, acct *4303)',inv='BRWI-2024-FALL-P'),
+ dict(v='BR Water',cat='Utilities',d='2026-05-12',a=62.36,n='Irrigation Apr+May 2026 (autopay 5/12/26)',inv='BRWI-2026-045-P'),
+ dict(v='BR Water',cat='Utilities',d='2026-06-09',a=18.94,n='Irrigation Jun 2026 (autopay)',inv='BRWI-2026-06-P'),
+ dict(v='BR Water',cat='Utilities',d='2026-07-09',a=12.39,n='Irrigation Jul 2026 (autopay)',inv='BRWI-2026-07-P'),
+ # Pool (Fairway only)
+ dict(v='Pool (Fernando)',cat='Pool',d='2024-09-18',a=356.00,n='Pool service Aug 2024, inv#2119 (paid by Venmo 9/18/24; predates James-pool series)',inv='2119'),
+ dict(v='Pool (Fernando)',cat='Pool',d='2026-06-25',a=475.00,n='Pool service Jun 2026, inv#3576 (5 weekly cleanings x $95, 8792 W Fairway)',inv='3576'),
 ]
 
 def merge(rows):
