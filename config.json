@@ -1,19 +1,18 @@
 {
   "_comment": "Percentage of each category that the EX (Lindsey) reimburses Ned. Edit these anytime.",
   "split_percent": {
-    "Utilities": 50.0,
-    "Pool": 50.0,
-    "Storage": 50.0,
-    "Cleaning": 50.0,
-    "Lawn/Yard": 50.0,
-    "AT&T Business": 100.0,
-    "School/Tuition": 12.0,
-    "Medical/Dental/Vision": 12.0,
-    "Mortgage": 50.0,
-    "Moving/Household": 50.0,
-    "Construction (De Roman's)": 50.0,
-    "Labor": 50.0,
-    "Health Insurance (her premium)": 100
+    "Utilities": 50,
+    "Pool": 50,
+    "Storage": 50,
+    "Cleaning": 50,
+    "Lawn/Yard": 50,
+    "AT&T Business": 0,
+    "School/Tuition": 12,
+    "Medical/Dental/Vision": 12,
+    "Mortgage": 50,
+    "Moving/Household": 80,
+    "Construction (De Roman's)": 50,
+    "Labor": 50
   },
   "subtract_payments_to_lindsey": true,
   "date_cutoff": "2024-08-01",
@@ -80,19 +79,6 @@
       "amount": 1600,
       "date": "2026-04-28",
       "_moving_supplement": true
-    },
-    {
-      "vendor": "NFP / Group Health Plan",
-      "category": "Health Insurance (her premium)",
-      "description": "Lindsey's spouse premium $982.38/mo, paid by Ned after March 2026",
-      "amount": 982.38,
-      "recurring_monthly": {
-        "start": "2026-04",
-        "end": "2026-07"
-      },
-      "source": "(from Gmail - NFP premium breakdown, Mar 4 2026: spouse rate $982.38/mo)",
-      "note": "her personal premium - 100%",
-      "_health": true
     }
   ],
   "_manual_note": "Items with no bill/PDF in the folder. 'recurring_monthly' expands to one line per month (dated the 1st).",

@@ -1,7 +1,7 @@
 {
  "title": "Additional Amounts Paid on Lindsey's Behalf",
- "subtitle": "Her vehicle & its insurance \u2014 paid by Ned through March 2026, never billed to her. Shown SEPARATELY; NOT included in the reimbursement total above.",
- "grand_total": 19107.92,
+ "subtitle": "Her vehicle, its insurance, and her health-insurance premium \u2014 paid by Ned, never billed to her. Shown SEPARATELY; NOT included in the reimbursement total above.",
+ "grand_total": 42685.04,
  "doc": "Amounts_Paid_For_Lindsey.pdf",
  "sections": [
   {
@@ -137,7 +137,134 @@
      "a": 391.14
     }
    ]
+  },
+  {
+   "name": "Health insurance \u2014 Lindsey's premium (NFP group health)",
+   "basis": "$982.38/mo x 24 months (Aug 2024 - Jul 2026)",
+   "total": 23577.12,
+   "items": [
+    {
+     "d": "2024-08",
+     "desc": "Lindsey's spouse premium (payroll)",
+     "a": 982.38
+    },
+    {
+     "d": "2024-09",
+     "desc": "Lindsey's spouse premium (payroll)",
+     "a": 982.38
+    },
+    {
+     "d": "2024-10",
+     "desc": "Lindsey's spouse premium (payroll)",
+     "a": 982.38
+    },
+    {
+     "d": "2024-11",
+     "desc": "Lindsey's spouse premium (payroll)",
+     "a": 982.38
+    },
+    {
+     "d": "2024-12",
+     "desc": "Lindsey's spouse premium (payroll)",
+     "a": 982.38
+    },
+    {
+     "d": "2025-01",
+     "desc": "Lindsey's spouse premium (payroll)",
+     "a": 982.38
+    },
+    {
+     "d": "2025-02",
+     "desc": "Lindsey's spouse premium (payroll)",
+     "a": 982.38
+    },
+    {
+     "d": "2025-03",
+     "desc": "Lindsey's spouse premium (payroll)",
+     "a": 982.38
+    },
+    {
+     "d": "2025-04",
+     "desc": "Lindsey's spouse premium (payroll)",
+     "a": 982.38
+    },
+    {
+     "d": "2025-05",
+     "desc": "Lindsey's spouse premium (payroll)",
+     "a": 982.38
+    },
+    {
+     "d": "2025-06",
+     "desc": "Lindsey's spouse premium (payroll)",
+     "a": 982.38
+    },
+    {
+     "d": "2025-07",
+     "desc": "Lindsey's spouse premium (payroll)",
+     "a": 982.38
+    },
+    {
+     "d": "2025-08",
+     "desc": "Lindsey's spouse premium (payroll)",
+     "a": 982.38
+    },
+    {
+     "d": "2025-09",
+     "desc": "Lindsey's spouse premium (payroll)",
+     "a": 982.38
+    },
+    {
+     "d": "2025-10",
+     "desc": "Lindsey's spouse premium (payroll)",
+     "a": 982.38
+    },
+    {
+     "d": "2025-11",
+     "desc": "Lindsey's spouse premium (payroll)",
+     "a": 982.38
+    },
+    {
+     "d": "2025-12",
+     "desc": "Lindsey's spouse premium (payroll)",
+     "a": 982.38
+    },
+    {
+     "d": "2026-01",
+     "desc": "Lindsey's spouse premium (payroll)",
+     "a": 982.38
+    },
+    {
+     "d": "2026-02",
+     "desc": "Lindsey's spouse premium (payroll)",
+     "a": 982.38
+    },
+    {
+     "d": "2026-03",
+     "desc": "Lindsey's spouse premium (payroll)",
+     "a": 982.38
+    },
+    {
+     "d": "2026-04",
+     "desc": "Lindsey's spouse premium (payroll)",
+     "a": 982.38
+    },
+    {
+     "d": "2026-05",
+     "desc": "Lindsey's spouse premium (payroll)",
+     "a": 982.38
+    },
+    {
+     "d": "2026-06",
+     "desc": "Lindsey's spouse premium (payroll)",
+     "a": 982.38
+    },
+    {
+     "d": "2026-07",
+     "desc": "Lindsey's spouse premium (payroll)",
+     "a": 982.38
+    }
+   ]
   }
  ],
- "alt": "Alternative if the full household auto premium is claimed (also covers Ned & Elijah): $33,760.76"
+ "alt": "Includes health insurance $982.38/mo x 24 = $23,577.12. Auto-insurance alt (full household premium): +$14,652.84."
 }
