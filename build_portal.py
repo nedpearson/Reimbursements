@@ -14,6 +14,11 @@ def build(bills_folder=None, progress=print):
     os.makedirs(proof,exist_ok=True)
     res=categorize.generate(bills_folder,outdir=os.path.join(HERE,'output'),progress=progress)
     rows=res['rows']
+    try:
+        import exports
+        exports.export_all(rows,cfg,bills_folder,os.path.join(HERE,'output'),progress=progress)
+    except Exception as _e:
+        progress('exports refresh skipped: %s'%_e)
     # ---- proof volumes ----
     catorder=[]; files=[]; seen=set()
     for r in rows:

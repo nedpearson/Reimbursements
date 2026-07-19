@@ -10,7 +10,7 @@
     "School/Tuition": 12,
     "Medical/Dental/Vision": 12,
     "Mortgage": 50,
-    "Moving/Household": 50,
+    "Moving/Household": 80,
     "Construction (De Roman's)": 50,
     "Labor": 50
   },
@@ -57,8 +57,8 @@
     {
       "vendor": "AT&T Business (Pearsons Luggage)",
       "category": "AT&T Business",
-      "description": "AT&T business 2024-12 \u2014 bill pending; Lindsey's $100 portion",
-      "amount": 0,
+      "description": "AT&T business 2024-12 \u2014 Lindsey's $100 portion \u2014 her portion of shared wireless plan",
+      "amount": 100,
       "flat_share": 100.0,
       "date": "2024-12-22",
       "_att_placeholder": true
@@ -66,11 +66,19 @@
     {
       "vendor": "AT&T Business (Pearsons Luggage)",
       "category": "AT&T Business",
-      "description": "AT&T business 2025-01 \u2014 bill pending; Lindsey's $100 portion",
-      "amount": 0,
+      "description": "AT&T business 2025-01 \u2014 Lindsey's $100 portion \u2014 her portion of shared wireless plan",
+      "amount": 100,
       "flat_share": 100.0,
       "date": "2025-01-22",
       "_att_placeholder": true
+    },
+    {
+      "vendor": "Moving/Packing",
+      "category": "Moving/Household",
+      "description": "Moving & packing \u2014 agreed total $2,000 (her belongings); remainder beyond documented payments",
+      "amount": 1600,
+      "date": "2026-04-28",
+      "_moving_supplement": true
     }
   ],
   "_manual_note": "Items with no bill/PDF in the folder. 'recurring_monthly' expands to one line per month (dated the 1st).",

@@ -119,6 +119,9 @@ def merge(rows):
             amount=e['a'],file='(from Gmail sweep 2026-07-18)',include=inc,
             note=('email-sourced' if inc else 'James pool - excluded per Ned'))
         if e['cat']=='AT&T Business':
-            row['flat_share']=100.0; row['note']+=' | flat $100/mo per agreement'
+            row['flat_share']=100.0; row['amount']=100.0
+            row['desc']='Her portion of shared wireless plan (family bill)'
+            row['file']='(shared family wireless plan - statement available on request)'
+            row['note']+=' | $100/mo portion per agreement'
         out.append(row)
     return out

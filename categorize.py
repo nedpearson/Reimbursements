@@ -82,9 +82,11 @@ def build(folder):
             else: push(d,a,de,n)
         elif v=='att_internet': d,a,de,n=EX.ex_att_internet(lines); push(d,a,de,n)
         elif v=='att_business':
-            d,a,de,n=EX.ex_att_business(lines); push(d,a,de,n)
+            d,a,de,n=EX.ex_att_business(lines)
+            push(d,100.0,'Her portion of shared wireless plan (family bill)',n)
             rows[-1]['flat_share']=CFG.get('att_business_flat_per_month',100.0)
-            rows[-1]['note']=(rows[-1].get('note') or '')+' flat $100/mo per agreement'
+            rows[-1]['file']='(shared family wireless plan - statement available on request)'
+            rows[-1]['note']=(rows[-1].get('note') or '')+' $100/mo portion per agreement'
         elif v=='pool':
             d,a,de,inv=EX.ex_pool(lines)
             JAMES_POOL={'3268','3336','2319','2383','2450','2507','2625','2698','2766','2836','2911','3008','3048','3134','3189'}
