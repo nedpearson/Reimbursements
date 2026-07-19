@@ -37,11 +37,13 @@ h2{color:var(--navy);font-size:1.05rem;margin:26px 4px 8px}.note{color:var(--gre
 <div id="cats"></div>
 <h2>Credits &mdash; amounts Ned already paid Lindsey (subtracted)</h2>
 <div class="card"><table id="credtbl"><thead><tr><th>Date</th><th>Description</th><th class="r">Amount</th></tr></thead><tbody></tbody></table></div>
+<h2 id="addl-h">Additional Amounts Paid on Lindsey&rsquo;s Behalf</h2>
+<div id="addl"></div>
 <h2>Documents</h2>
 <div class="card"><div class="docs">
 <a class="doc" href="Reimbursement_Statement.pdf" target="_blank"><b>Itemized Statement</b><span>Every charge by date</span></a>
 <a class="doc" href="Reimbursement_Cover_Letter.pdf" target="_blank"><b>Cover Letter</b><span>Summary &amp; terms</span></a>
-<a class="doc" href="proof/vol1.pdf" target="_blank"><b>Proof Pack &mdash; Vol 1</b><span>Source bills (exhibits 1&ndash;41)</span></a>
+<a class="doc" href="Amounts_Paid_For_Lindsey.pdf" target="_blank"><b>Additional Amounts (Vehicle &amp; Insurance)</b><span>Yukon Denali + insurance chart</span></a>\n<a class="doc" href="proof/vol1.pdf" target="_blank"><b>Proof Pack &mdash; Vol 1</b><span>Source bills (exhibits 1&ndash;41)</span></a>
 <a class="doc" href="proof/vol2.pdf" target="_blank"><b>Proof Pack &mdash; Vol 2</b><span>Source bills</span></a>
 <a class="doc" href="proof/vol3.pdf" target="_blank"><b>Proof Pack &mdash; Vol 3</b><span>Source bills</span></a>
 <a class="doc" href="proof/vol4.pdf" target="_blank"><b>Proof Pack &mdash; Vol 4</b><span>Source bills</span></a>
@@ -65,4 +67,15 @@ D.cats.forEach(c=>{const items=D.items.filter(i=>i.cat===c.name).sort((a,b)=>(a.
 const tb=document.querySelector('#credtbl tbody');
 D.credits.forEach(c=>{tb.insertAdjacentHTML('beforeend','<tr class="credit"><td>'+c.d+'</td><td>'+c.desc+'</td><td class="r">−'+money(c.a)+'</td></tr>');});
 tb.insertAdjacentHTML('beforeend','<tr><td></td><td><b>Total credited</b></td><td class="r"><b>−'+money(D.credit_total)+'</b></td></tr>');
+
+const ADD=__ADDITIONAL__;
+if(ADD&&ADD.sections){
+ document.getElementById('addl-h').insertAdjacentHTML('afterend','<div class="note" style="margin-top:-2px">'+ADD.subtitle+'</div>');
+ const aw=document.getElementById('addl');
+ ADD.sections.forEach(sec=>{const card=document.createElement('div');card.className='card';
+  card.innerHTML='<div class="cat" style="border-left:5px solid #B07A00"><div><div class="nm">'+sec.name+'</div><div class="meta">'+sec.items.length+' payments · '+sec.basis+'</div></div><div style="display:flex;align-items:center;gap:12px"><div class="owed">'+money(sec.total)+'</div><div class="chev">▶</div></div></div><div class="items"><table><thead><tr><th>Date</th><th>Detail</th><th class="r">Amount paid</th></tr></thead><tbody>'+sec.items.map(i=>'<tr><td>'+i.d+'</td><td>'+i.desc+'</td><td class="r"><b>'+money(i.a)+'</b></td></tr>').join('')+'</tbody></table></div>';
+  card.querySelector('.cat').onclick=()=>card.classList.toggle('open');aw.appendChild(card);});
+ aw.insertAdjacentHTML('beforeend','<div class="banner" style="background:#8a6100"><div>ADDITIONAL TOTAL (separate from the amount above)<br><span style="font-size:.78rem;opacity:.85">'+ADD.alt+'</span></div><b>'+money(ADD.grand_total)+'</b></div>');
+ aw.insertAdjacentHTML('beforeend','<div class="note">Full detail &amp; chart: <a href="'+ADD.doc+'" target="_blank">Additional Amounts (Vehicle &amp; Insurance)</a>. Sources: GM Financial / GEICO receipts, available on request.</div>');
+}
 </script></body></html>

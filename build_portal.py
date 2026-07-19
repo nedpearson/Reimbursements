@@ -86,8 +86,14 @@ def build(bills_folder=None, progress=print):
               basis=('flat $100/mo' if c=='AT&T Business' else ('12%' if c in ('School/Tuition','Medical/Dental/Vision') else '50%'))) for c in CATS if c in cats],
         items=items, credits=sorted(credits,key=lambda x:x['d']))
     tpl=open(os.path.join(HERE,'portal_template.html'),encoding='utf-8').read()
-    html=tpl.replace('__DATA__',json.dumps(data,separators=(',',':'))).replace('__NET__',format(data['net'],',.2f')).replace('__CREDITS__',format(data['credit_total'],',.2f')).replace('__UPDATED__',data['updated'])
+    addl={}
+    ap=os.path.join(HERE,'additional.json')
+    if os.path.exists(ap):
+        addl=json.load(open(ap,encoding='utf-8'))
+    html=tpl.replace('__DATA__',json.dumps(data,separators=(',',':'))).replace('__ADDITIONAL__',json.dumps(addl,separators=(',',':'))).replace('__NET__',format(data['net'],',.2f')).replace('__CREDITS__',format(data['credit_total'],',.2f')).replace('__UPDATED__',data['updated'])
     open(os.path.join(docs,'index.html'),'w',encoding='utf-8').write(html)
+    ac=os.path.join(HERE,'Amounts_Paid_For_Lindsey.pdf')
+    if os.path.exists(ac): shutil.copy2(ac,os.path.join(docs,'Amounts_Paid_For_Lindsey.pdf'))
     for fn in ('Reimbursement_Statement.pdf','Reimbursement_Cover_Letter.pdf'):
         s=os.path.join(HERE,'output',fn)
         if os.path.exists(s): shutil.copy2(s,os.path.join(docs,fn))
