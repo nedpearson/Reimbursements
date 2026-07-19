@@ -98,6 +98,19 @@ ENTRIES=[
  dict(v='BR Water',cat='Utilities',d='2025-05-20',a=137.49,n='Water/Sewer May 2025 current charges (email)',inv='BRW-2505-R'),
  dict(v='BR Water',cat='Utilities',d='2025-01-20',a=38.79,n='Irrigation Jan 2025 current charges (email)',inv='BRW-2501-I'),
  dict(v='BR Water',cat='Utilities',d='2025-05-20',a=18.19,n='Irrigation May 2025 current charges (email)',inv='BRW-2505-I'),
+ # --- St Luke's / FACTS additional items (Gmail sweep 2026-07-19) ---
+ dict(v="St Luke's School (FACTS)",cat='School/Tuition',d='2024-09-16',a=200.00,n='Class trips 2024-25 (FACTS conf, MC 6499)',inv='SL-CT-0916'),
+ dict(v="St Luke's School (FACTS)",cat='School/Tuition',d='2024-10-06',a=18.00,n="Parents' Guild merchandise (FACTS conf)",inv='SL-PG-1006'),
+ dict(v="St Luke's School (FACTS)",cat='School/Tuition',d='2024-10-14',a=200.00,n='Class trips 2024-25 (FACTS conf, Visa 8056)',inv='SL-CT-1014'),
+ dict(v="St Luke's School (FACTS)",cat='School/Tuition',d='2025-01-15',a=205.90,n='Tuition plan draft $200 + $5.90 fee (rescheduled after return)',inv='SL-PP-0115'),
+ dict(v="St Luke's School (FACTS)",cat='School/Tuition',d='2025-12-14',a=70.00,n='Tutoring fee (invoice 652009473)',inv='652009473'),
+ dict(v="St Luke's School (FACTS)",cat='School/Tuition',d='2025-12-31',a=32.00,n='After Care drop-in (invoice 654818426)',inv='654818426'),
+ dict(v="St Luke's School (FACTS)",cat='School/Tuition',d='2026-01-30',a=100.00,n='Tutoring fee (invoice 663128726)',inv='663128726'),
+ dict(v="St Luke's School (FACTS)",cat='School/Tuition',d='2026-03-09',a=40.00,n='Tutoring fee (invoice 675669295)',inv='675669295'),
+ dict(v="St Luke's School (FACTS)",cat='School/Tuition',d='2026-04-21',a=191.00,n='Softball $175 + After Care $16 (invoice 690124466)',inv='690124466'),
+ dict(v="St Luke's School (FACTS)",cat='School/Tuition',d='2026-06-08',a=116.00,n='Tutoring $100 + After Care $16 (invoice 704723238)',inv='704723238'),
+ dict(v="St Luke's School (FACTS)",cat='School/Tuition',d='2026-06-15',a=14.64,n='Library book replacement (invoice 707380812)',inv='707380812'),
+ dict(v="St Luke's School (FACTS)",cat='School/Tuition',d='2026-06-30',a=627.00,n='Remaining tuition payment-plan balance (statement 6/30/26; treated as paid)',inv='SL-BAL-0630'),
 ]
 
 def merge(rows):
