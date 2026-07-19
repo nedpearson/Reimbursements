@@ -1,0 +1,66 @@
+========================================================
+  REIMBURSEMENT TOOL  —  User Guide
+========================================================
+
+WHAT IT DOES
+  Reads every bill in your "House Bills" folder, figures out how much
+  Lindsey owes you, and produces two files you can hand to anyone:
+     • Reimbursement_Breakdown.xlsx  (full spreadsheet, by date)
+     • Reimbursement_Statement.pdf   (clean statement for her / her attorney)
+
+--------------------------------------------------------
+EASIEST WAY TO USE IT  (the app)
+--------------------------------------------------------
+  1. Double-click  Start.bat
+  2. Confirm the bills folder at the top (it defaults to the folder
+     this tool sits in).
+  3. Adjust any percentage if you want, then click "Generate Report".
+  4. Click "Open Excel" or "Open PDF statement" to view the results.
+
+--------------------------------------------------------
+NO-CLICK WAY  (without the app window)
+--------------------------------------------------------
+  Double-click  "Generate Report.bat"  — it reads the folder this tool
+  lives in and rebuilds both files.
+
+--------------------------------------------------------
+ADDING NEW BILLS LATER
+--------------------------------------------------------
+  Just drop the new bill (PDF or photo/screenshot) anywhere in the
+  House Bills folder and run again. New items are picked up and sorted
+  automatically. Anything it can't recognize is listed on the "Review"
+  tab / "NEEDS REVIEW" so you can handle it by hand — it is never
+  silently dropped.
+
+--------------------------------------------------------
+CHANGING THE NUMBERS
+--------------------------------------------------------
+  • Percentages, the date cutoff, the mortgage amount/months, and the
+    credit toggle can all be changed in the app before you click Generate.
+  • You can also edit them directly inside the Excel "Settings" tab
+    (yellow cells) — the whole workbook recalculates.
+  • Advanced: config.json holds the same settings in plain text.
+
+--------------------------------------------------------
+HOW EACH BILL IS READ  (so the numbers hold up)
+--------------------------------------------------------
+  • Utility bills use the CURRENT month's charge, not the "total due"
+    (which rolls in past-due balances) — so no month is counted twice.
+  • Entergy is on Level Billing; the "Amount Due by due date" is used.
+  • There are two water accounts (main + irrigation) — both counted.
+  • Duplicate files, duplicate payments, and partial-payment receipts
+    are detected and listed on the Review tab, not double-counted.
+  • The mortgage has no bill in the folder, so it is entered as a
+    recurring monthly amount you set.
+
+--------------------------------------------------------
+FIRST-TIME SETUP  (once per computer)
+--------------------------------------------------------
+  Requires Python 3 (free): https://www.python.org/downloads/
+     -> During install, tick "Add Python to PATH".
+  Then open a Command Prompt in this folder and run once:
+     pip install pymupdf openpyxl reportlab
+  (Optional, only for scanned/photographed bills: install Tesseract OCR
+   from https://github.com/UB-Mannheim/tesseract/wiki )
+
+Questions? The Excel "Review" tab shows exactly what was and wasn't counted.

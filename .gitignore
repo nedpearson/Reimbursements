@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+output/
+*.log
+.deps_installed
+_to_delete/

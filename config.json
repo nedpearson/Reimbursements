@@ -1,0 +1,80 @@
+{
+  "_comment": "Percentage of each category that the EX (Lindsey) reimburses Ned. Edit these anytime.",
+  "split_percent": {
+    "Utilities": 50,
+    "Pool": 50,
+    "Storage": 50,
+    "Cleaning": 50,
+    "Lawn/Yard": 50,
+    "AT&T Business": 0,
+    "School/Tuition": 12,
+    "Medical/Dental/Vision": 12,
+    "Mortgage": 50,
+    "Moving/Household": 50,
+    "Construction (De Roman's)": 50,
+    "Labor": 50
+  },
+  "subtract_payments_to_lindsey": true,
+  "date_cutoff": "2024-08-01",
+  "_date_cutoff_note": "Set to 'YYYY-MM-DD' (e.g. 2025-01-10 judgment date) to exclude older items, or null to include all.",
+  "treat_all_bills_as_paid": true,
+  "_treat_all_note": "When true, tuition INVOICES are counted as paid (deduped); partial-payment receipts of an already-counted invoice are not double-counted.",
+  "manual_entries": [
+    {
+      "vendor": "Assurance Financial",
+      "category": "Mortgage",
+      "description": "Home mortgage (8792 W Fairway Dr) - Assurance Financial, actual amounts from payment notices",
+      "amount": 3538.62,
+      "recurring_monthly": {
+        "start": "2024-08",
+        "end": "2026-07"
+      },
+      "amount_schedule": [
+        {
+          "start": "2024-08",
+          "end": "2025-04",
+          "amount": 3675.19
+        },
+        {
+          "start": "2025-05",
+          "end": "2026-02",
+          "amount": 3538.62
+        },
+        {
+          "start": "2026-03",
+          "end": "2026-07",
+          "amount": 3917.74
+        }
+      ]
+    },
+    {
+      "vendor": "Labor",
+      "category": "Labor",
+      "description": "Labor (agreed flat amount)",
+      "amount": 1000,
+      "date": "2026-07-18"
+    },
+    {
+      "vendor": "AT&T Business (Pearsons Luggage)",
+      "category": "AT&T Business",
+      "description": "AT&T business 2024-12 \u2014 bill pending; Lindsey's $100 portion",
+      "amount": 0,
+      "flat_share": 100.0,
+      "date": "2024-12-22",
+      "_att_placeholder": true
+    },
+    {
+      "vendor": "AT&T Business (Pearsons Luggage)",
+      "category": "AT&T Business",
+      "description": "AT&T business 2025-01 \u2014 bill pending; Lindsey's $100 portion",
+      "amount": 0,
+      "flat_share": 100.0,
+      "date": "2025-01-22",
+      "_att_placeholder": true
+    }
+  ],
+  "_manual_note": "Items with no bill/PDF in the folder. 'recurring_monthly' expands to one line per month (dated the 1st).",
+  "att_business_flat_per_month": 100.0,
+  "last_folder": "C:\\Users\\nedpe\\Desktop\\House Bills",
+  "output_dir": "output"
+}
