@@ -84,5 +84,6 @@
   "_manual_note": "Items with no bill/PDF in the folder. 'recurring_monthly' expands to one line per month (dated the 1st).",
   "att_business_flat_per_month": 100.0,
   "last_folder": "C:\\Users\\nedpe\\Desktop\\House Bills",
-  "output_dir": "output"
+  "output_dir": "output",
+  "att_business_end": "2026-05"
 }

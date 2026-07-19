@@ -174,6 +174,9 @@ def apply_split(rows):
             r['in_window']=True
         pct=sp.get(r['category'])
         r['pct']=pct
+        _ae=CFG.get('att_business_end')
+        if _ae and r['category']=='AT&T Business' and r.get('date') and r['date'][:7]>_ae:
+            r['in_window']=False; r['note']=(r.get('note') or '')+f' | after AT&T end {_ae}'
         billable = r['include'] and r['in_window'] and r['amount'] is not None and pct is not None
         if r.get('flat_share') is not None:
             r['her_share']=round(float(r['flat_share']),2) if billable else 0.0
