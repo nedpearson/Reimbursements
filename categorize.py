@@ -153,7 +153,8 @@ def build(folder):
                 ym=f"{y:04d}-{m:02d}"
                 rows.append(dict(date=f"{ym}-01",vendor=me['vendor'],category=me['category'],
                     desc=me['description'],amount=round(_amt_for(ym),2),
-                    file='(from Assurance payment notices - email)',include=True,note='mortgage (actual)'))
+                    file=me.get('source','(from Assurance payment notices - email)'),
+                    include=True,note=me.get('note','mortgage (actual)')))
                 m+=1
                 if m>12: m=1; y+=1
         else:
