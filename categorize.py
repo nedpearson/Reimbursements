@@ -111,6 +111,7 @@ def build(folder):
             push(d,a,de,n)
         elif v=='facts':
             d,a,de,pid=EX.ex_facts(lines)
+            de='Tuition payment — paid by Gerald Pearson'
             if pid and pid in seen_payid: push(d,a,de,'duplicate FACTS payment id',include=False)
             else: seen_payid.add(pid); push(d,a,de)
         elif v=='studyville':
