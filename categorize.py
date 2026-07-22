@@ -204,11 +204,15 @@ def generate(folder, outdir=None, progress=None):
     say("Reading bills in: "+folder)
     rows=apply_split(build(folder))
     say("Categorized %d line items."%len(rows))
+    from safewrite import write_via_temp, write_text
     cols=['date','vendor','category','desc','amount','pct','her_share','include','in_window','note','file']
-    with open(os.path.join(outdir,'ledger.csv'),'w',newline='',encoding='utf-8') as f:
-        w=csv.DictWriter(f,fieldnames=cols); w.writeheader()
-        for r in sorted(rows,key=lambda x:(x['category'],x['date'] or '')): w.writerow({k:r.get(k) for k in cols})
-    json.dump(rows,open(os.path.join(outdir,'ledger.json'),'w',encoding='utf-8'),indent=1)
+    def _wcsv(tmp):
+        with open(tmp,'w',newline='',encoding='utf-8') as f:
+            w=csv.DictWriter(f,fieldnames=cols); w.writeheader()
+            for r in sorted(rows,key=lambda x:(x['category'],x['date'] or '')): w.writerow({k:r.get(k) for k in cols})
+    write_via_temp(os.path.join(outdir,'ledger.csv'),_wcsv,say)
+    write_via_temp(os.path.join(outdir,'ledger.json'),
+                   lambda tmp: json.dump(rows,open(tmp,'w',encoding='utf-8'),indent=1),say)
     from collections import defaultdict
     bycat=defaultdict(lambda:[0,0.0,0.0]); credits=0.0
     for r in rows:
@@ -229,20 +233,26 @@ def generate(folder, outdir=None, progress=None):
         lines.append(f"{'LESS credits paid':22s}                                 -> -${credit_applied:11,.2f}")
     lines.append("="*60)
     lines.append(f"{'NET LINDSEY OWES YOU':22s}                                 -> ${net:12,.2f}")
-    open(os.path.join(outdir,'summary.txt'),'w',encoding='utf-8').write("\n".join(lines))
+    write_text(os.path.join(outdir,'summary.txt'),"\n".join(lines),say)
     files={'csv':os.path.join(outdir,'ledger.csv')}
-    # Excel
+    # Excel — built in a temp file, swapped in; if the workbook is open in Excel
+    # the previous version is kept and the user is told to close it.
     if report is not None:
         try:
-            report.build_workbook(rows, os.path.join(outdir,'Reimbursement_Breakdown.xlsx'))
-            _try_recalc(os.path.join(outdir,'Reimbursement_Breakdown.xlsx'))
-            files['xlsx']=os.path.join(outdir,'Reimbursement_Breakdown.xlsx'); say("Built Excel workbook.")
+            xlsx=os.path.join(outdir,'Reimbursement_Breakdown.xlsx')
+            def _wxlsx(tmp):
+                report.build_workbook(rows,tmp); _try_recalc(tmp)
+            if write_via_temp(xlsx,_wxlsx,say):
+                say("Built Excel workbook.")
+            files['xlsx']=xlsx
         except Exception as e: say("Excel build failed: %s"%e)
     # PDF
     try:
         import report_pdf
-        report_pdf.build_pdf(rows,CFG,os.path.join(outdir,'Reimbursement_Statement.pdf'))
-        files['pdf']=os.path.join(outdir,'Reimbursement_Statement.pdf'); say("Built PDF statement.")
+        pdf=os.path.join(outdir,'Reimbursement_Statement.pdf')
+        if write_via_temp(pdf,lambda tmp: report_pdf.build_pdf(rows,CFG,tmp),say):
+            say("Built PDF statement.")
+        files['pdf']=pdf
     except Exception as e: say("PDF build failed: %s"%e)
     say("Done. Net Lindsey owes: $%,.2f"%net if False else "Done.")
     return dict(rows=rows,net=net,subtotal=subtotal,credits=credit_applied,summary_lines=lines,files=files)

@@ -54,11 +54,11 @@ def _existing():
     return [(p, n) for p, n in PACKET if os.path.exists(p)]
 
 
-def _subject_body():
+def _subject_body(greeting=''):
     net = _net_amount()
     subject = 'Reimbursement packet — Pearson v. Pearson, No. 236951'
     lines = [
-        'Lindsey,',
+        (greeting.rstrip(',') + ',') if greeting else 'Hello,',
         '',
         'Attached is the complete reimbursement packet: the cover letter, the itemized '
         'statement, the Excel workbook, and the proof pack with every bill included as a '
@@ -72,17 +72,60 @@ def _subject_body():
     return subject, '\n'.join(lines)
 
 
+def _ask_recipient():
+    """Small dialog: who is this going to? Returns (email, greeting) — both may be ''.
+    Blank email = compose opens with the To field empty, fill it in yourself."""
+    try:
+        import tkinter as tk
+        created = False
+        root = getattr(tk, '_default_root', None)
+        if not root:
+            root = tk.Tk(); root.withdraw(); created = True
+        dlg = tk.Toplevel(root); dlg.title('Email Full Packet')
+        dlg.attributes('-topmost', True); dlg.resizable(False, False); dlg.grab_set()
+        tk.Label(dlg, text='Send to (email address — leave blank to type it in Gmail):',
+                 anchor='w').grid(row=0, column=0, sticky='w', padx=12, pady=(12, 2))
+        e_to = tk.Entry(dlg, width=44); e_to.grid(row=1, column=0, padx=12, sticky='we')
+        tk.Label(dlg, text='Greeting name (optional — e.g. Lindsey, or leave blank):',
+                 anchor='w').grid(row=2, column=0, sticky='w', padx=12, pady=(10, 2))
+        e_nm = tk.Entry(dlg, width=44); e_nm.grid(row=3, column=0, padx=12, sticky='we')
+        res = {'ok': False}
+        def ok(*_):    res['ok'] = True;  dlg.destroy()
+        def cancel(*_):                    dlg.destroy()
+        bf = tk.Frame(dlg); bf.grid(row=4, column=0, pady=12)
+        tk.Button(bf, text='Continue', width=12, bg='#1F3864', fg='white',
+                  relief='flat', command=ok).pack(side='left', padx=6)
+        tk.Button(bf, text='Cancel', width=10, command=cancel).pack(side='left', padx=6)
+        dlg.bind('<Return>', ok); dlg.bind('<Escape>', cancel)
+        e_to.focus_set(); root.wait_window(dlg)
+        to, nm = e_to.get().strip(), e_nm.get().strip()
+        if created:
+            root.destroy()
+        if not res['ok']:
+            return None, None            # cancelled
+        return to, nm
+    except Exception:
+        return '', ''                    # headless fallback: no recipient pre-filled
+
+
 def build_zip():
     files = _existing()
     if not files:
         return None, 'No documents found in the output folder. Open Reimbursement Manager and click "Generate All Documents" first.'
     # If everything is too big for Gmail, drop the print package (it duplicates the rest).
+    from safewrite import write_via_temp
     def make(zfiles):
-        with zipfile.ZipFile(ZIP_PATH, 'w', zipfile.ZIP_DEFLATED) as z:
-            for p, _ in zfiles:
-                z.write(p, os.path.basename(p))
+        def w(tmp):
+            with zipfile.ZipFile(tmp, 'w', zipfile.ZIP_DEFLATED) as z:
+                for p, _ in zfiles:
+                    z.write(p, os.path.basename(p))
+        if not write_via_temp(ZIP_PATH, w, print):
+            return -1                     # zip locked (open in Explorer preview etc.)
         return os.path.getsize(ZIP_PATH)
     size = make(files)
+    if size < 0:
+        return ZIP_PATH, ('Could not refresh the zip — it is open in another window. '
+                          'The previous zip will be attached; close it and retry for the latest.')
     if size > GMAIL_MAX:
         slim = [(p, n) for p, n in files if 'PRINT' not in p]
         size = make(slim)
@@ -115,7 +158,7 @@ def _outlook_configured():
     return False
 
 
-def try_outlook(subject, body):
+def try_outlook(subject, body, to=''):
     """Open an Outlook draft with every file attached. True on success."""
     if not _outlook_configured():
         return False
@@ -124,6 +167,8 @@ def try_outlook(subject, body):
         ol = win32com.client.Dispatch('Outlook.Application')
         mail = ol.CreateItem(0)
         mail.Subject, mail.Body = subject, body
+        if to:
+            mail.To = to
         try:   # send from the configured account if Outlook has several
             for acct in ol.Session.Accounts:
                 if str(acct.SmtpAddress).lower() == _user_email().lower():
@@ -162,31 +207,37 @@ def _popup(title, msg, warn=False):
         print(msg)
 
 
-def gmail_fallback(subject, body, zip_path, warn):
+def gmail_fallback(subject, body, zip_path, warn, to=''):
     compose = ('https://mail.google.com/mail/?authuser='
                + urllib.parse.quote(_user_email())          # open under YOUR account
-               + '&view=cm&fs=1&su='
-               + urllib.parse.quote(subject) + '&body=' + urllib.parse.quote(body))
+               + '&view=cm&fs=1'
+               + (('&to=' + urllib.parse.quote(to)) if to else '')
+               + '&su=' + urllib.parse.quote(subject) + '&body=' + urllib.parse.quote(body))
     webbrowser.open(compose)
     if sys.platform.startswith('win'):
         subprocess.Popen(['explorer', '/select,', zip_path])
-    msg = ('Your email is open in the browser with the subject and message filled in.\n\n'
+    step2 = 'Press Send.' if to else 'Add the recipient\'s address and press Send.'
+    msg = ('Your email is open in the browser with the subject and message filled in'
+           + (' and addressed to %s' % to if to else '') + '.\n\n'
            '1)  Drag the highlighted file  "%s"  from the File Explorer window into the email.\n'
-           '2)  Add Lindsey\'s address and press Send.' % os.path.basename(zip_path))
+           '2)  ' % os.path.basename(zip_path) + step2)
     if warn:
         msg += '\n\nNote: ' + warn
     _popup('Email Full Packet — 2 steps left', msg)
 
 
 def main():
-    subject, body = _subject_body()
+    to, greeting = _ask_recipient()
+    if to is None:                          # user pressed Cancel
+        return
+    subject, body = _subject_body(greeting)
     zip_path, warn = build_zip()
     if zip_path is None:                    # nothing generated yet
         _popup('Email Full Packet', warn, warn=True)
         return
-    if try_outlook(subject, body):
+    if try_outlook(subject, body, to):
         return
-    gmail_fallback(subject, body, zip_path, warn)
+    gmail_fallback(subject, body, zip_path, warn, to)
 
 
 if __name__ == '__main__':

@@ -54,10 +54,14 @@ def build(bills_folder=None, progress=print):
     sz=os.path.getsize(tmp)/1e6; full=fitz.open(tmp); n=full.page_count
     per=max(1,int(n*2.2/sz)) if sz else n; volmap={}; volno=0; p=0
     for old in os.listdir(proof):
-        if old.startswith('vol'): os.remove(os.path.join(proof,old))
+        if old.startswith('vol'):
+            try: os.remove(os.path.join(proof,old))
+            except OSError: pass   # open somewhere; will be overwritten via temp-swap below
+    from safewrite import write_via_temp
     while p<n:
         volno+=1; end=min(n,p+per); v=fitz.open(); v.insert_pdf(full,from_page=p,to_page=end-1)
-        v.save(os.path.join(proof,f'vol{volno}.pdf'),deflate=True)
+        write_via_temp(os.path.join(proof,f'vol{volno}.pdf'),
+                       lambda tmp,_v=v: _v.save(tmp,deflate=True),progress)
         for gp in range(p+1,end+1): volmap[gp]=(volno,gp-p)
         p=end
     full.close(); os.remove(tmp)
@@ -94,12 +98,13 @@ def build(bills_folder=None, progress=print):
     tpl=tpl.replace('__CREDITNOTE__', ('after $__CREDITS__ already paid to Lindsey is credited' if subtract else 'includes the direct payments/advances Ned made to Lindsey — see the Advances category below'))
     tpl=tpl.replace('__CREDITSTITLE__', ('Credits — amounts Ned already paid Lindsey (subtracted)' if subtract else 'Payments Ned made to Lindsey — settled separate expenses (NOT subtracted)'))
     html=tpl.replace('__DATA__',json.dumps(data,separators=(',',':'))).replace('__ADDITIONAL__',json.dumps(addl,separators=(',',':'))).replace('__NET__',format(data['net'],',.2f')).replace('__CREDITS__',format(data['credit_total'],',.2f')).replace('__UPDATED__',data['updated'])
-    open(os.path.join(docs,'index.html'),'w',encoding='utf-8').write(html)
+    from safewrite import write_text, copy_file
+    write_text(os.path.join(docs,'index.html'),html,progress)
     ac=os.path.join(HERE,'Amounts_Paid_For_Lindsey.pdf')
-    if os.path.exists(ac): shutil.copy2(ac,os.path.join(docs,'Amounts_Paid_For_Lindsey.pdf'))
+    if os.path.exists(ac): copy_file(ac,os.path.join(docs,'Amounts_Paid_For_Lindsey.pdf'),progress)
     for fn in ('Reimbursement_Statement.pdf','Reimbursement_Cover_Letter.pdf'):
         s=os.path.join(HERE,'output',fn)
-        if os.path.exists(s): shutil.copy2(s,os.path.join(docs,fn))
+        if os.path.exists(s): copy_file(s,os.path.join(docs,fn),progress)
     progress(f"Portal rebuilt: {len(items)} items, {exh} exhibits, {volno} proof volumes, net ${data['net']:,.2f}")
     return data['net']
 

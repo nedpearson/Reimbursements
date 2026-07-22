@@ -142,9 +142,13 @@ def build_proof_pack(rows,bills_folder,out,progress=None):
     SimpleDocTemplate(idx_path,pagesize=letter,topMargin=0.55*inch,bottomMargin=0.5*inch,
                       leftMargin=0.65*inch,rightMargin=0.65*inch).build(E)
     final=fitz.open(); final.insert_pdf(fitz.open(idx_path)); final.insert_pdf(body)
-    final.save(out,deflate=True,garbage=3)
-    try: os.remove(idx_path)
-    except OSError: pass
+    from safewrite import write_via_temp
+    try:
+        if not write_via_temp(out,lambda tmp: final.save(tmp,deflate=True,garbage=3),say):
+            return out       # locked: previous version kept, user already told
+    finally:
+        try: os.remove(idx_path)
+        except OSError: pass
     say(f"Proof pack: {exh} exhibits, {final.page_count} pages")
     return out
 
@@ -158,18 +162,24 @@ def build_print_package(cover_pdf,statement_pdf,out):
 
 def export_all(rows,cfg,bills_folder,outdir,progress=None):
     say=progress or (lambda m:None)
+    from safewrite import write_via_temp
     os.makedirs(outdir,exist_ok=True)
     outs={}
     cov=os.path.join(outdir,'Reimbursement_Cover_Letter.pdf')
-    build_cover_letter(rows,cfg,cov); outs['cover']=cov; say("Cover letter built.")
+    try:
+        if write_via_temp(cov,lambda tmp: build_cover_letter(rows,cfg,tmp),say):
+            say("Cover letter built.")
+        outs['cover']=cov
+    except Exception as e: say(f"Cover letter failed: {e}")
     stmt=os.path.join(outdir,'Reimbursement_Statement.pdf')
-    if os.path.exists(stmt): pass
     try:
         build_proof_pack(rows,bills_folder,os.path.join(outdir,'Reimbursement_Proof_Pack.pdf'),say)
         outs['proof']=os.path.join(outdir,'Reimbursement_Proof_Pack.pdf')
     except Exception as e: say(f"Proof pack failed: {e}")
     try:
-        build_print_package(cov,stmt,os.path.join(outdir,'Reimbursement_Package_PRINT.pdf'))
-        outs['print']=os.path.join(outdir,'Reimbursement_Package_PRINT.pdf'); say("Print package built.")
+        prn=os.path.join(outdir,'Reimbursement_Package_PRINT.pdf')
+        if write_via_temp(prn,lambda tmp: build_print_package(cov,stmt,tmp),say):
+            say("Print package built.")
+        outs['print']=prn
     except Exception as e: say(f"Print package failed: {e}")
     return outs

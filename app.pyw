@@ -15,7 +15,9 @@ OUTDIR=os.path.join(HERE,'output')
 NAVY='#1F3864'; GREEN='#2E7D32'; BG='#F4F6FB'
 
 def load_cfg(): return json.load(open(CFG_PATH))
-def save_cfg(c): json.dump(c,open(CFG_PATH,'w'),indent=2)
+def save_cfg(c):
+    from safewrite import write_via_temp
+    write_via_temp(CFG_PATH,lambda tmp: json.dump(c,open(tmp,'w'),indent=2))
 def open_path(p):
     try:
         if sys.platform.startswith('win'): os.startfile(p)
