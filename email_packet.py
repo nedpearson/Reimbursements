@@ -83,8 +83,32 @@ def build_zip():
     return ZIP_PATH, None
 
 
+def _outlook_configured():
+    """True only if Outlook actually has a mail profile set up.
+    (Launching an unconfigured Outlook pops its account-setup wizard.)"""
+    if not sys.platform.startswith('win'):
+        return False
+    try:
+        import winreg
+        for ver in ('16.0', '15.0'):
+            try:
+                k = winreg.OpenKey(winreg.HKEY_CURRENT_USER,
+                                   r'Software\Microsoft\Office\%s\Outlook\Profiles' % ver)
+                has = winreg.QueryInfoKey(k)[0] > 0   # at least one profile subkey
+                winreg.CloseKey(k)
+                if has:
+                    return True
+            except OSError:
+                continue
+    except Exception:
+        pass
+    return False
+
+
 def try_outlook(subject, body):
     """Open an Outlook draft with every file attached. True on success."""
+    if not _outlook_configured():
+        return False
     try:
         import win32com.client  # pywin32, only if user has it
         ol = win32com.client.Dispatch('Outlook.Application')
@@ -103,11 +127,20 @@ def _popup(title, msg, warn=False):
         import tkinter as tk
         from tkinter import messagebox
         created = False
-        if not getattr(tk, '_default_root', None):
+        r = getattr(tk, '_default_root', None)
+        if not r:
             r = tk.Tk(); r.withdraw(); created = True
-        (messagebox.showwarning if warn else messagebox.showinfo)(title, msg)
+        try:
+            r.attributes('-topmost', True)   # don't hide behind the browser
+        except Exception:
+            pass
+        fn = messagebox.showwarning if warn else messagebox.showinfo
+        fn(title, msg, parent=r)
         if created:
             r.destroy()
+        else:
+            try: r.attributes('-topmost', False)
+            except Exception: pass
     except Exception:
         print(msg)
 
