@@ -1,0 +1,4 @@
+{
+ "_how_to_use": "When Lindsey emails a DISPUTE, add an entry here, then run Generate + Publish to Web. status: review | accepted | declined | resolved. 'item' should match the line (e.g. 'Exhibit 12 \u2014 Pool (Fernando) 2025-02-01 $342.00'). If accepted, ALSO fix the underlying charge (Edit Amounts / config) so the totals change.",
+ "items": []
+}

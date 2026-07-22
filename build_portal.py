@@ -97,7 +97,15 @@ def build(bills_folder=None, progress=print):
     subtract=bool(cfg.get('subtract_payments_to_lindsey'))
     tpl=tpl.replace('__CREDITNOTE__', ('after $__CREDITS__ already paid to Lindsey is credited' if subtract else 'includes the direct payments/advances Ned made to Lindsey — see the Advances category below'))
     tpl=tpl.replace('__CREDITSTITLE__', ('Credits — amounts Ned already paid Lindsey (subtracted)' if subtract else 'Payments Ned made to Lindsey — settled separate expenses (NOT subtracted)'))
-    html=tpl.replace('__DATA__',json.dumps(data,separators=(',',':'))).replace('__ADDITIONAL__',json.dumps(addl,separators=(',',':'))).replace('__NET__',format(data['net'],',.2f')).replace('__CREDITS__',format(data['credit_total'],',.2f')).replace('__UPDATED__',data['updated'])
+    disputes={'items':[]}
+    dp=os.path.join(HERE,'disputes.json')
+    if os.path.exists(dp):
+        try:
+            _d=json.load(open(dp,encoding='utf-8'))
+            disputes={'items':[i for i in _d.get('items',[]) if i.get('item')]}
+        except Exception as _e:
+            progress('disputes.json unreadable, skipping: %s'%_e)
+    html=tpl.replace('__DATA__',json.dumps(data,separators=(',',':'))).replace('__ADDITIONAL__',json.dumps(addl,separators=(',',':'))).replace('__DISPUTES__',json.dumps(disputes,separators=(',',':'))).replace('__NET__',format(data['net'],',.2f')).replace('__CREDITS__',format(data['credit_total'],',.2f')).replace('__UPDATED__',data['updated'])
     from safewrite import write_text, copy_file
     write_text(os.path.join(docs,'index.html'),html,progress)
     try:

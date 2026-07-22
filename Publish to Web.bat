@@ -9,4 +9,5 @@ git commit -m "Update reimbursement portal"
 git push
 echo.
 echo Done. Live link: https://nedpearson.github.io/Reimbursements/
+echo (If the link shows 404: repo Settings - Pages - Deploy from branch - main - /docs - Save. One time only.)
 pause

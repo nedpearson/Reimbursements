@@ -97,6 +97,7 @@ class App(tk.Tk):
         tk.Label(f,text='"Additional amounts paid for her" (Yukon / auto insurance / health) live in additional.json.',
                  bg=BG,fg=NAVY,font=('Segoe UI',10,'bold')).pack(anchor='w',padx=14)
         tk.Button(f,text="Open additional.json in Notepad",command=lambda:os.startfile(os.path.join(HERE,'additional.json')) if sys.platform.startswith('win') else open_path(os.path.join(HERE,'additional.json'))).pack(anchor='w',padx=14,pady=4)
+        tk.Button(f,text="Open disputes.json in Notepad (Lindsey's disputes & your responses)",command=lambda:os.startfile(os.path.join(HERE,'disputes.json')) if sys.platform.startswith('win') else open_path(os.path.join(HERE,'disputes.json'))).pack(anchor='w',padx=14,pady=4)
         tk.Label(f,text="After ANY change here: go to Generate & Export and click Generate, then Publish to Web.bat to update the shared link.",
                  bg=BG,fg='#777',font=('Segoe UI',9)).pack(anchor='w',padx=14,pady=(4,10))
         self._amt_reload()

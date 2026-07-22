@@ -30,6 +30,14 @@ h2{color:var(--navy);font-size:1.05rem;margin:26px 4px 8px}.note{color:var(--gre
 .credit td{color:#20603c}footer{color:#8a8fa3;font-size:.75rem;text-align:center;margin-top:34px}
 .emailbtn{display:inline-block;background:#fff;color:var(--navy);font-weight:700;border:2px solid #fff;border-radius:9px;padding:9px 16px;text-decoration:none;font-size:.92rem;cursor:pointer}
 .emailbtn:hover{background:#E8F5EC}
+.dbtn{display:inline-block;font-size:.72rem;color:#9a3324;border:1px solid #e3b7ae;border-radius:8px;padding:1px 8px;text-decoration:none;white-space:nowrap}
+.dbtn:hover{background:#FDEDEA}
+.dstat{display:inline-block;font-size:.72rem;font-weight:700;padding:2px 10px;border-radius:10px}
+.dstat.review{background:#FDF3E3;color:#8a6100}.dstat.accepted{background:#E7F5EC;color:#20603c}.dstat.declined{background:#FDEDEA;color:#9a3324}.dstat.resolved{background:#E8EDF7;color:#1F3864}
+.howto{padding:16px 18px;font-size:.86rem}
+.howto ol{margin:8px 0 0 20px}.howto li{margin:4px 0}
+.dispitem{border-top:1px solid var(--line);padding:12px 18px}
+.dispitem .q{margin:4px 0;color:#222}.dispitem .a{margin:4px 0;color:var(--navy)}
 </style></head><body>
 <header><div class="wrap"><h1>Expense Reimbursement &mdash; Pearson</h1>
 <div class="sub">Shared household &amp; child-related expenses &middot; 8792 W Fairway Dr &middot; Aug 2024 &ndash; Jul 2026 &middot; Updated __UPDATED__</div></div></header>
@@ -41,11 +49,24 @@ h2{color:var(--navy);font-size:1.05rem;margin:26px 4px 8px}.note{color:var(--gre
 <div class="note"><b>Note on child support:</b> separate from everything on this page, Ned paid the court-ordered child support (Consent Judgment of Jan 12, 2025; guideline worksheet: $1,011.95/month) through May 1, 2026, via lump-sum check — worksheet and judgment on file. Child support is not part of this reimbursement claim and is not credited against it. Likewise, direct support Ned provided to his son Eli during this period (approximately $7,700 — fuel, food, and school needs) is not claimed and does not appear as line items.</div>
 <h2 id="addl-h">Additional Amounts Paid on Lindsey&rsquo;s Behalf</h2>
 <div id="addl"></div>
+<h2>Notes &amp; Disputes</h2>
+<div class="card"><div class="howto">
+<b style="color:var(--navy)">Lindsey — if you believe any charge is wrong, dispute it right from this page:</b>
+<ol>
+<li>Open the category, find the line, and click <span class="dbtn">Dispute</span> next to it. An email opens already filled in with that exact charge.</li>
+<li>Say why you dispute it and <b>attach your proof documents</b> (receipts, statements, screenshots) to that email before sending.</li>
+<li>Every dispute gets reviewed against the source bills. The outcome is posted below with a response, and the totals above are corrected if you're right.</li>
+</ol>
+<div class="note" style="margin:10px 0 0">To send general notes or documents that aren't about one specific line, email <a href="mailto:nedpearson@gmail.com?subject=NOTE%20%E2%80%94%20Pearson%20reimbursement">nedpearson@gmail.com</a> with subject "NOTE".</div>
+</div>
+<div id="displist"></div>
+</div>
 <h2>Documents</h2>
 <div class="card"><div class="docs">
 <a class="doc" href="Reimbursement_Statement.pdf" target="_blank"><b>Itemized Statement</b><span>Every charge by date</span></a>
 <a class="doc" href="Reimbursement_Cover_Letter.pdf" target="_blank"><b>Cover Letter</b><span>Summary &amp; terms</span></a>
-<a class="doc" href="Amounts_Paid_For_Lindsey.pdf" target="_blank"><b>Additional Amounts (Vehicle &amp; Insurance)</b><span>Yukon Denali + insurance chart</span></a>\n<a class="doc" href="proof/vol1.pdf" target="_blank"><b>Proof Pack &mdash; Vol 1</b><span>Source bills (exhibits 1&ndash;41)</span></a>
+<a class="doc" href="Amounts_Paid_For_Lindsey.pdf" target="_blank"><b>Additional Amounts (Vehicle &amp; Insurance)</b><span>Yukon Denali + insurance chart</span></a>
+<a class="doc" href="proof/vol1.pdf" target="_blank"><b>Proof Pack &mdash; Vol 1</b><span>Source bills</span></a>
 <a class="doc" href="proof/vol2.pdf" target="_blank"><b>Proof Pack &mdash; Vol 2</b><span>Source bills</span></a>
 <a class="doc" href="proof/vol3.pdf" target="_blank"><b>Proof Pack &mdash; Vol 3</b><span>Source bills</span></a>
 <a class="doc" href="proof/vol4.pdf" target="_blank"><b>Proof Pack &mdash; Vol 4</b><span>Source bills</span></a>
@@ -61,10 +82,29 @@ function srcCell(s){if(!s)return '';
  if(s.t==='email')return '<span class="badge email">'+s.doc+'</span>';
  if(s.t==='venmo')return '<span class="badge venmo">'+s.doc+'</span>';
  return '<span class="badge">'+(s.doc||'')+'</span>';}
+function itemRef(i){return (i.src&&i.src.t==='exh'?('Exhibit '+i.src.exh+' — '):'')+i.v+' '+(i.d||'')+' '+money(i.a);}
+function dispBtn(i){
+ var ref=itemRef(i);
+ var subj='DISPUTE — '+ref+' — Pearson reimbursement';
+ var body='I dispute this charge:\n\n  '+ref+'\n  Category: '+i.cat+'\n  Description: '+i.desc+'\n  Her share claimed: '+money(i.h)+'\n\nReason for dispute:\n(write your reason here)\n\nIMPORTANT: attach your proof documents (receipts, statements, screenshots) to this email before sending.\n\n— Lindsey';
+ return '<a class="dbtn" href="mailto:nedpearson@gmail.com?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body)+'">Dispute</a>';}
+const DISP=__DISPUTES__;
+(function(){
+ var dl=document.getElementById('displist');
+ var st={review:'UNDER REVIEW',accepted:'ACCEPTED — TOTAL ADJUSTED',declined:'DECLINED',resolved:'RESOLVED'};
+ var items=(DISP&&DISP.items)?DISP.items:[];
+ if(!items.length){dl.innerHTML='<div class="dispitem" style="color:#8a8fa3">No disputes submitted yet. Anything Lindsey disputes will appear here with its outcome, so both sides can see exactly where things stand.</div>';return;}
+ items.forEach(function(d){
+  var cls=(d.status||'review').toLowerCase();
+  dl.insertAdjacentHTML('beforeend','<div class="dispitem"><div><b style="color:var(--navy)">'+(d.item||'')+'</b> &nbsp;<span class="dstat '+cls+'">'+(st[cls]||d.status||'')+'</span> <span style="color:#8a8fa3;font-size:.75rem">'+(d.date||'')+'</span></div>'
+   +(d.her_claim?('<div class="q"><b>Lindsey:</b> '+d.her_claim+(d.proof?(' <span class="badge">proof: '+d.proof+'</span>'):'')+'</div>'):'')
+   +(d.response?('<div class="a"><b>Ned:</b> '+d.response+'</div>'):'')+'</div>');
+ });
+})();
 const wrap=document.getElementById('cats');
 D.cats.forEach(c=>{const items=D.items.filter(i=>i.cat===c.name).sort((a,b)=>(a.d||'').localeCompare(b.d||''));
  const card=document.createElement('div');card.className='card';
- card.innerHTML='<div class="cat"><div><div class="nm">'+c.name+'</div><div class="meta">'+c.n+' charge'+(c.n>1?'s':'')+' · billed '+money(c.billed)+' · her share: '+c.basis+'</div></div><div style="display:flex;align-items:center;gap:12px"><div class="owed">'+money(c.owed)+'</div><div class="chev">▶</div></div></div><div class="items"><table><thead><tr><th>Date</th><th>Vendor</th><th>Description</th><th class="r">Bill amount</th><th class="r">Her share</th><th>Source of truth</th></tr></thead><tbody>'+items.map(i=>'<tr><td>'+(i.d||'—')+'</td><td>'+i.v+'</td><td>'+i.desc+'</td><td class="r">'+money(i.a)+'</td><td class="r"><b>'+money(i.h)+'</b></td><td class="src">'+srcCell(i.src)+'</td></tr>').join('')+'</tbody></table></div>';
+ card.innerHTML='<div class="cat"><div><div class="nm">'+c.name+'</div><div class="meta">'+c.n+' charge'+(c.n>1?'s':'')+' · billed '+money(c.billed)+' · her share: '+c.basis+'</div></div><div style="display:flex;align-items:center;gap:12px"><div class="owed">'+money(c.owed)+'</div><div class="chev">▶</div></div></div><div class="items"><table><thead><tr><th>Date</th><th>Vendor</th><th>Description</th><th class="r">Bill amount</th><th class="r">Her share</th><th>Source of truth</th><th></th></tr></thead><tbody>'+items.map(i=>'<tr><td>'+(i.d||'—')+'</td><td>'+i.v+'</td><td>'+i.desc+'</td><td class="r">'+money(i.a)+'</td><td class="r"><b>'+money(i.h)+'</b></td><td class="src">'+srcCell(i.src)+'</td><td>'+dispBtn(i)+'</td></tr>').join('')+'</tbody></table></div>';
  card.querySelector('.cat').onclick=()=>card.classList.toggle('open');wrap.appendChild(card);});
 
 
@@ -86,7 +126,7 @@ if(ADD&&ADD.sections){
  var body='The complete expense reimbursement package is here:\n'+link+'\n\n'
   +'Net amount due: '+money(D.net)+'\n'
   +(addTotal?('Additional amounts paid on your behalf (vehicle, insurance, health premium, direct payments): '+money(addTotal)+'\n'):'')
-  +'\nOn that page: every charge by category, each line linked to the actual bill ('+'93 exhibits), plus the itemized statement, cover letter, and full proof pack — all viewable in the browser, nothing to download.\n\nNed';
+  +'\nOn that page: every charge by category, each line linked to the actual bill, plus the itemized statement, cover letter, and full proof pack — all viewable in the browser, nothing to download. If you believe any charge is wrong, use the Dispute button on that line and attach your proof.\n\nNed';
  var el=document.getElementById('emailbtn');
  if(el) el.href='mailto:?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body);
 })();
