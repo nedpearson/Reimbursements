@@ -1,7 +1,7 @@
 {
  "title": "Additional Amounts Paid on Lindsey's Behalf",
- "subtitle": "Her vehicle, its insurance, and her health-insurance premium \u2014 paid by Ned, never billed to her. Shown SEPARATELY; NOT included in the reimbursement total above.",
- "grand_total": 24620.12,
+ "subtitle": "Her vehicle, its insurance, and her health-insurance premium \u2014 paid by Ned from August 1, 2024, never billed to her. Shown SEPARATELY; NOT included in the reimbursement total above.",
+ "grand_total": 43849.4,
  "doc": "Amounts_Paid_For_Lindsey.pdf",
  "sections": [
   {
@@ -63,9 +63,79 @@
   },
   {
    "name": "Auto insurance \u2014 Yukon's portion (GEICO household policy)",
-   "basis": "$391.14/mo x 8 months (Oct 2025 - May 2026)",
-   "total": 3129.12,
+   "basis": "$391.14/mo x 22 months (Aug 2024 - May 2026)",
+   "total": 8605.08,
    "items": [
+    {
+     "d": "2024-08",
+     "desc": "Yukon share of GEICO household premium (at documented rate)",
+     "a": 391.14
+    },
+    {
+     "d": "2024-09",
+     "desc": "Yukon share of GEICO household premium (at documented rate)",
+     "a": 391.14
+    },
+    {
+     "d": "2024-10",
+     "desc": "Yukon share of GEICO household premium (at documented rate)",
+     "a": 391.14
+    },
+    {
+     "d": "2024-11",
+     "desc": "Yukon share of GEICO household premium (at documented rate)",
+     "a": 391.14
+    },
+    {
+     "d": "2024-12",
+     "desc": "Yukon share of GEICO household premium (at documented rate)",
+     "a": 391.14
+    },
+    {
+     "d": "2025-01",
+     "desc": "Yukon share of GEICO household premium (at documented rate)",
+     "a": 391.14
+    },
+    {
+     "d": "2025-02",
+     "desc": "Yukon share of GEICO household premium (at documented rate)",
+     "a": 391.14
+    },
+    {
+     "d": "2025-03",
+     "desc": "Yukon share of GEICO household premium (at documented rate)",
+     "a": 391.14
+    },
+    {
+     "d": "2025-04",
+     "desc": "Yukon share of GEICO household premium (at documented rate)",
+     "a": 391.14
+    },
+    {
+     "d": "2025-05",
+     "desc": "Yukon share of GEICO household premium (at documented rate)",
+     "a": 391.14
+    },
+    {
+     "d": "2025-06",
+     "desc": "Yukon share of GEICO household premium (at documented rate)",
+     "a": 391.14
+    },
+    {
+     "d": "2025-07",
+     "desc": "Yukon share of GEICO household premium (at documented rate)",
+     "a": 391.14
+    },
+    {
+     "d": "2025-08",
+     "desc": "Yukon share of GEICO household premium (at documented rate)",
+     "a": 391.14
+    },
+    {
+     "d": "2025-09",
+     "desc": "Yukon share of GEICO household premium (at documented rate)",
+     "a": 391.14
+    },
     {
      "d": "2025-10",
      "desc": "Yukon share of GEICO household premium",
@@ -110,9 +180,79 @@
   },
   {
    "name": "Health insurance \u2014 Lindsey's premium (NFP group health)",
-   "basis": "$982.38/mo x 8 months (Oct 2025 - May 2026) \u2014 months after the final judgment of divorce",
-   "total": 7859.04,
+   "basis": "$982.38/mo x 22 months (Aug 2024 - May 2026)",
+   "total": 21612.36,
    "items": [
+    {
+     "d": "2024-08",
+     "desc": "Lindsey's spouse premium (payroll, at documented rate)",
+     "a": 982.38
+    },
+    {
+     "d": "2024-09",
+     "desc": "Lindsey's spouse premium (payroll, at documented rate)",
+     "a": 982.38
+    },
+    {
+     "d": "2024-10",
+     "desc": "Lindsey's spouse premium (payroll, at documented rate)",
+     "a": 982.38
+    },
+    {
+     "d": "2024-11",
+     "desc": "Lindsey's spouse premium (payroll, at documented rate)",
+     "a": 982.38
+    },
+    {
+     "d": "2024-12",
+     "desc": "Lindsey's spouse premium (payroll, at documented rate)",
+     "a": 982.38
+    },
+    {
+     "d": "2025-01",
+     "desc": "Lindsey's spouse premium (payroll, at documented rate)",
+     "a": 982.38
+    },
+    {
+     "d": "2025-02",
+     "desc": "Lindsey's spouse premium (payroll, at documented rate)",
+     "a": 982.38
+    },
+    {
+     "d": "2025-03",
+     "desc": "Lindsey's spouse premium (payroll, at documented rate)",
+     "a": 982.38
+    },
+    {
+     "d": "2025-04",
+     "desc": "Lindsey's spouse premium (payroll, at documented rate)",
+     "a": 982.38
+    },
+    {
+     "d": "2025-05",
+     "desc": "Lindsey's spouse premium (payroll, at documented rate)",
+     "a": 982.38
+    },
+    {
+     "d": "2025-06",
+     "desc": "Lindsey's spouse premium (payroll, at documented rate)",
+     "a": 982.38
+    },
+    {
+     "d": "2025-07",
+     "desc": "Lindsey's spouse premium (payroll, at documented rate)",
+     "a": 982.38
+    },
+    {
+     "d": "2025-08",
+     "desc": "Lindsey's spouse premium (payroll, at documented rate)",
+     "a": 982.38
+    },
+    {
+     "d": "2025-09",
+     "desc": "Lindsey's spouse premium (payroll, at documented rate)",
+     "a": 982.38
+    },
     {
      "d": "2025-10",
      "desc": "Lindsey's spouse premium (payroll)",
@@ -156,5 +296,5 @@
    ]
   }
  ],
- "alt": "Health & GEICO auto: Oct 2025 - May 2026 (8 months each). Vehicle loan: Aug 2024 - Mar 2026."
+ "alt": "Health & GEICO auto: Aug 2024 - May 2026 (22 months each; Aug 2024 - Sep 2025 at the documented monthly rate, statements available on request). Vehicle loan: Aug 2024 - Mar 2026."
 }

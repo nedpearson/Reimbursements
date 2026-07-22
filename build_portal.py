@@ -100,6 +100,11 @@ def build(bills_folder=None, progress=print):
     html=tpl.replace('__DATA__',json.dumps(data,separators=(',',':'))).replace('__ADDITIONAL__',json.dumps(addl,separators=(',',':'))).replace('__NET__',format(data['net'],',.2f')).replace('__CREDITS__',format(data['credit_total'],',.2f')).replace('__UPDATED__',data['updated'])
     from safewrite import write_text, copy_file
     write_text(os.path.join(docs,'index.html'),html,progress)
+    try:
+        import make_additional_pdf
+        make_additional_pdf.build()          # keep the chart in sync with additional.json
+    except Exception as _e:
+        progress('additional chart rebuild skipped: %s'%_e)
     ac=os.path.join(HERE,'Amounts_Paid_For_Lindsey.pdf')
     if os.path.exists(ac): copy_file(ac,os.path.join(docs,'Amounts_Paid_For_Lindsey.pdf'),progress)
     for fn in ('Reimbursement_Statement.pdf','Reimbursement_Cover_Letter.pdf'):
