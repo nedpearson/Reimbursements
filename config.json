@@ -12,7 +12,8 @@
     "Mortgage": 50,
     "Moving/Household": 80,
     "Construction (De Roman's)": 50,
-    "Labor": 50
+    "Labor": 50,
+    "Home Repairs & A/C": 50
   },
   "subtract_payments_to_lindsey": false,
   "date_cutoff": "2024-08-01",
@@ -87,6 +88,22 @@
       "amount": 139.35,
       "date": "2026-06-20",
       "_helm": true
+    },
+    {
+      "vendor": "Assurance Financial",
+      "category": "Mortgage",
+      "description": "Returned-check late charges $205 + NSF fee $20 (Notice 1/7/25, addressed to both Gerald & Lindsey Pearson; $3,675.19 check returned)",
+      "amount": 225.0,
+      "date": "2025-01-07",
+      "_retfee": true
+    },
+    {
+      "vendor": "Landon Haynes",
+      "category": "Home Repairs & A/C",
+      "description": "A/C repair work on the house \u2014 paid cash $3,000 (Chase withdrawal slip 9/25/25, memo 'Landon Haynes AC work')",
+      "amount": 3000.0,
+      "date": "2025-09-25",
+      "_acwork": true
     }
   ],
   "_manual_note": "Items with no bill/PDF in the folder. 'recurring_monthly' expands to one line per month (dated the 1st).",

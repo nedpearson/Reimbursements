@@ -28,15 +28,17 @@ td.r,th.r{text-align:right;white-space:nowrap}
 .doc:hover{border-color:var(--navy);background:var(--light)}.doc b{color:var(--navy);display:block;font-size:.9rem}.doc span{color:var(--grey);font-size:.78rem}
 h2{color:var(--navy);font-size:1.05rem;margin:26px 4px 8px}.note{color:var(--grey);font-size:.8rem;margin:8px 4px}
 .credit td{color:#20603c}footer{color:#8a8fa3;font-size:.75rem;text-align:center;margin-top:34px}
+.emailbtn{display:inline-block;background:#fff;color:var(--navy);font-weight:700;border:2px solid #fff;border-radius:9px;padding:9px 16px;text-decoration:none;font-size:.92rem;cursor:pointer}
+.emailbtn:hover{background:#E8F5EC}
 </style></head><body>
 <header><div class="wrap"><h1>Expense Reimbursement &mdash; Pearson</h1>
 <div class="sub">Shared household &amp; child-related expenses &middot; 8792 W Fairway Dr &middot; Aug 2024 &ndash; Jul 2026 &middot; Updated __UPDATED__</div></div></header>
 <div class="wrap">
-<div class="banner"><div>NET AMOUNT DUE TO NED<br><span style="font-size:.78rem;opacity:.85">__CREDITNOTE__</span></div><b>$__NET__</b></div>
+<div class="banner"><div>NET AMOUNT DUE TO NED<br><span style="font-size:.78rem;opacity:.85">__CREDITNOTE__</span></div><div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap"><b>$__NET__</b><a id="emailbtn" class="emailbtn" href="#">&#9993;&nbsp;Email this out</a></div></div>
 <h2>Categories &mdash; tap any row to see every charge, then tap a source to open the actual bill</h2>
 <div id="cats"></div>
 
-<div class="note"><b>Note on child support:</b> separate from everything on this page, Ned paid child support of approximately $1,100 per month through May 1, 2026, via lump-sum check (documentation available on request). Child support is not part of this reimbursement claim and is not credited against it. Likewise, direct support Ned provided to his son Eli during this period (approximately $7,700 — fuel, food, and school needs) is not claimed and does not appear as line items.</div>
+<div class="note"><b>Note on child support:</b> separate from everything on this page, Ned paid the court-ordered child support (Consent Judgment of Jan 12, 2025; guideline worksheet: $1,011.95/month) through May 1, 2026, via lump-sum check — worksheet and judgment on file. Child support is not part of this reimbursement claim and is not credited against it. Likewise, direct support Ned provided to his son Eli during this period (approximately $7,700 — fuel, food, and school needs) is not claimed and does not appear as line items.</div>
 <h2 id="addl-h">Additional Amounts Paid on Lindsey&rsquo;s Behalf</h2>
 <div id="addl"></div>
 <h2>Documents</h2>
@@ -76,4 +78,16 @@ if(ADD&&ADD.sections){
  aw.insertAdjacentHTML('beforeend','<div class="banner" style="background:#8a6100"><div>ADDITIONAL TOTAL (separate from the amount above)<br><span style="font-size:.78rem;opacity:.85">'+ADD.alt+'</span></div><b>'+money(ADD.grand_total)+'</b></div>');
  aw.insertAdjacentHTML('beforeend','<div class="note">Full detail &amp; chart: <a href="'+ADD.doc+'" target="_blank">Additional Amounts (Vehicle &amp; Insurance)</a>. Sources: GM Financial / GEICO receipts, available on request.</div>');
 }
+
+(function(){
+ var link='https://nedpearson.github.io/Reimbursements/';
+ var addTotal=(typeof ADD!=='undefined'&&ADD&&ADD.grand_total)?ADD.grand_total:0;
+ var subj='Expense Reimbursement — Pearson ('+money(D.net)+')';
+ var body='The complete expense reimbursement package is here:\n'+link+'\n\n'
+  +'Net amount due: '+money(D.net)+'\n'
+  +(addTotal?('Additional amounts paid on your behalf (vehicle, insurance, health premium, direct payments): '+money(addTotal)+'\n'):'')
+  +'\nOn that page: every charge by category, each line linked to the actual bill ('+'93 exhibits), plus the itemized statement, cover letter, and full proof pack — all viewable in the browser, nothing to download.\n\nNed';
+ var el=document.getElementById('emailbtn');
+ if(el) el.href='mailto:?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body);
+})();
 </script></body></html>

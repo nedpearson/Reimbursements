@@ -63,7 +63,7 @@ def build(bills_folder=None, progress=print):
     full.close(); os.remove(tmp)
     fin={rel:dict(exh=m['exh'],cat=m['cat'],vol=volmap[m['page']][0],page=volmap[m['page']][1],base=m['base']) for rel,m in mapping.items()}
     # ---- portal data ----
-    CATS=['Mortgage','Utilities','Pool',"Construction (De Roman's)",'School/Tuition','AT&T Business','Storage','Cleaning','Lawn/Yard','Moving/Household','Labor','Medical/Dental/Vision']
+    CATS=['Mortgage','Utilities','Pool',"Construction (De Roman's)",'Home Repairs & A/C','School/Tuition','AT&T Business','Storage','Cleaning','Lawn/Yard','Moving/Household','Labor','Medical/Dental/Vision']
     items=[]; credits=[]
     for r in rows:
         if r['vendor']=='Paid TO Lindsey' and r.get('amount'):

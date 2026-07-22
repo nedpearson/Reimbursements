@@ -47,7 +47,8 @@ def build_cover_letter(rows,cfg,out,today=None):
     E.append(Paragraph('Enclosed is a complete accounting of the household and child-related expenses I have paid, '
       'together with the share of each category that is yours under our agreement and the Interim Consent Judgment '
       'dated January 10, 2025. Household costs are divided equally; school, tuition, and the children’s medical, '
-      'dental, and vision costs are calculated at twelve percent (12%).',body))
+      'dental, vision, tuition, and school costs are set at twelve percent (12%) — the share ordered by the '
+      'Consent Judgment, corresponding to your 11.34% share of combined income on the Child Support Worksheet (Exhibit B).',body))
     data=[['Category','Total Paid','Share','Amount Owed']]
     sp=cfg['split_percent']
     for c in order:
@@ -72,14 +73,13 @@ def build_cover_letter(rows,cfg,out,today=None):
     E.append(Spacer(1,6)); E.append(t); E.append(Spacer(1,10))
     E.append(Paragraph('Every figure is drawn from a source document. The enclosed statement itemizes each charge by date, '
       'and the proof pack reproduces the underlying bills. Utility amounts use current charges rather than past-due '
-      'balances so no month is counted twice; duplicates were removed; payments I previously made to you settled separate expenses and are itemized for transparency. Child support (approximately $1,100 per month) was additionally paid through May 1, 2026 by lump-sum check, and direct support I provided to our son Eli (approximately $7,700) is likewise not claimed. '
+      'balances so no month is counted twice; duplicates were removed; payments I previously made to you settled separate expenses and are itemized for transparency. Court-ordered child support (Consent Judgment of January 12, 2025; guideline worksheet $1,011.95 per month) was additionally paid through May 1, 2026, and direct support I provided to our son Eli (approximately $7,700) is likewise not claimed. '
       'The original of any bill is available on request.',body))
     E.append(Paragraph('Please review the enclosed statement and let me know within thirty (30) days how you would like '
       'to arrange payment or discuss any item. I am open to a payment schedule.',body))
     E.append(Spacer(1,16)); E.append(Paragraph('Sincerely,',body)); E.append(Spacer(1,28))
     E.append(Paragraph('Gerald "Ned" Pearson Jr.',body)); E.append(Spacer(1,10))
     E.append(Paragraph('Enclosures: Expense Reimbursement Statement; Proof Pack (source bills)',small))
-    E.append(Paragraph('cc: Jaclyn Champagne, Esq., Law Offices of Ossie Brown',small))
     doc.build(E)
     return out
 
