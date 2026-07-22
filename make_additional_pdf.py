@@ -59,7 +59,7 @@ def build(out=None):
             ]))
             E.append(Spacer(1, 4)); E.append(t)
     E.append(Spacer(1, 14))
-    gt = Table([['GRAND TOTAL — PAID ON LINDSEY\'S BEHALF', _money(a['grand_total'])]],
+    gt = Table([[a.get('grand_label', 'TOTAL VOLUNTARY SUPPORT PROVIDED TO LINDSEY'), _money(a['grand_total'])]],
                colWidths=[5.4 * inch, 1.15 * inch])
     gt.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, -1), NAVY),
@@ -70,6 +70,11 @@ def build(out=None):
         ('TOPPADDING', (0, 0), (-1, -1), 6), ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
     ]))
     E.append(gt)
+    if a.get('statement'):
+        E.append(Spacer(1, 12))
+        stmt = ParagraphStyle('stmt', parent=styles['Normal'], fontSize=10.5, leading=15,
+                              textColor=NAVY, borderPadding=8, backColor=colors.HexColor('#F4F6FB'))
+        E.append(Paragraph('<b>Statement for the court.</b> ' + a['statement'], stmt))
     if a.get('alt'):
         E.append(Spacer(1, 8)); E.append(Paragraph(a['alt'], sub))
     from safewrite import write_via_temp

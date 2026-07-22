@@ -1,11 +1,11 @@
 {
- "title": "Additional Amounts Paid on Lindsey's Behalf",
- "subtitle": "Her vehicle, its insurance, and her health-insurance premium \u2014 paid by Ned from August 1, 2024, never billed to her. Shown SEPARATELY; NOT included in the reimbursement total above.",
+ "title": "Voluntary Support Provided to Help Lindsey Start Over",
+ "subtitle": "Beyond every shared expense listed above \u2014 and beyond anything any court has ordered \u2014 Gerald has voluntarily and continuously carried Lindsey's vehicle, its insurance, and her health coverage since their separation, so that she could re-establish herself on stable footing. These amounts were never billed to her and are documented here to show the full, good-faith extent of the support he has provided.",
  "grand_total": 58248.92,
  "doc": "Amounts_Paid_For_Lindsey.pdf",
  "sections": [
   {
-   "name": "GMC Yukon Denali \u2014 loan payments (GM Financial)",
+   "name": "GMC Yukon Denali \u2014 vehicle loan Gerald carried for Lindsey (GM Financial)",
    "basis": "Aug 2024 \u2013 Mar 2026 (monthly $1,199.96; catch-up/2-month payments and separate acct *1890 shown as recorded)",
    "total": 28031.48,
    "items": [
@@ -122,7 +122,7 @@
    ]
   },
   {
-   "name": "Auto insurance \u2014 Yukon's portion (GEICO household policy)",
+   "name": "Auto insurance Gerald carried for Lindsey \u2014 Yukon's portion (GEICO)",
    "basis": "$391.14/mo x 22 months (Aug 2024 - May 2026)",
    "total": 8605.08,
    "items": [
@@ -239,7 +239,7 @@
    ]
   },
   {
-   "name": "Health insurance \u2014 Lindsey's premium (NFP group health)",
+   "name": "Health insurance Gerald carried for Lindsey \u2014 monthly premium (NFP group plan)",
    "basis": "$982.38/mo x 22 months (Aug 2024 - May 2026)",
    "total": 21612.36,
    "items": [
@@ -356,5 +356,7 @@
    ]
   }
  ],
- "alt": "Health & GEICO auto: Aug 2024 - May 2026 (22 months each; Aug 2024 - Sep 2025 at the documented monthly rate, statements available on request). Vehicle loan: Aug 2024 - Mar 2026."
+ "alt": "Paid voluntarily by Gerald, of his own accord, to ease Lindsey's transition to an independent household. Health & GEICO auto: Aug 2024 \u2013 May 2026; vehicle loan: Aug 2024 \u2013 Mar 2026. Underlying statements available on request.",
+ "grand_label": "TOTAL VOLUNTARY SUPPORT PROVIDED TO LINDSEY",
+ "statement": "For the court's context: none of the payments in this section were ordered or required of Gerald. He made them by choice, month after month \u2014 keeping Lindsey mobile, insured, and covered \u2014 to ease her transition into an independent household. This is support extended in good faith, well beyond his obligations, to help the mother of his children get back on her feet."
 }

@@ -28,6 +28,8 @@ td.r,th.r{text-align:right;white-space:nowrap}
 .doc:hover{border-color:var(--navy);background:var(--light)}.doc b{color:var(--navy);display:block;font-size:.9rem}.doc span{color:var(--grey);font-size:.78rem}
 h2{color:var(--navy);font-size:1.05rem;margin:26px 4px 8px}.note{color:var(--grey);font-size:.8rem;margin:8px 4px}
 .credit td{color:#20603c}footer{color:#8a8fa3;font-size:.75rem;text-align:center;margin-top:34px}
+tr.vgrp td{background:#EAF0FA;color:var(--navy);font-weight:700;font-size:.8rem;padding:7px 10px;border-top:2px solid #cdd8ee}
+tr.vgrp .vmeta{font-weight:600;color:#5a6b8c;font-size:.74rem}
 .emailbtn{display:inline-block;background:#fff;color:var(--navy);font-weight:700;border:2px solid #fff;border-radius:9px;padding:9px 16px;text-decoration:none;font-size:.92rem;cursor:pointer}
 .emailbtn:hover{background:#E8F5EC}
 .dbtn{display:inline-block;font-size:.72rem;color:#9a3324;border:1px solid #e3b7ae;border-radius:8px;padding:1px 8px;text-decoration:none;white-space:nowrap}
@@ -139,22 +141,40 @@ const PAID_EXH=new Set();
    +(d.response?('<div class="a"><b>Ned:</b> '+d.response+'</div>'):'')+'</div>');
  });
 })();
+function itemRow(i){return '<tr'+((PAID.has(i.id)||(i.src&&i.src.t==='exh'&&PAID_EXH.has(i.src.exh)))?' style="background:#F1F9F3"':'')+'><td>'+(i.d||'—')+'</td><td>'+i.v+'</td><td>'+i.desc+'</td><td class="r">'+money(i.a)+'</td><td class="r"><b>'+money(i.h)+'</b></td><td class="src">'+srcCell(i.src)+'</td><td>'+statusCell(i)+'</td></tr>';}
+function groupedRows(items){
+ // group the category's charges by vendor, with a subtotal header per vendor
+ var g={},order=[];
+ items.forEach(function(i){if(!g[i.v]){g[i.v]=[];order.push(i.v);}g[i.v].push(i);});
+ order.sort(function(a,b){var sa=g[a].reduce((t,x)=>t+x.h,0),sb=g[b].reduce((t,x)=>t+x.h,0);return sb-sa;});
+ var html='';
+ order.forEach(function(v){
+  var rows=g[v].slice().sort((a,b)=>(a.d||'').localeCompare(b.d||''));
+  var billed=rows.reduce((t,x)=>t+x.a,0),share=rows.reduce((t,x)=>t+x.h,0);
+  html+='<tr class="vgrp"><td colspan="3">'+v+' <span class="vmeta">· '+rows.length+' charge'+(rows.length>1?'s':'')+'</span></td><td class="r">'+money(billed)+'</td><td class="r">'+money(share)+'</td><td colspan="2" class="vmeta">vendor subtotal</td></tr>';
+  html+=rows.map(itemRow).join('');
+ });
+ return html;
+}
 const wrap=document.getElementById('cats');
-D.cats.forEach(c=>{const items=D.items.filter(i=>i.cat===c.name).sort((a,b)=>(a.d||'').localeCompare(b.d||''));
+D.cats.forEach(c=>{const items=D.items.filter(i=>i.cat===c.name);
+ var nv=new Set(items.map(i=>i.v)).size;
  const card=document.createElement('div');card.className='card';
- card.innerHTML='<div class="cat"><div><div class="nm">'+c.name+'</div><div class="meta">'+c.n+' charge'+(c.n>1?'s':'')+' · billed '+money(c.billed)+' · her share: '+c.basis+'</div></div><div style="display:flex;align-items:center;gap:12px"><div class="owed">'+money(c.owed)+'</div><div class="chev">▶</div></div></div><div class="items"><table><thead><tr><th>Date</th><th>Vendor</th><th>Description</th><th class="r">Bill amount</th><th class="r">Her share</th><th>Source of truth</th><th></th></tr></thead><tbody>'+items.map(i=>'<tr'+((PAID.has(i.id)||(i.src&&i.src.t==='exh'&&PAID_EXH.has(i.src.exh)))?' style="background:#F1F9F3"':'')+'><td>'+(i.d||'—')+'</td><td>'+i.v+'</td><td>'+i.desc+'</td><td class="r">'+money(i.a)+'</td><td class="r"><b>'+money(i.h)+'</b></td><td class="src">'+srcCell(i.src)+'</td><td>'+statusCell(i)+'</td></tr>').join('')+'</tbody></table></div>';
+ card.innerHTML='<div class="cat"><div><div class="nm">'+c.name+'</div><div class="meta">'+c.n+' charge'+(c.n>1?'s':'')+' · '+nv+' vendor'+(nv>1?'s':'')+' · billed '+money(c.billed)+' · her share: '+c.basis+'</div></div><div style="display:flex;align-items:center;gap:12px"><div class="owed">'+money(c.owed)+'</div><div class="chev">▶</div></div></div><div class="items"><table><thead><tr><th>Date</th><th>Vendor</th><th>Description</th><th class="r">Bill amount</th><th class="r">Her share</th><th>Source of truth</th><th></th></tr></thead><tbody>'+groupedRows(items)+'</tbody></table></div>';
  card.querySelector('.cat').onclick=()=>card.classList.toggle('open');wrap.appendChild(card);});
 
 
 const ADD=__ADDITIONAL__;
 if(ADD&&ADD.sections){
+ if(ADD.title) document.getElementById('addl-h').textContent=ADD.title;
  document.getElementById('addl-h').insertAdjacentHTML('afterend','<div class="note" style="margin-top:-2px">'+ADD.subtitle+'</div>');
  const aw=document.getElementById('addl');
  ADD.sections.forEach(sec=>{const card=document.createElement('div');card.className='card';
   card.innerHTML='<div class="cat" style="border-left:5px solid #B07A00"><div><div class="nm">'+sec.name+'</div><div class="meta">'+sec.items.length+' payments · '+sec.basis+'</div></div><div style="display:flex;align-items:center;gap:12px"><div class="owed">'+money(sec.total)+'</div><div class="chev">▶</div></div></div><div class="items"><table><thead><tr><th>Date</th><th>Detail</th><th class="r">Amount paid</th></tr></thead><tbody>'+sec.items.map(i=>'<tr><td>'+i.d+'</td><td>'+i.desc+'</td><td class="r"><b>'+money(i.a)+'</b></td></tr>').join('')+'</tbody></table></div>';
   card.querySelector('.cat').onclick=()=>card.classList.toggle('open');aw.appendChild(card);});
- aw.insertAdjacentHTML('beforeend','<div class="banner" style="background:#8a6100"><div>ADDITIONAL TOTAL (separate from the amount above)<br><span style="font-size:.78rem;opacity:.85">'+ADD.alt+'</span></div><b>'+money(ADD.grand_total)+'</b></div>');
- aw.insertAdjacentHTML('beforeend','<div class="note">Full detail &amp; chart: <a href="'+ADD.doc+'" target="_blank">Additional Amounts (Vehicle &amp; Insurance)</a>. Sources: GM Financial / GEICO receipts, available on request.</div>');
+ aw.insertAdjacentHTML('beforeend','<div class="banner" style="background:#8a6100"><div>'+(ADD.grand_label||'TOTAL VOLUNTARY SUPPORT PROVIDED')+' (separate from the amount above)<br><span style="font-size:.78rem;opacity:.85">'+ADD.alt+'</span></div><b>'+money(ADD.grand_total)+'</b></div>');
+ if(ADD.statement) aw.insertAdjacentHTML('beforeend','<div class="card" style="border-left:5px solid var(--navy)"><div style="padding:14px 18px;font-size:.9rem;color:#333"><b style="color:var(--navy)">Statement for the court.</b> '+ADD.statement+'</div></div>');
+ aw.insertAdjacentHTML('beforeend','<div class="note">Full detail &amp; chart: <a href="'+ADD.doc+'" target="_blank">Voluntary Support Provided (Vehicle &amp; Insurance)</a>. Underlying GM Financial / GEICO / health-plan statements available on request.</div>');
 }
 
 (function(){
