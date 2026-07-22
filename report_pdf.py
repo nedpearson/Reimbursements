@@ -29,9 +29,16 @@ def build_pdf(rows, cfg, out, prepared_for="Lindsey Pearson", prepared_by='Geral
     # category rollup
     cats={}
     for r in billable:
-        c=cats.setdefault(r['category'],[0,0.0,0.0]); c[0]+=1; c[1]+=r['amount']; c[2]+=round(r['amount']*pct(r['category']),2)
+        c=cats.setdefault(r['category'],[0,0.0,0.0]); c[0]+=1; c[1]+=r['amount']
+        # use the engine's computed share (handles flat-dollar rows like AT&T $100/mo
+        # and half-up rounding) instead of recomputing from the category percent
+        hs=r.get('her_share')
+        c[2]+=hs if hs is not None else round(r['amount']*pct(r['category']),2)
+    for c in cats: cats[c][2]=round(cats[c][2],2)
     order=[c for c in sp.keys() if c in cats]
-    subtotal=sum(v[2] for v in cats.values())
+    subtotal=round(sum(v[2] for v in cats.values()),2)
+    def pctlabel(cat):
+        return 'flat' if (pct(cat)==0 and cats.get(cat,[0,0,0.0])[2]>0) else f"{pct(cat)*100:.0f}%"
     credit_tot=sum(r['amount'] for r in credits) if cfg.get('subtract_payments_to_lindsey') else 0.0
     net=subtotal-credit_tot
     dates=sorted(r['date'] for r in billable if r['date'])
@@ -82,7 +89,7 @@ def build_pdf(rows, cfg, out, prepared_for="Lindsey Pearson", prepared_by='Geral
     data=[['Category','Items','Total billed','Her %','Amount owed']]
     for c in order:
         n,amt,her=cats[c]
-        data.append([c,str(n),_money(amt),f"{pct(c)*100:.0f}%",_money(her)])
+        data.append([c,str(n),_money(amt),pctlabel(c),_money(her)])
     data.append(['Subtotal','','','',_money(subtotal)])
     if cfg.get('subtract_payments_to_lindsey'):
         data.append([f'Less: payments already made to {prepared_for.split()[0]}','','','',_money(-credit_tot)])
@@ -106,7 +113,8 @@ def build_pdf(rows, cfg, out, prepared_for="Lindsey Pearson", prepared_by='Geral
       "(past-due balances excluded so no month is counted twice). Percentages reflect the parties' agreement: "
       "household and utility costs are shared 50/50; school/tuition and medical/dental/vision at "
       f"{int(pct('School/Tuition')*100)}%. Duplicate documents and partial-payment receipts were removed. "
-      "Payments already made are credited against the balance. A full itemized ledger follows.")
+      "Direct payments made to Lindsey during this period are itemized as advances to be repaid. "
+      "A full itemized ledger follows.")
     E.append(Paragraph(method,body))
 
     # Itemized appendix by category
@@ -115,7 +123,7 @@ def build_pdf(rows, cfg, out, prepared_for="Lindsey Pearson", prepared_by='Geral
     E.append(Spacer(1,8))
     for c in order:
         items=sorted([r for r in billable if r['category']==c],key=lambda x:x['date'] or '')
-        E.append(Paragraph(f"{c} &nbsp;—&nbsp; {_money(cats[c][1])} billed, {_money(cats[c][2])} owed at {pct(c)*100:.0f}%",h2))
+        E.append(Paragraph(f"{c} &nbsp;—&nbsp; {_money(cats[c][1])} billed, {_money(cats[c][2])} owed at {pctlabel(c)}",h2))
         d=[['Date','Vendor','Description','Amount']]
         for r in items:
             d.append([r['date'] or '',r['vendor'],(r['desc'] or '')[:52],_money(r['amount'])])

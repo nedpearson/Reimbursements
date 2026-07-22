@@ -10,7 +10,6 @@ ENTRIES=[
  dict(v='Entergy (Electric)',cat='Utilities',d='2024-12-06',a=506.49,n='from email - no PDF on file'),
  dict(v='Entergy (Electric)',cat='Utilities',d='2025-01-09',a=511.18,n='from email - no PDF on file'),
  dict(v='Entergy (Electric)',cat='Utilities',d='2026-04-08',a=472.14,n='from email - PDF on file unparseable'),
- dict(v='Entergy (Electric)',cat='Utilities',d='2026-06-06',a=412.17,n='from email - no PDF on file'),
  # --- Atmos: current charges for months w/o PDF ---
  dict(v='Atmos (Gas)',cat='Utilities',d='2024-08-12',a=84.20,n='from email (current charges)'),
  dict(v='Atmos (Gas)',cat='Utilities',d='2024-09-11',a=36.94,n='from email (current charges)'),
@@ -31,7 +30,6 @@ ENTRIES=[
  dict(v='AT&T Internet',cat='Utilities',d='2025-02-02',a=115.40,n='from email (Jan service)'),
  dict(v='AT&T Internet',cat='Utilities',d='2026-03-31',a=125.42,n='from email'),
  dict(v='AT&T Internet',cat='Utilities',d='2026-05-31',a=160.42,n='from email'),
- dict(v='AT&T Internet',cat='Utilities',d='2026-07-01',a=125.42,n='from email'),
  # --- AT&T Business (Pearsons Luggage) 2825: all months w/o PDF ---
  dict(v='AT&T Business (Pearsons Luggage)',cat='AT&T Business',d='2024-08-22',a=794.98,n='from email'),
  dict(v='AT&T Business (Pearsons Luggage)',cat='AT&T Business',d='2024-09-22',a=804.96,n='from email'),
@@ -54,7 +52,6 @@ ENTRIES=[
  dict(v='AT&T Business (Pearsons Luggage)',cat='AT&T Business',d='2026-06-24',a=1473.59,n='from email'),
  dict(v='AT&T Business (Pearsons Luggage)',cat='AT&T Business',d='2026-07-22',a=228.22,n='from email'),
  # --- Pool (Fernando): invoices found in email, not in folder (deduped by invoice #) ---
- dict(v='Pool (Fernando)',cat='Pool',d='2024-09-18',a=356.00,n='inv#2119 from email',inv='2119'),
  dict(v='Pool (Fernando)',cat='Pool',d='2024-10-04',a=443.00,n='inv#2178 from email',inv='2178'),
  dict(v='Pool (Fernando)',cat='Pool',d='2024-11-04',a=356.00,n='inv#2234 from email',inv='2234'),
  dict(v='Pool (Fernando)',cat='Pool',d='2024-12-04',a=348.00,n='inv#2298 from email',inv='2298'),
@@ -75,11 +72,7 @@ ENTRIES=[
  dict(v='Pool (Fernando)',cat='Pool',d='2026-01-05',a=350.00,n='inv#3189 - JAMES POOL, not the Fairway house',inv='3189',excl=True),
  dict(v='Pool (Fernando)',cat='Pool',d='2026-05-08',a=425.00,n='inv#3435 from email',inv='3435'),
  dict(v='Pool (Fernando)',cat='Pool',d='2026-06-08',a=460.00,n='inv#3526 from email',inv='3526'),
- dict(v='Pool (Fernando)',cat='Pool',d='2026-06-25',a=475.00,n='inv#3576 from email',inv='3576'),
  # --- BR Water irrigation autopay confirmations ---
- dict(v='BR Water',cat='Utilities',d='2026-05-12',a=62.36,n='Irrigation autopay (email)'),
- dict(v='BR Water',cat='Utilities',d='2026-06-09',a=18.94,n='Irrigation autopay (email)'),
- dict(v='BR Water',cat='Utilities',d='2026-07-09',a=12.39,n='Irrigation autopay (email)'),
  # --- PODS: recurring months not in folder; service ended 5/15/2026 ---
  dict(v='PODS (Storage)',cat='Storage',d='2026-02-10',a=279.00,n='recurring rate from PODS order (email)'),
  dict(v='PODS (Storage)',cat='Storage',d='2026-03-10',a=279.00,n='recurring rate from PODS order (email)'),
@@ -97,7 +90,6 @@ ENTRIES=[
  dict(v='BR Water',cat='Utilities',d='2025-04-20',a=157.27,n='Water/Sewer Apr 2025 current charges (email)',inv='BRW-2504-R'),
  dict(v='BR Water',cat='Utilities',d='2025-05-20',a=137.49,n='Water/Sewer May 2025 current charges (email)',inv='BRW-2505-R'),
  dict(v='BR Water',cat='Utilities',d='2025-01-20',a=38.79,n='Irrigation Jan 2025 current charges (email)',inv='BRW-2501-I'),
- dict(v='BR Water',cat='Utilities',d='2025-05-20',a=18.19,n='Irrigation May 2025 current charges (email)',inv='BRW-2505-I'),
  # --- St Luke's / FACTS additional items (Gmail sweep 2026-07-19) ---
  dict(v="St Luke's School (FACTS)",cat='School/Tuition',d='2024-09-16',a=200.00,n='Class trips 2024-25 (FACTS conf, MC 6499)',inv='SL-CT-0916'),
  dict(v="St Luke's School (FACTS)",cat='School/Tuition',d='2024-10-06',a=18.00,n="Parents' Guild merchandise (FACTS conf)",inv='SL-PG-1006'),
@@ -133,20 +125,38 @@ ENTRIES=[
  dict(v='Pool (Fernando)',cat='Pool',d='2026-06-25',a=475.00,n='Pool service Jun 2026, inv#3576 (5 weekly cleanings x $95, 8792 W Fairway)',inv='3576'),
 ]
 
+def _subtype(vendor, text):
+    """Distinguish BR Water's two accounts so month-coverage is per service line."""
+    if vendor == 'BR Water':
+        return 'IRR' if 'irrigation' in (text or '').lower() else 'W'
+    return ''
+
+
 def merge(rows):
-    """Append email entries, skipping any month/invoice now covered by a file-based row."""
-    monthcov={}   # (vendor, YYYY-MM) -> max positive amount seen from files
+    """Append email entries, skipping any month/invoice now covered by a file-based row.
+    Also dedups WITHIN the email list itself: same invoice number, or same
+    vendor+date+amount, can never be counted twice even if two Gmail sweeps
+    recorded the same bill."""
+    monthcov={}   # (vendor, subtype, YYYY-MM) -> max positive amount seen from files
     invcov=set()
     for r in rows:
         if r.get('date') and r.get('amount'):
-            monthcov[(r['vendor'],r['date'][:7])]=max(monthcov.get((r['vendor'],r['date'][:7]),0),r['amount'] or 0)
+            k=(r['vendor'],_subtype(r['vendor'],r.get('desc')),r['date'][:7])
+            monthcov[k]=max(monthcov.get(k,0),r['amount'] or 0)
         import re as _re
         m=_re.search(r'inv#(\d+)',r.get('desc') or '')
         if m: invcov.add(m.group(1))
-    out=[]
+    out=[]; seen_inv=set(); seen_key=set()
     for e in ENTRIES:
-        if e.get('inv') and e['inv'] in invcov: continue
-        if not e.get('inv') and monthcov.get((e['v'],e['d'][:7]),0)>0: continue
+        key=(e['v'],e['d'],round(float(e['a']),2))
+        if key in seen_key: continue                      # identical bill listed twice
+        if e.get('inv') and (e['inv'] in invcov or e['inv'] in seen_inv): continue
+        mk=(e['v'],_subtype(e['v'],e['n']),e['d'][:7])
+        cov=monthcov.get(mk,0)>0
+        if not e.get('inv') and cov: continue
+        if e.get('inv') and str(e['inv']).startswith('BRW') and cov: continue   # reconstructed water months yield to real bills
+        seen_key.add(key)
+        if e.get('inv'): seen_inv.add(e['inv'])
         inc=not e.get('excl')
         row=dict(date=e['d'],vendor=(e['v'] if inc else e['v']+' — James pool'),category=e['cat'],desc=e['n'],
             amount=e['a'],file='(from Gmail sweep 2026-07-18)',include=inc,
