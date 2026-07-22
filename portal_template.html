@@ -86,7 +86,9 @@ const D=__DATA__;const P=".";
 const money=v=>'$'+v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 document.title='Pearson Reimbursement — '+money(D.net);
 function srcCell(s){if(!s)return '';
- if(s.t==='exh')return '<a href="'+P+'/proof/vol'+s.vol+'.pdf#page='+s.pg+'" target="_blank" title="'+s.doc+'">Exhibit '+s.exh+' — view bill</a>';
+ if(s.t==='exh'){var label=s.rec?'view record':'view bill';
+  return '<a href="'+P+'/proof/vol'+s.vol+'.pdf#page='+s.pg+'" target="_blank" title="'+(s.doc||'')+'">Exhibit '+s.exh+' — '+label+'</a>'
+   +(s.doc?('<div style="color:#8a8fa3;font-size:.7rem;margin-top:2px">'+s.doc+'</div>'):'');}
  if(s.t==='email')return '<span class="badge email">'+s.doc+'</span>';
  if(s.t==='venmo')return '<span class="badge venmo">'+s.doc+'</span>';
  return '<span class="badge">'+(s.doc||'')+'</span>';}

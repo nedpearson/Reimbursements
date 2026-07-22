@@ -7,6 +7,70 @@ import categorize
 from parsers import _decode_html_embedded_pdf
 import fitz
 
+def _wrap(s, n):
+    out=[]; line=''
+    for w in str(s).split():
+        if len(line)+len(w)+1>n: out.append(line); line=w
+        else: line=(line+' '+w).strip()
+    if line: out.append(line)
+    return out or ['']
+
+def _origin_of(r):
+    """(origin sentence, availability sentence) for a source-record page."""
+    f=str(r.get('file','')); note=(r.get('note') or ''); cat=r.get('category',''); desc=(r.get('desc') or '').lower()
+    if 'return' in desc or 'nsf' in desc or 'returned-check' in desc:
+        return ("Returned-check / NSF fees charged on the mortgage account (lender notice on file).",
+                "The lender's returned-check notice is on file and available on request.")
+    if cat=='Mortgage' or 'mortgage' in note or f.startswith('(from Assurance'):
+        return ("Assurance Financial mortgage payment notification for this month (lender payment email/statement for account on file, property 8792 W Fairway Dr).",
+                "The full monthly statement is available directly from Assurance Financial on request.")
+    if cat=='AT&T Business' or r.get('flat_share') is not None:
+        return ("Lindsey's agreed flat $100/month portion of the shared family wireless plan (multi-line AT&T account).",
+                "The underlying AT&T statement is available on request.")
+    if 'Venmo' in f or f.lower().endswith('.csv') or 'venmo' in note.lower():
+        return ("Recorded from the official Venmo monthly statement — payment involving %s."%(r.get('vendor') or 'this vendor'),
+                "The full Venmo statement showing this line is available on request.")
+    if f.startswith('(from Gmail') or 'email' in note.lower():
+        return ("Recorded from the biller's own bill/statement email (%s) in Gerald Pearson's email records."%(r.get('vendor') or 'biller'),
+                "The original email/PDF for this month is available on request.")
+    return ("Agreed amount recorded per the parties for this item.",
+            "Supporting detail is available on request.")
+
+def _origin_short(r):
+    f=str(r.get('file','')); cat=r.get('category','')
+    if cat=='Mortgage': return 'Assurance mortgage payment notice'
+    if cat=='AT&T Business' or r.get('flat_share') is not None: return 'AT&T shared-plan portion'
+    if 'Venmo' in f or f.lower().endswith('.csv'): return 'Venmo statement'
+    if f.startswith('(from Gmail'): return 'Biller email/statement'
+    return 'Agreed amount'
+
+def _draw_source_record(body, exh, cat, r):
+    import fitz, datetime as _d
+    NAVY=(0.12,0.22,0.39); GREY=(0.4,0.4,0.4)
+    pg=body.new_page(width=612,height=792)
+    def T(x,y,s,size=10,color=(0,0,0),bold=False):
+        pg.insert_text((x,y),str(s),fontsize=size,color=color,fontname=('hebo' if bold else 'helv'))
+    T(40,60,'SOURCE RECORD',size=17,color=NAVY,bold=True)
+    pg.draw_line((40,72),(572,72),color=NAVY,width=1.2)
+    T(40,98,'Exhibit %d — %s'%(exh,cat),size=12,color=NAVY,bold=True)
+    y=132
+    def money(v): return '$%s'%format(v,',.2f')
+    for k,v in [('Date',r.get('date') or '—'),('Payee / vendor',r.get('vendor') or ''),
+                ('Amount billed',money(r['amount'])),("Lindsey's share",money(r['her_share']))]:
+        T(40,y,k+':',size=10,color=GREY,bold=True); T(190,y,v,size=10); y+=22
+    T(40,y,'Description:',size=10,color=GREY,bold=True)
+    dlines=_wrap(r.get('desc') or '',62)
+    for j,ln in enumerate(dlines[:3]): T(190,y+j*15,ln,size=10)
+    y+=22+max(0,len(dlines[:3])-1)*15
+    y+=10
+    origin,avail=_origin_of(r)
+    T(40,y,'Origin of this figure',size=10.5,color=NAVY,bold=True); y+=18
+    for ln in _wrap(origin,92): T(40,y,ln,size=10); y+=15
+    y+=8
+    for ln in _wrap(avail,92): T(40,y,ln,size=9,color=GREY); y+=13
+    T(40,760,'Gerald "Ned" Pearson Jr.  ·  Pearson v. Pearson, No. 236951, Family Court, East Baton Rouge Parish, LA',size=7.5,color=(0.5,0.5,0.5))
+    T(40,772,'Source record prepared %s. This documents the origin of the amount; the underlying bill/statement is available on request.'%_d.date.today().strftime('%B %d, %Y'),size=7.5,color=(0.5,0.5,0.5))
+
 def build(bills_folder=None, progress=print):
     cfg=json.load(open(os.path.join(HERE,'config.json')))
     bills_folder=bills_folder or cfg.get('last_folder')
@@ -50,6 +114,21 @@ def build(bills_folder=None, progress=print):
                 pg.insert_image(fitz.Rect(20,32,592,772),stream=jpg,keep_proportion=True)
                 pg.insert_text((20,22),f"Exhibit {exh} | {cat} | {os.path.basename(rel)} (p.{pi+1})",fontsize=7,color=(.35,.35,.35))
         except Exception as e: progress(f"portal: skip {rel}: {e}")
+    # ---- source-record exhibits: one page for every included line WITHOUT a file bill
+    # (mortgage notices, email-sourced utility months, Venmo advances, agreed amounts) so
+    # every "source of truth" on the portal opens a real document. ----
+    mapping_id={}
+    for cat in catorder:
+        for r in rows:
+            if not (r['include'] and r.get('in_window',True) and r.get('amount') is not None and r.get('her_share') is not None): continue
+            if r['category']!=cat: continue
+            f=str(r.get('file',''))
+            if f in mapping: continue          # already shown as an actual bill exhibit
+            rid=categorize.item_id(r)
+            if rid in mapping_id: continue
+            exh+=1
+            mapping_id[rid]=dict(exh=exh,cat=cat,page=body.page_count+1,doc=_origin_short(r))
+            _draw_source_record(body,exh,cat,r)
     tmp=os.path.join(docs,'_wp.pdf'); body.save(tmp,deflate=True,garbage=4)
     sz=os.path.getsize(tmp)/1e6; full=fitz.open(tmp); n=full.page_count
     per=max(1,int(n*2.2/sz)) if sz else n; volmap={}; volno=0; p=0
@@ -66,6 +145,7 @@ def build(bills_folder=None, progress=print):
         p=end
     full.close(); os.remove(tmp)
     fin={rel:dict(exh=m['exh'],cat=m['cat'],vol=volmap[m['page']][0],page=volmap[m['page']][1],base=m['base']) for rel,m in mapping.items()}
+    fin_id={rid:dict(exh=m['exh'],cat=m['cat'],vol=volmap[m['page']][0],page=volmap[m['page']][1],doc=m['doc']) for rid,m in mapping_id.items()}
     # ---- portal data ----
     CATS=['Mortgage','Utilities','Pool',"Construction (De Roman's)",'Home Repairs & A/C','Advances to Lindsey','School/Tuition','AT&T Business','Storage','Cleaning','Lawn/Yard','Moving/Household','Labor','Medical/Dental/Vision']
     items=[]; credits=[]
@@ -74,12 +154,11 @@ def build(bills_folder=None, progress=print):
             credits.append(dict(d=r.get('date',''),desc=r.get('desc') or 'Payment to Lindsey',a=r['amount'])); continue
         if not (r['include'] and r.get('in_window',True) and r.get('amount') is not None and r.get('her_share') is not None): continue
         f=str(r.get('file',''))
-        if f in fin: m=fin[f]; src=dict(t='exh',exh=m['exh'],vol=m['vol'],pg=m['page'])
-        elif 'mortgage' in (r.get('note') or '') or f.startswith('(from Assurance'): src=dict(t='email',doc='Assurance payment notice (email)')
-        elif f.startswith('(from Gmail'): src=dict(t='email',doc='Bill from email records')
-        elif 'Venmo' in f or f.lower().endswith('.csv'): src=dict(t='venmo',doc='Venmo statement')
+        rid=categorize.item_id(r)
+        if f in fin: m=fin[f]; src=dict(t='exh',exh=m['exh'],vol=m['vol'],pg=m['page'],doc=m['base'],rec=False)
+        elif rid in fin_id: m=fin_id[rid]; src=dict(t='exh',exh=m['exh'],vol=m['vol'],pg=m['page'],doc=m['doc'],rec=True)
         else: src=dict(t='manual',doc='Agreed amount' if not r.get('flat_share') else 'Agreed portion')
-        items.append(dict(cat=r['category'],d=r.get('date',''),v=r['vendor'],desc=(r.get('desc') or '')[:70],a=r['amount'],h=r['her_share'],src=src,id=categorize.item_id(r)))
+        items.append(dict(cat=r['category'],d=r.get('date',''),v=r['vendor'],desc=(r.get('desc') or '')[:70],a=r['amount'],h=r['her_share'],src=src,id=rid))
     cats={}
     for it in items:
         c=cats.setdefault(it['cat'],dict(n=0,billed=0.0,owed=0.0)); c['n']+=1; c['billed']+=it['a']; c['owed']+=it['h']
