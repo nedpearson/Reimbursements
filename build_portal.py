@@ -91,7 +91,7 @@ def build(bills_folder=None, progress=print):
     if os.path.exists(ap):
         addl=json.load(open(ap,encoding='utf-8'))
     subtract=bool(cfg.get('subtract_payments_to_lindsey'))
-    tpl=tpl.replace('__CREDITNOTE__', ('after $__CREDITS__ already paid to Lindsey is credited' if subtract else 'payments Ned made to Lindsey are listed below for transparency (settled separate expenses; not credited)'))
+    tpl=tpl.replace('__CREDITNOTE__', ('after $__CREDITS__ already paid to Lindsey is credited' if subtract else 'direct payments Ned made to Lindsey appear under Additional Amounts below (not credited against this total)'))
     tpl=tpl.replace('__CREDITSTITLE__', ('Credits — amounts Ned already paid Lindsey (subtracted)' if subtract else 'Payments Ned made to Lindsey — settled separate expenses (NOT subtracted)'))
     html=tpl.replace('__DATA__',json.dumps(data,separators=(',',':'))).replace('__ADDITIONAL__',json.dumps(addl,separators=(',',':'))).replace('__NET__',format(data['net'],',.2f')).replace('__CREDITS__',format(data['credit_total'],',.2f')).replace('__UPDATED__',data['updated'])
     open(os.path.join(docs,'index.html'),'w',encoding='utf-8').write(html)
