@@ -30,6 +30,16 @@ ZIP_PATH  = os.path.join(OUTDIR, 'Reimbursement_Full_Packet.zip')
 GMAIL_MAX = 24 * 1024 * 1024   # stay safely under Gmail's 25 MB cap
 
 
+def _user_email():
+    """The account the email is sent FROM (config 'user_email', editable)."""
+    try:
+        import json
+        cfg = json.load(open(os.path.join(HERE, 'config.json')))
+        return (cfg.get('user_email') or '').strip() or 'nedpearson@gmail.com'
+    except Exception:
+        return 'nedpearson@gmail.com'
+
+
 def _net_amount():
     """Pull the NET figure out of output/summary.txt (falls back to '')."""
     try:
@@ -114,6 +124,13 @@ def try_outlook(subject, body):
         ol = win32com.client.Dispatch('Outlook.Application')
         mail = ol.CreateItem(0)
         mail.Subject, mail.Body = subject, body
+        try:   # send from the configured account if Outlook has several
+            for acct in ol.Session.Accounts:
+                if str(acct.SmtpAddress).lower() == _user_email().lower():
+                    mail._oleobj_.Invoke(64209, 0, 8, 0, acct)  # SendUsingAccount
+                    break
+        except Exception:
+            pass
         for p, _ in _existing():
             mail.Attachments.Add(p)
         mail.Display()   # draft window — user presses Send
@@ -146,7 +163,9 @@ def _popup(title, msg, warn=False):
 
 
 def gmail_fallback(subject, body, zip_path, warn):
-    compose = ('https://mail.google.com/mail/?view=cm&fs=1&su='
+    compose = ('https://mail.google.com/mail/?authuser='
+               + urllib.parse.quote(_user_email())          # open under YOUR account
+               + '&view=cm&fs=1&su='
                + urllib.parse.quote(subject) + '&body=' + urllib.parse.quote(body))
     webbrowser.open(compose)
     if sys.platform.startswith('win'):
