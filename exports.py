@@ -55,7 +55,8 @@ def build_cover_letter(rows,cfg,out,today=None):
         share=('flat $100/mo' if c=='AT&T Business' else f"{sp[c]:.0f}%")
         data.append([c,_money(amt),share,_money(her)])
     data.append(['Subtotal',_money(sum(v[1] for v in cats.values())),'',_money(subtotal)])
-    data.append(['Less: amounts already paid to you','','','( '+_money(credits)+' )'])
+    if cfg.get('subtract_payments_to_lindsey'):
+        data.append(['Less: amounts already paid to you','','','( '+_money(credits)+' )'])
     data.append(['NET AMOUNT DUE','','',_money(net)])
     cw=[3.3*inch,1.2*inch,0.95*inch,1.15*inch]
     t=Table(data,colWidths=cw)
@@ -71,7 +72,7 @@ def build_cover_letter(rows,cfg,out,today=None):
     E.append(Spacer(1,6)); E.append(t); E.append(Spacer(1,10))
     E.append(Paragraph('Every figure is drawn from a source document. The enclosed statement itemizes each charge by date, '
       'and the proof pack reproduces the underlying bills. Utility amounts use current charges rather than past-due '
-      'balances so no month is counted twice; duplicates were removed; amounts already paid to you are credited in full. '
+      'balances so no month is counted twice; duplicates were removed; payments I previously made to you settled separate expenses and are itemized for transparency. Child support (approximately $1,100 per month) was additionally paid through May 1, 2026 by lump-sum check, and direct support I provided to our son Eli (approximately $7,700) is likewise not claimed. '
       'The original of any bill is available on request.',body))
     E.append(Paragraph('Please review the enclosed statement and let me know within thirty (30) days how you would like '
       'to arrange payment or discuss any item. I am open to a payment schedule.',body))

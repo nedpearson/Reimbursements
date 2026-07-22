@@ -14,7 +14,7 @@
     "Construction (De Roman's)": 50,
     "Labor": 50
   },
-  "subtract_payments_to_lindsey": true,
+  "subtract_payments_to_lindsey": false,
   "date_cutoff": "2024-08-01",
   "_date_cutoff_note": "Set to 'YYYY-MM-DD' (e.g. 2025-01-10 judgment date) to exclude older items, or null to include all.",
   "treat_all_bills_as_paid": true,
@@ -51,7 +51,7 @@
       "vendor": "Labor",
       "category": "Labor",
       "description": "Labor (agreed flat amount)",
-      "amount": 1000,
+      "amount": 3100,
       "date": "2026-07-18"
     },
     {
@@ -79,6 +79,14 @@
       "amount": 1600,
       "date": "2026-04-28",
       "_moving_supplement": true
+    },
+    {
+      "vendor": "Helm Paint (Hager Painting)",
+      "category": "Labor",
+      "description": "Paint for sale-prep painting \u2014 Helm Paint receipt PR040983, 6/20/2026 (receipt on file: Misc/HelmPaint_PR040983.jpg)",
+      "amount": 139.35,
+      "date": "2026-06-20",
+      "_helm": true
     }
   ],
   "_manual_note": "Items with no bill/PDF in the folder. 'recurring_monthly' expands to one line per month (dated the 1st).",

@@ -122,10 +122,12 @@ def ex_studyville(ls):
 
 def ex_cleaning(ls):
     t=_text(ls); dm=re.search(r'([A-Z][a-z]{2} \d{1,2}, \d{4})',t)
+    if not dm: dm=re.search(r'(\d{2}/\d{2}/\d{4})',t)
     amt=None
-    m=re.search(r'\$([\d,]+\.\d{2})',t)
+    m=re.search(r'Total\s*\n?\$([\d,]+\.\d{2})',t) or re.search(r'\$([\d,]+\.\d{2})',t)
     if m: amt=float(m.group(1).replace(',',''))
-    return norm_date(dm.group(1) if dm else ''), amt, 'House cleaning (Zelle)',''
+    desc='Exterior softwash (Green Tiger)' if 'softwash' in t.lower() else 'House cleaning (Zelle)'
+    return norm_date(dm.group(1) if dm else ''), amt, desc,''
 
 def ex_venmo(ls, who):
     """Return list of (date,amount,desc) for each 'You paid X'."""

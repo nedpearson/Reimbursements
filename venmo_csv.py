@@ -66,10 +66,10 @@ def parse(folder):
                 continue  # NOT DISCLOSED — dropped entirely (private)
             vendor={'Kids-Direct (Eli)':'Eli Pearson (Venmo)','Moving/Household':cp,
                     'Lawn/Yard':cp,'Cleaning':cp,'School/Tuition':cp}.get(cat,cp)
-            inc = cat!='Kids-Direct (Eli)'
+            if cat=='Kids-Direct (Eli)':
+                continue  # excluded from claim entirely per Ned; acknowledged as a note in the documents
             rows.append(dict(date=date,vendor=vendor,category=cat,
-                desc=(note or 'Venmo payment'),amount=round(amt,2),file=rel,include=inc,
-                note=('Venmo' if inc else 'Eli direct - removed for now per Ned 7/18/26')))
+                desc=(note or 'Venmo payment'),amount=round(amt,2),file=rel,include=True,note='Venmo'))
     return rows
 
 if __name__=='__main__':

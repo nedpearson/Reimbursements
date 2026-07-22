@@ -43,10 +43,12 @@ class App(tk.Tk):
         nb=ttk.Notebook(self); nb.pack(fill='both',expand=True,padx=12,pady=10)
         self.tab_run=tk.Frame(nb,bg=BG); self.tab_add=tk.Frame(nb,bg=BG)
         self.tab_set=tk.Frame(nb,bg=BG)
+        self.tab_amt=tk.Frame(nb,bg=BG)
         nb.add(self.tab_run,text='  Generate & Export  ')
+        nb.add(self.tab_amt,text='  Edit Amounts  ')
         nb.add(self.tab_add,text='  Add / Import  ')
         nb.add(self.tab_set,text='  Settings  ')
-        self._build_run(); self._build_add(); self._build_settings()
+        self._build_run(); self._build_amounts(); self._build_add(); self._build_settings()
 
     def _build_run(self):
         f=self.tab_run
@@ -70,6 +72,99 @@ class App(tk.Tk):
         tk.Label(f,text="Progress",bg=BG,fg=NAVY,font=('Segoe UI',10,'bold')).pack(anchor='w',padx=14,pady=(10,0))
         self.log=tk.Text(f,height=14,font=('Consolas',9),bg='white',relief='solid',bd=1)
         self.log.pack(fill='both',expand=True,padx=14,pady=(2,12))
+
+    # ---------- Edit Amounts tab ----------
+    def _build_amounts(self):
+        f=self.tab_amt
+        tk.Label(f,text="Manual amounts (mortgage, labor, moving, AT&T placeholders...) — select a row and click Edit",
+                 bg=BG,fg=NAVY,font=('Segoe UI',11,'bold')).pack(anchor='w',padx=14,pady=(12,4))
+        cols=('vendor','category','when','amount','desc')
+        self.amt_tree=ttk.Treeview(f,columns=cols,show='headings',height=9)
+        for c,w in zip(cols,(170,150,130,90,300)):
+            self.amt_tree.heading(c,text=c.title()); self.amt_tree.column(c,width=w,anchor='w')
+        self.amt_tree.pack(fill='x',padx=14)
+        bf=tk.Frame(f,bg=BG); bf.pack(fill='x',padx=14,pady=6)
+        tk.Button(bf,text="Edit Selected…",command=self._amt_edit).pack(side='left')
+        tk.Button(bf,text="Delete Selected",command=self._amt_delete).pack(side='left',padx=8)
+        tk.Button(bf,text="Reload",command=self._amt_reload).pack(side='left')
+        self.amt_status=tk.Label(f,text='',bg=BG,fg=GREEN,font=('Segoe UI',10,'bold')); self.amt_status.pack(anchor='w',padx=14)
+        ttk.Separator(f,orient='horizontal').pack(fill='x',padx=14,pady=8)
+        tk.Label(f,text='"Additional amounts paid for her" (Yukon / auto insurance / health) live in additional.json.',
+                 bg=BG,fg=NAVY,font=('Segoe UI',10,'bold')).pack(anchor='w',padx=14)
+        tk.Button(f,text="Open additional.json in Notepad",command=lambda:os.startfile(os.path.join(HERE,'additional.json')) if sys.platform.startswith('win') else open_path(os.path.join(HERE,'additional.json'))).pack(anchor='w',padx=14,pady=4)
+        tk.Label(f,text="After ANY change here: go to Generate & Export and click Generate, then Publish to Web.bat to update the shared link.",
+                 bg=BG,fg='#777',font=('Segoe UI',9)).pack(anchor='w',padx=14,pady=(4,10))
+        self._amt_reload()
+
+    def _amt_reload(self):
+        try: self.cfg=load_cfg()
+        except Exception: pass
+        for i in self.amt_tree.get_children(): self.amt_tree.delete(i)
+        for idx,m in enumerate(self.cfg.get('manual_entries',[])):
+            rec=m.get('recurring_monthly')
+            when=(rec['start']+' to '+rec['end']) if rec else m.get('date','')
+            amt=m.get('amount',0)
+            if m.get('amount_schedule'): amt=str(amt)+' (tiered)'
+            if m.get('flat_share') is not None: amt=str(m.get('amount'))+' (her: '+str(m.get('flat_share'))+')'
+            self.amt_tree.insert('',ated:='end',iid=str(idx),values=(m.get('vendor',''),m.get('category',''),when,amt,(m.get('description','') or '')[:60]))
+        self.amt_status.config(text='')
+
+    def _amt_sel(self):
+        sel=self.amt_tree.selection()
+        if not sel:
+            messagebox.showinfo("Select","Click a row first."); return None
+        return int(sel[0])
+
+    def _amt_edit(self):
+        idx=self._amt_sel()
+        if idx is None: return
+        m=self.cfg['manual_entries'][idx]
+        dlg=tk.Toplevel(self); dlg.title("Edit amount"); dlg.configure(bg=BG); dlg.grab_set()
+        fields=[('Amount ($)','amount',str(m.get('amount','')))]
+        rec=m.get('recurring_monthly')
+        if rec:
+            fields+=[('Start (YYYY-MM)','_start',rec.get('start','')),('End (YYYY-MM)','_end',rec.get('end',''))]
+        else:
+            fields+=[('Date (YYYY-MM-DD)','date',m.get('date',''))]
+        if m.get('flat_share') is not None:
+            fields+=[('Her flat share ($)','flat_share',str(m.get('flat_share','')))]
+        fields+=[('Description','description',m.get('description',''))]
+        vars={}
+        for i,(lab,key,val) in enumerate(fields):
+            tk.Label(dlg,text=lab,bg=BG,font=('Segoe UI',10)).grid(row=i,column=0,sticky='w',padx=12,pady=4)
+            v=tk.StringVar(value=val); vars[key]=v
+            tk.Entry(dlg,textvariable=v,width=46,font=('Segoe UI',10)).grid(row=i,column=1,padx=12,pady=4)
+        if m.get('amount_schedule'):
+            tk.Label(dlg,text="Note: this entry has a tiered amount_schedule (edit per-tier in config.json).",
+                     bg=BG,fg='#8a6100',font=('Segoe UI',9)).grid(row=len(fields),column=0,columnspan=2,sticky='w',padx=12)
+        def save():
+            try:
+                m['amount']=float(vars['amount'].get())
+                if 'flat_share' in vars: m['flat_share']=float(vars['flat_share'].get())
+                if rec:
+                    rec['start']=vars['_start'].get().strip(); rec['end']=vars['_end'].get().strip()
+                elif 'date' in vars: m['date']=vars['date'].get().strip()
+                m['description']=vars['description'].get()
+            except ValueError:
+                messagebox.showerror("Invalid","Amount must be a number."); return
+            try: disk=load_cfg()
+            except Exception: disk=self.cfg
+            disk['manual_entries']=self.cfg['manual_entries']; save_cfg(disk); self.cfg=disk
+            dlg.destroy(); self._amt_reload()
+            self.amt_status.config(text="Saved. Re-run Generate (and Publish) to apply.")
+        tk.Button(dlg,text="Save",bg=GREEN,fg='white',relief='flat',padx=16,pady=5,
+                  font=('Segoe UI',10,'bold'),command=save).grid(row=len(fields)+1,column=1,sticky='e',padx=12,pady=10)
+
+    def _amt_delete(self):
+        idx=self._amt_sel()
+        if idx is None: return
+        m=self.cfg['manual_entries'][idx]
+        if not messagebox.askyesno("Delete",f"Remove {m.get('vendor')} {m.get('amount')}?"): return
+        del self.cfg['manual_entries'][idx]
+        try: disk=load_cfg()
+        except Exception: disk=self.cfg
+        disk['manual_entries']=self.cfg['manual_entries']; save_cfg(disk); self.cfg=disk
+        self._amt_reload(); self.amt_status.config(text="Deleted. Re-run Generate (and Publish) to apply.")
 
     def _build_add(self):
         f=self.tab_add

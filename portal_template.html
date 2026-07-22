@@ -32,11 +32,12 @@ h2{color:var(--navy);font-size:1.05rem;margin:26px 4px 8px}.note{color:var(--gre
 <header><div class="wrap"><h1>Expense Reimbursement &mdash; Pearson</h1>
 <div class="sub">Shared household &amp; child-related expenses &middot; 8792 W Fairway Dr &middot; Aug 2024 &ndash; Jul 2026 &middot; Updated __UPDATED__</div></div></header>
 <div class="wrap">
-<div class="banner"><div>NET AMOUNT DUE TO NED<br><span style="font-size:.78rem;opacity:.85">after $__CREDITS__ already paid to Lindsey is credited</span></div><b>$__NET__</b></div>
+<div class="banner"><div>NET AMOUNT DUE TO NED<br><span style="font-size:.78rem;opacity:.85">__CREDITNOTE__</span></div><b>$__NET__</b></div>
 <h2>Categories &mdash; tap any row to see every charge, then tap a source to open the actual bill</h2>
 <div id="cats"></div>
-<h2>Credits &mdash; amounts Ned already paid Lindsey (subtracted)</h2>
+<h2>__CREDITSTITLE__</h2>
 <div class="card"><table id="credtbl"><thead><tr><th>Date</th><th>Description</th><th class="r">Amount</th></tr></thead><tbody></tbody></table></div>
+<div class="note"><b>Note on child support:</b> separate from everything on this page, Ned paid child support of approximately $1,100 per month through May 1, 2026, via lump-sum check (documentation available on request). Child support is not part of this reimbursement claim and is not credited against it. Likewise, direct support Ned provided to his son Eli during this period (approximately $7,700 — fuel, food, and school needs) is not claimed and does not appear as line items.</div>
 <h2 id="addl-h">Additional Amounts Paid on Lindsey&rsquo;s Behalf</h2>
 <div id="addl"></div>
 <h2>Documents</h2>
@@ -66,7 +67,7 @@ D.cats.forEach(c=>{const items=D.items.filter(i=>i.cat===c.name).sort((a,b)=>(a.
  card.querySelector('.cat').onclick=()=>card.classList.toggle('open');wrap.appendChild(card);});
 const tb=document.querySelector('#credtbl tbody');
 D.credits.forEach(c=>{tb.insertAdjacentHTML('beforeend','<tr class="credit"><td>'+c.d+'</td><td>'+c.desc+'</td><td class="r">−'+money(c.a)+'</td></tr>');});
-tb.insertAdjacentHTML('beforeend','<tr><td></td><td><b>Total credited</b></td><td class="r"><b>−'+money(D.credit_total)+'</b></td></tr>');
+tb.insertAdjacentHTML('beforeend','<tr><td></td><td><b>Total</b></td><td class="r"><b>−'+money(D.credit_total)+'</b></td></tr>');
 
 const ADD=__ADDITIONAL__;
 if(ADD&&ADD.sections){

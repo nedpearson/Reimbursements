@@ -80,7 +80,7 @@ def build(bills_folder=None, progress=print):
     for it in items:
         c=cats.setdefault(it['cat'],dict(n=0,billed=0.0,owed=0.0)); c['n']+=1; c['billed']+=it['a']; c['owed']+=it['h']
     data=dict(updated=__import__('datetime').date.today().strftime('%B %d, %Y'),
-        net=round(sum(i['h'] for i in items)-sum(c['a'] for c in credits),2),
+        net=round(sum(i['h'] for i in items)-(sum(c['a'] for c in credits) if cfg.get('subtract_payments_to_lindsey') else 0.0),2),
         credit_total=round(sum(c['a'] for c in credits),2),
         cats=[dict(name=c,**{k:(round(v,2) if isinstance(v,float) else v) for k,v in cats[c].items()},
               basis=('flat $100/mo' if c=='AT&T Business' else ('12%' if c in ('School/Tuition','Medical/Dental/Vision') else '50%'))) for c in CATS if c in cats],
@@ -90,6 +90,9 @@ def build(bills_folder=None, progress=print):
     ap=os.path.join(HERE,'additional.json')
     if os.path.exists(ap):
         addl=json.load(open(ap,encoding='utf-8'))
+    subtract=bool(cfg.get('subtract_payments_to_lindsey'))
+    tpl=tpl.replace('__CREDITNOTE__', ('after $__CREDITS__ already paid to Lindsey is credited' if subtract else 'payments Ned made to Lindsey are listed below for transparency (settled separate expenses; not credited)'))
+    tpl=tpl.replace('__CREDITSTITLE__', ('Credits — amounts Ned already paid Lindsey (subtracted)' if subtract else 'Payments Ned made to Lindsey — settled separate expenses (NOT subtracted)'))
     html=tpl.replace('__DATA__',json.dumps(data,separators=(',',':'))).replace('__ADDITIONAL__',json.dumps(addl,separators=(',',':'))).replace('__NET__',format(data['net'],',.2f')).replace('__CREDITS__',format(data['credit_total'],',.2f')).replace('__UPDATED__',data['updated'])
     open(os.path.join(docs,'index.html'),'w',encoding='utf-8').write(html)
     ac=os.path.join(HERE,'Amounts_Paid_For_Lindsey.pdf')

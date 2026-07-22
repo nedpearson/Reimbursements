@@ -110,5 +110,5 @@ def detect_vendor(path, text):
         return 'venmo'
     if 'pearsons luggage' in t or '2825' in fn: return 'att_business'
     if 'at&t' in t or 'att' in fn or 'attbill' in fn: return 'att_internet'
-    if 'zelle' in t or 'cleaning' in fn: return 'cleaning'
+    if 'zelle' in t or 'cleaning' in fn or 'softwash' in t or 'softwash' in fn or 'green tiger' in t: return 'cleaning'
     return 'unknown'

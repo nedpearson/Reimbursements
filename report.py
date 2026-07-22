@@ -59,7 +59,7 @@ def build_workbook(rows, OUT):
     SET_FIRST, SET_LAST = 5, r-1
     ws['A'+str(r+1)]='Subtract money you already paid Lindsey (Venmo credits)?'
     ws['A'+str(r+1)].font=ARIAL(bold=True)
-    tog=ws.cell(r+1,2,'Yes'); tog.font=bluef; tog.fill=inputfill; tog.border=box
+    tog=ws.cell(r+1,2,('Yes' if _cfg.get('subtract_payments_to_lindsey') else 'No')); tog.font=bluef; tog.fill=inputfill; tog.border=box
     TOGGLE_CELL='Settings!$B$'+str(r+1)
     ws['A'+str(r+3)]='Notes: Household/utilities default 50%. School/tuition & medical default 12% (per your agreement).'
     ws['A'+str(r+3)].font=ARIAL(italic=True,size=9,color='808080')
@@ -186,7 +186,7 @@ def build_workbook(rows, OUT):
      '• Percentages are set on the Settings tab — change them there and every number updates.',
      '• School/tuition and medical default to 12%; household costs to 50%.',
      '• Tuition invoices are treated as paid; duplicate files and partial-payment receipts are listed on the Review tab, not counted twice.',
-     '• See the Review tab for items intentionally excluded (duplicates, business items you flagged, unpaid balances).']
+     '• Direct support to Eli (~$7,700) and child support (~$1,100/mo through 5/1/2026) are excluded from this claim and noted for the record. See the Review tab for other items intentionally excluded (duplicates, business items you flagged, unpaid balances).']
     for k,n in enumerate(notes):
         wsum.cell(sr+5+k,1,n).font=ARIAL(size=9,color='606060')
 
