@@ -119,9 +119,8 @@ def build(folder):
         elif v in ('venmo_lions','venmo_eli','venmo_lindsey'):
             raw=EX.ex_venmo(lines,v)
             for d,a,n,flag in infer_venmo_dates(raw):
-                inc = (v!='venmo_lindsey')  # payments to Lindsey are credits, tracked separately
                 note=n+(' | '+flag if flag else '')
-                push(d,a,(n or ('Payment to '+vl)),note,include=inc)
+                push(d,a,(n or ('Advance to Lindsey' if v=='venmo_lindsey' else 'Payment to '+vl)),note,include=True)
         else:
             # unknown: capture biggest $ as a guess, mark for review
             m=re.findall(r'\$?([\d,]+\.\d{2})',text)

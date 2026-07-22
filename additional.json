@@ -1,7 +1,7 @@
 {
  "title": "Additional Amounts Paid on Lindsey's Behalf",
- "subtitle": "Her vehicle, its insurance, her health-insurance premium, and direct payments to her \u2014 all paid by Ned. Shown SEPARATELY; NOT included in the reimbursement total above.",
- "grand_total": 30760.41,
+ "subtitle": "Her vehicle, its insurance, and her health-insurance premium \u2014 paid by Ned, never billed to her. Shown SEPARATELY; NOT included in the reimbursement total above.",
+ "grand_total": 24620.12,
  "doc": "Amounts_Paid_For_Lindsey.pdf",
  "sections": [
   {
@@ -152,113 +152,6 @@
      "d": "2026-05",
      "desc": "Lindsey's spouse premium (payroll)",
      "a": 982.38
-    }
-   ]
-  },
-  {
-   "name": "Direct payments to Lindsey (Venmo)",
-   "basis": "20 payments, Sep 2024 - Dec 2025 (groceries, kids, reimbursements)",
-   "total": 6140.29,
-   "items": [
-    {
-     "d": "2024-09-18",
-     "desc": "Gas for kids soccer/travel etc",
-     "a": 54.05
-    },
-    {
-     "d": "2024-09-18",
-     "desc": "Linen lit pizza",
-     "a": 12.46
-    },
-    {
-     "d": "2024-09-29",
-     "desc": "Kids",
-     "a": 205.0
-    },
-    {
-     "d": "2024-10-09",
-     "desc": "Kids reimbursement",
-     "a": 900.0
-    },
-    {
-     "d": "2024-10-15",
-     "desc": "Reimbursement",
-     "a": 800.0
-    },
-    {
-     "d": "2024-11-24",
-     "desc": "Groceries. Gas , etc",
-     "a": 197.08
-    },
-    {
-     "d": "2024-11-30",
-     "desc": "Clothes",
-     "a": 300.0
-    },
-    {
-     "d": "2025-01-09",
-     "desc": "Tax reimbursement and groceries",
-     "a": 1386.0
-    },
-    {
-     "d": "2025-01-16",
-     "desc": "Equifax reimbursement",
-     "a": 59.7
-    },
-    {
-     "d": "2025-02-16",
-     "desc": "Kids",
-     "a": 300.0
-    },
-    {
-     "d": "2025-03-02",
-     "desc": "Kids reimbursement",
-     "a": 600.0
-    },
-    {
-     "d": "2025-03-18",
-     "desc": "Food",
-     "a": 40.0
-    },
-    {
-     "d": "2025-04-28",
-     "desc": "Payment",
-     "a": 100.0
-    },
-    {
-     "d": "2025-05-28",
-     "desc": "Ac help",
-     "a": 80.0
-    },
-    {
-     "d": "2025-06-17",
-     "desc": "Payment",
-     "a": 116.0
-    },
-    {
-     "d": "2025-07-11",
-     "desc": "Linen soccer",
-     "a": 130.0
-    },
-    {
-     "d": "2025-08-18",
-     "desc": "Payment",
-     "a": 400.0
-    },
-    {
-     "d": "2025-11-16",
-     "desc": "Groceries",
-     "a": 100.0
-    },
-    {
-     "d": "2025-11-18",
-     "desc": "Payment",
-     "a": 200.0
-    },
-    {
-     "d": "2025-12-05",
-     "desc": "House reimbursement",
-     "a": 160.0
     }
    ]
   }

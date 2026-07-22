@@ -13,7 +13,8 @@
     "Moving/Household": 80,
     "Construction (De Roman's)": 50,
     "Labor": 50,
-    "Home Repairs & A/C": 50
+    "Home Repairs & A/C": 50,
+    "Advances to Lindsey": 100
   },
   "subtract_payments_to_lindsey": false,
   "date_cutoff": "2024-08-01",
@@ -104,6 +105,14 @@
       "amount": 3000.0,
       "date": "2025-09-25",
       "_acwork": true
+    },
+    {
+      "vendor": "Kids A/C",
+      "category": "Home Repairs & A/C",
+      "description": "Kids' rooms A/C work \u2014 manual ticket per Ned (documentation to follow)",
+      "amount": 3600.0,
+      "date": "2026-07-22",
+      "_kidsac": true
     }
   ],
   "_manual_note": "Items with no bill/PDF in the folder. 'recurring_monthly' expands to one line per month (dated the 1st).",

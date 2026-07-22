@@ -73,7 +73,7 @@ def build_cover_letter(rows,cfg,out,today=None):
     E.append(Spacer(1,6)); E.append(t); E.append(Spacer(1,10))
     E.append(Paragraph('Every figure is drawn from a source document. The enclosed statement itemizes each charge by date, '
       'and the proof pack reproduces the underlying bills. Utility amounts use current charges rather than past-due '
-      'balances so no month is counted twice; duplicates were removed; payments I previously made to you settled separate expenses and are itemized for transparency. Court-ordered child support (Consent Judgment of January 12, 2025; guideline worksheet $1,011.95 per month) was additionally paid through May 1, 2026, and direct support I provided to our son Eli (approximately $7,700) is likewise not claimed. '
+      'balances so no month is counted twice; duplicates were removed; direct payments I made to you during this period are included as advances to be repaid. Court-ordered child support (Consent Judgment of January 12, 2025; guideline worksheet $1,011.95 per month) was additionally paid through May 1, 2026, and direct support I provided to our son Eli (approximately $7,700) is likewise not claimed. '
       'The original of any bill is available on request.',body))
     E.append(Paragraph('Please review the enclosed statement and let me know within thirty (30) days how you would like '
       'to arrange payment or discuss any item. I am open to a payment schedule.',body))

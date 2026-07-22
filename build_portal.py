@@ -63,7 +63,7 @@ def build(bills_folder=None, progress=print):
     full.close(); os.remove(tmp)
     fin={rel:dict(exh=m['exh'],cat=m['cat'],vol=volmap[m['page']][0],page=volmap[m['page']][1],base=m['base']) for rel,m in mapping.items()}
     # ---- portal data ----
-    CATS=['Mortgage','Utilities','Pool',"Construction (De Roman's)",'Home Repairs & A/C','School/Tuition','AT&T Business','Storage','Cleaning','Lawn/Yard','Moving/Household','Labor','Medical/Dental/Vision']
+    CATS=['Mortgage','Utilities','Pool',"Construction (De Roman's)",'Home Repairs & A/C','Advances to Lindsey','School/Tuition','AT&T Business','Storage','Cleaning','Lawn/Yard','Moving/Household','Labor','Medical/Dental/Vision']
     items=[]; credits=[]
     for r in rows:
         if r['vendor']=='Paid TO Lindsey' and r.get('amount'):
@@ -83,7 +83,7 @@ def build(bills_folder=None, progress=print):
         net=round(sum(i['h'] for i in items)-(sum(c['a'] for c in credits) if cfg.get('subtract_payments_to_lindsey') else 0.0),2),
         credit_total=round(sum(c['a'] for c in credits),2),
         cats=[dict(name=c,**{k:(round(v,2) if isinstance(v,float) else v) for k,v in cats[c].items()},
-              basis=('flat $100/mo' if c=='AT&T Business' else ('12%' if c in ('School/Tuition','Medical/Dental/Vision') else '50%'))) for c in CATS if c in cats],
+              basis=('flat $100/mo' if c=='AT&T Business' else ('12%' if c in ('School/Tuition','Medical/Dental/Vision') else ('100%' if c=='Advances to Lindsey' else ('80%' if c=='Moving/Household' else '50%'))))) for c in CATS if c in cats],
         items=items, credits=sorted(credits,key=lambda x:x['d']))
     tpl=open(os.path.join(HERE,'portal_template.html'),encoding='utf-8').read()
     addl={}
@@ -91,7 +91,7 @@ def build(bills_folder=None, progress=print):
     if os.path.exists(ap):
         addl=json.load(open(ap,encoding='utf-8'))
     subtract=bool(cfg.get('subtract_payments_to_lindsey'))
-    tpl=tpl.replace('__CREDITNOTE__', ('after $__CREDITS__ already paid to Lindsey is credited' if subtract else 'direct payments Ned made to Lindsey appear under Additional Amounts below (not credited against this total)'))
+    tpl=tpl.replace('__CREDITNOTE__', ('after $__CREDITS__ already paid to Lindsey is credited' if subtract else 'includes the direct payments/advances Ned made to Lindsey — see the Advances category below'))
     tpl=tpl.replace('__CREDITSTITLE__', ('Credits — amounts Ned already paid Lindsey (subtracted)' if subtract else 'Payments Ned made to Lindsey — settled separate expenses (NOT subtracted)'))
     html=tpl.replace('__DATA__',json.dumps(data,separators=(',',':'))).replace('__ADDITIONAL__',json.dumps(addl,separators=(',',':'))).replace('__NET__',format(data['net'],',.2f')).replace('__CREDITS__',format(data['credit_total'],',.2f')).replace('__UPDATED__',data['updated'])
     open(os.path.join(docs,'index.html'),'w',encoding='utf-8').write(html)

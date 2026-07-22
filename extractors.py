@@ -7,13 +7,13 @@ CATEGORY = {
  'atmos':'Utilities','entergy':'Utilities','brwater':'Utilities','att_internet':'Utilities',
  'pool':'Pool','pods':'Storage','cleaning':'Cleaning','venmo_lions':'Lawn/Yard',
  'att_business':'AT&T Business','facts':'School/Tuition','studyville':'School/Tuition',
- 'venmo_eli':'Kids-Direct (Eli)','venmo_lindsey':'Credit/Payment to Lindsey',
+ 'venmo_eli':'Kids-Direct (Eli)','venmo_lindsey':'Advances to Lindsey',
 }
 VENDOR_LABEL = {
  'atmos':'Atmos (Gas)','entergy':'Entergy (Electric)','brwater':'BR Water','att_internet':'AT&T Internet',
  'pool':'Pool (Fernando)','pods':'PODS (Storage)','cleaning':'House Cleaning','venmo_lions':'Lions Lawncare',
  'att_business':'AT&T Business (Pearsons Luggage)','facts':"St Luke's School (FACTS)",'studyville':'Studyville',
- 'venmo_eli':'Payments to Eli','venmo_lindsey':'Paid TO Lindsey',
+ 'venmo_eli':'Payments to Eli','venmo_lindsey':'Advances to Lindsey (Venmo)',
 }
 
 def _text(lines): return "\n".join(lines)
