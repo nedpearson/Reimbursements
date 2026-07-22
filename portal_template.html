@@ -63,6 +63,7 @@ h2{color:var(--navy);font-size:1.05rem;margin:26px 4px 8px}.note{color:var(--gre
 <li>Say why you dispute it and <b>attach your proof documents</b> (receipts, statements, screenshots) to that email before sending.</li>
 <li>Every dispute gets reviewed against the source bills. The outcome is posted below with a response, and the totals above are corrected if you're right.</li>
 </ol>
+<div class="note" style="margin:10px 0 0"><b style="color:#20603c">Already paid a specific line?</b> Click the green <span class="paid" style="font-size:.72rem">I paid this ✓</span> button on that line — an email opens for that exact item. Attach your proof (Venmo/bank/check) and send. It shows as <span class="dstat review" style="font-size:.72rem">proof submitted — under review</span> until Ned verifies it, then the line turns <span class="paid" style="font-size:.72rem">PAID ✓</span> green and drops off the balance.</div>
 <div class="note" style="margin:10px 0 0">To send general notes or documents that aren't about one specific line, email <a href="mailto:nedpearson@gmail.com?subject=NOTE%20%E2%80%94%20Pearson%20reimbursement">nedpearson@gmail.com</a> with subject "NOTE".</div>
 <div class="note" style="margin:6px 0 0"><b>Already paid something back?</b> Email the proof (Venmo/bank screenshot, check image) to <a href="mailto:nedpearson@gmail.com?subject=PAID%20BACK%20%E2%80%94%20Pearson%20reimbursement&body=I%20paid%20back%3A%0A%0A  Amount%3A%20%0A  Date%3A%20%0A  Method%3A%20%0A  What%20it%20covers%3A%20%0A%0AProof%20is%20attached.">nedpearson@gmail.com</a> with subject "PAID BACK". Once verified it's recorded above and the balance drops.</div>
 </div>
@@ -90,31 +91,39 @@ function srcCell(s){if(!s)return '';
  if(s.t==='venmo')return '<span class="badge venmo">'+s.doc+'</span>';
  return '<span class="badge">'+(s.doc||'')+'</span>';}
 function itemRef(i){return (i.src&&i.src.t==='exh'?('Exhibit '+i.src.exh+' — '):'')+i.v+' '+(i.d||'')+' '+money(i.a);}
-function dispBtn(i){
+function paidProofBtn(i){
+ var ref=itemRef(i);
+ var subj='PAID PROOF — '+ref+' — Pearson reimbursement';
+ var body='I already paid this item:\n\n  '+ref+'\n  Category: '+i.cat+'\n  Her share: '+money(i.h)+'\n\nHow/when I paid it:\n(amount, date, method — write here)\n\nIMPORTANT: attach your proof (Venmo/bank screenshot, check image, receipt) to this email before sending. Once Ned verifies it, this line turns green to PAID.\n\n— Lindsey';
+ return '<a class="dbtn" style="color:#20603c;border-color:#a9d5ba" href="mailto:nedpearson@gmail.com?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body)+'">I paid this ✓ send proof</a>';}
+function statusCell(i){
+ if(PAID.has(i.id)||(i.src&&i.src.t==='exh'&&PAID_EXH.has(i.src.exh))) return '<span class="paid">PAID ✓</span>';
+ if(PENDING.has(i.id)) return '<span class="dstat review">PROOF SUBMITTED — under review</span>';
  var ref=itemRef(i);
  var subj='DISPUTE — '+ref+' — Pearson reimbursement';
  var body='I dispute this charge:\n\n  '+ref+'\n  Category: '+i.cat+'\n  Description: '+i.desc+'\n  Her share claimed: '+money(i.h)+'\n\nReason for dispute:\n(write your reason here)\n\nIMPORTANT: attach your proof documents (receipts, statements, screenshots) to this email before sending.\n\n— Lindsey';
- if(i.src&&i.src.t==='exh'&&PAID_EXH.has(i.src.exh)) return '<span class="paid">PAID BACK ✓</span>';
- return '<a class="dbtn" href="mailto:nedpearson@gmail.com?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body)+'">Dispute</a>';}
+ return '<a class="dbtn" href="mailto:nedpearson@gmail.com?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body)+'">Dispute</a> '+paidProofBtn(i);}
 const DISP=__DISPUTES__;
 const PB=__PAIDBACK__;
+const SETTLED=__SETTLED__;
+const PAID=new Set((SETTLED&&SETTLED.paid)||[]);
+const PENDING=new Set((SETTLED&&SETTLED.pending)||[]);
 const PAID_EXH=new Set();
 (function(){
- if(!PB||!PB.payments||!PB.payments.length)return;
- PB.payments.forEach(function(p){(p.exh||[]).forEach(function(e){PAID_EXH.add(e);});});
- var bal=Math.max(0,Math.round((D.net-PB.total)*100)/100);
+ // balance = original claim minus the her-share of every line marked PAID
+ var paidTotal=(SETTLED&&SETTLED.paid_total)?SETTLED.paid_total:0;
+ if(PB&&PB.payments){PB.payments.forEach(function(p){(p.exh||[]).forEach(function(e){PAID_EXH.add(e);});});}
+ if(paidTotal<=0)return;
+ var bal=Math.max(0,Math.round((D.net-paidTotal)*100)/100);
  document.getElementById('bignum').textContent=money(bal);
  document.getElementById('bannerlbl').textContent='BALANCE STILL DUE TO NED';
  var br=document.getElementById('balrow');
  br.style.display='block';
- br.innerHTML='Original amount '+money(D.net)+' &nbsp;−&nbsp; paid back '+money(PB.total)+' &nbsp;=&nbsp; balance '+money(bal);
+ br.innerHTML='Original amount '+money(D.net)+' &nbsp;−&nbsp; paid '+money(paidTotal)+' &nbsp;=&nbsp; balance '+money(bal)
+  +' &nbsp;·&nbsp; '+SETTLED.paid_count+' of '+SETTLED.item_count+' items marked paid';
  document.getElementById('pb-h').style.display='block';
  document.getElementById('pbcard').style.display='block';
- var pl=document.getElementById('pblist');
- PB.payments.forEach(function(p){
-  pl.insertAdjacentHTML('beforeend','<div class="pbitem"><div><b style="color:var(--navy)">'+(p.date||'')+'</b> · '+(p.method||'payment')+(p.covers?(' — '+p.covers):'')+(p.note?('<div style="color:#8a8fa3;font-size:.78rem">'+p.note+'</div>'):'')+'</div><div class="amt">'+money(p.amount)+' <span class="paid">RECEIVED ✓</span></div></div>');
- });
- pl.insertAdjacentHTML('beforeend','<div class="pbitem" style="background:var(--light)"><div><b>Total paid back</b></div><div class="amt">'+money(PB.total)+'</div></div>');
+ document.getElementById('pblist').innerHTML='<div class="pbitem" style="background:var(--light)"><div><b>Total marked paid ('+SETTLED.paid_count+' items)</b> — green lines below are settled; the balance above already reflects them.</div><div class="amt">'+money(paidTotal)+'</div></div>';
 })();
 (function(){
  var dl=document.getElementById('displist');
@@ -131,7 +140,7 @@ const PAID_EXH=new Set();
 const wrap=document.getElementById('cats');
 D.cats.forEach(c=>{const items=D.items.filter(i=>i.cat===c.name).sort((a,b)=>(a.d||'').localeCompare(b.d||''));
  const card=document.createElement('div');card.className='card';
- card.innerHTML='<div class="cat"><div><div class="nm">'+c.name+'</div><div class="meta">'+c.n+' charge'+(c.n>1?'s':'')+' · billed '+money(c.billed)+' · her share: '+c.basis+'</div></div><div style="display:flex;align-items:center;gap:12px"><div class="owed">'+money(c.owed)+'</div><div class="chev">▶</div></div></div><div class="items"><table><thead><tr><th>Date</th><th>Vendor</th><th>Description</th><th class="r">Bill amount</th><th class="r">Her share</th><th>Source of truth</th><th></th></tr></thead><tbody>'+items.map(i=>'<tr><td>'+(i.d||'—')+'</td><td>'+i.v+'</td><td>'+i.desc+'</td><td class="r">'+money(i.a)+'</td><td class="r"><b>'+money(i.h)+'</b></td><td class="src">'+srcCell(i.src)+'</td><td>'+dispBtn(i)+'</td></tr>').join('')+'</tbody></table></div>';
+ card.innerHTML='<div class="cat"><div><div class="nm">'+c.name+'</div><div class="meta">'+c.n+' charge'+(c.n>1?'s':'')+' · billed '+money(c.billed)+' · her share: '+c.basis+'</div></div><div style="display:flex;align-items:center;gap:12px"><div class="owed">'+money(c.owed)+'</div><div class="chev">▶</div></div></div><div class="items"><table><thead><tr><th>Date</th><th>Vendor</th><th>Description</th><th class="r">Bill amount</th><th class="r">Her share</th><th>Source of truth</th><th></th></tr></thead><tbody>'+items.map(i=>'<tr'+((PAID.has(i.id)||(i.src&&i.src.t==='exh'&&PAID_EXH.has(i.src.exh)))?' style="background:#F1F9F3"':'')+'><td>'+(i.d||'—')+'</td><td>'+i.v+'</td><td>'+i.desc+'</td><td class="r">'+money(i.a)+'</td><td class="r"><b>'+money(i.h)+'</b></td><td class="src">'+srcCell(i.src)+'</td><td>'+statusCell(i)+'</td></tr>').join('')+'</tbody></table></div>';
  card.querySelector('.cat').onclick=()=>card.classList.toggle('open');wrap.appendChild(card);});
 
 
@@ -149,10 +158,11 @@ if(ADD&&ADD.sections){
 (function(){
  var link='https://nedpearson.github.io/Reimbursements/';
  var addTotal=(typeof ADD!=='undefined'&&ADD&&ADD.grand_total)?ADD.grand_total:0;
- var due=(typeof PB!=='undefined'&&PB&&PB.total)?Math.max(0,Math.round((D.net-PB.total)*100)/100):D.net;
+ var paidT=(typeof SETTLED!=='undefined'&&SETTLED&&SETTLED.paid_total)?SETTLED.paid_total:0;
+ var due=paidT?Math.max(0,Math.round((D.net-paidT)*100)/100):D.net;
  var subj='Expense Reimbursement — Pearson ('+money(due)+')';
  var body='The complete expense reimbursement package is here:\n'+link+'\n\n'
-  +((due!==D.net)?('Balance still due: '+money(due)+'  (original '+money(D.net)+' less '+money(PB.total)+' paid back)\n'):('Net amount due: '+money(D.net)+'\n'))
+  +((due!==D.net)?('Balance still due: '+money(due)+'  (original '+money(D.net)+' less '+money(paidT)+' already paid)\n'):('Net amount due: '+money(D.net)+'\n'))
   +(addTotal?('Additional amounts paid on your behalf (vehicle, insurance, health premium, direct payments): '+money(addTotal)+'\n'):'')
   +'\nOn that page: every charge by category, each line linked to the actual bill, plus the itemized statement, cover letter, and full proof pack — all viewable in the browser, nothing to download. If you believe any charge is wrong, use the Dispute button on that line and attach your proof.\n\nNed';
  var el=document.getElementById('emailbtn');

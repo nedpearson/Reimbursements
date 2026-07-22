@@ -79,7 +79,7 @@ def build(bills_folder=None, progress=print):
         elif f.startswith('(from Gmail'): src=dict(t='email',doc='Bill from email records')
         elif 'Venmo' in f or f.lower().endswith('.csv'): src=dict(t='venmo',doc='Venmo statement')
         else: src=dict(t='manual',doc='Agreed amount' if not r.get('flat_share') else 'Agreed portion')
-        items.append(dict(cat=r['category'],d=r.get('date',''),v=r['vendor'],desc=(r.get('desc') or '')[:70],a=r['amount'],h=r['her_share'],src=src))
+        items.append(dict(cat=r['category'],d=r.get('date',''),v=r['vendor'],desc=(r.get('desc') or '')[:70],a=r['amount'],h=r['her_share'],src=src,id=categorize.item_id(r)))
     cats={}
     for it in items:
         c=cats.setdefault(it['cat'],dict(n=0,billed=0.0,owed=0.0)); c['n']+=1; c['billed']+=it['a']; c['owed']+=it['h']
@@ -114,7 +114,20 @@ def build(bills_folder=None, progress=print):
             paidback={'payments':pays,'total':round(sum(float(x['amount']) for x in pays),2)}
         except Exception as _e:
             progress('paidback.json unreadable, skipping: %s'%_e)
-    html=tpl.replace('__DATA__',json.dumps(data,separators=(',',':'))).replace('__ADDITIONAL__',json.dumps(addl,separators=(',',':'))).replace('__DISPUTES__',json.dumps(disputes,separators=(',',':'))).replace('__PAIDBACK__',json.dumps(paidback,separators=(',',':'))).replace('__NET__',format(data['net'],',.2f')).replace('__CREDITS__',format(data['credit_total'],',.2f')).replace('__UPDATED__',data['updated'])
+    # ---- per-line settled status (Ned-controlled paid + pending proof) ----
+    settled={'paid':[],'pending':[]}
+    st=os.path.join(HERE,'settled.json')
+    if os.path.exists(st):
+        try:
+            _s=json.load(open(st,encoding='utf-8'))
+            settled={'paid':list(_s.get('paid',[])),'pending':[i for i in _s.get('pending',[]) if i not in set(_s.get('paid',[]))]}
+        except Exception as _e:
+            progress('settled.json unreadable, skipping: %s'%_e)
+    paidset=set(settled['paid'])
+    settled['paid_total']=round(sum(i['h'] for i in items if i['id'] in paidset),2)
+    settled['paid_count']=sum(1 for i in items if i['id'] in paidset)
+    settled['item_count']=len(items)
+    html=tpl.replace('__DATA__',json.dumps(data,separators=(',',':'))).replace('__ADDITIONAL__',json.dumps(addl,separators=(',',':'))).replace('__DISPUTES__',json.dumps(disputes,separators=(',',':'))).replace('__PAIDBACK__',json.dumps(paidback,separators=(',',':'))).replace('__SETTLED__',json.dumps(settled,separators=(',',':'))).replace('__NET__',format(data['net'],',.2f')).replace('__CREDITS__',format(data['credit_total'],',.2f')).replace('__UPDATED__',data['updated'])
     from safewrite import write_text, copy_file
     write_text(os.path.join(docs,'index.html'),html,progress)
     try:

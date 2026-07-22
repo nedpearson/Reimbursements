@@ -46,11 +46,13 @@ class App(tk.Tk):
         self.tab_run=tk.Frame(nb,bg=BG); self.tab_add=tk.Frame(nb,bg=BG)
         self.tab_set=tk.Frame(nb,bg=BG)
         self.tab_amt=tk.Frame(nb,bg=BG)
+        self.tab_paid=tk.Frame(nb,bg=BG)
         nb.add(self.tab_run,text='  Generate & Export  ')
         nb.add(self.tab_amt,text='  Edit Amounts  ')
+        nb.add(self.tab_paid,text='  Mark Paid  ')
         nb.add(self.tab_add,text='  Add / Import  ')
         nb.add(self.tab_set,text='  Settings  ')
-        self._build_run(); self._build_amounts(); self._build_add(); self._build_settings()
+        self._build_run(); self._build_amounts(); self._build_paid(); self._build_add(); self._build_settings()
 
     def _build_run(self):
         f=self.tab_run
@@ -239,6 +241,87 @@ class App(tk.Tk):
             email_packet.main()
         except Exception as e:
             messagebox.showerror("Email Full Packet", str(e))
+    # ---------- Mark Paid tab ----------
+    def _build_paid(self):
+        f=self.tab_paid
+        tk.Label(f,text="Mark each line Paid, Proof-Submitted, or Unpaid — you control this",
+                 bg=BG,fg=NAVY,font=('Segoe UI',11,'bold')).pack(anchor='w',padx=14,pady=(12,2))
+        tk.Label(f,text="Load your lines, select one or more rows, then click a status. Green = paid (drops off the balance). "
+                 "Yellow = Lindsey sent proof, awaiting your OK. Then Generate & Publish.",
+                 bg=BG,fg='#555',font=('Segoe UI',9),justify='left',wraplength=800).pack(anchor='w',padx=14)
+        bar=tk.Frame(f,bg=BG); bar.pack(fill='x',padx=14,pady=6)
+        tk.Button(bar,text="⟳ Load / Refresh lines",command=self._paid_load).pack(side='left')
+        tk.Label(bar,text="  Filter:",bg=BG).pack(side='left')
+        self.paid_filter=tk.StringVar()
+        fe=tk.Entry(bar,textvariable=self.paid_filter,width=26); fe.pack(side='left')
+        fe.bind('<KeyRelease>',lambda e:self._paid_fill())
+        self.paid_count_lbl=tk.Label(bar,text="",bg=BG,fg=GREEN,font=('Segoe UI',10,'bold')); self.paid_count_lbl.pack(side='right')
+        cols=('date','cat','vendor','amount','share','status')
+        tv=ttk.Treeview(f,columns=cols,show='headings',selectmode='extended',height=16)
+        for c,w,t in [('date',80,'Date'),('cat',150,'Category'),('vendor',150,'Vendor'),('amount',90,'Bill'),('share',90,'Her share'),('status',150,'Status')]:
+            tv.heading(c,text=t); tv.column(c,width=w,anchor=('e' if c in('amount','share') else 'w'))
+        tv.tag_configure('paid',background='#E7F5EC'); tv.tag_configure('pending',background='#FDF3E3')
+        sb=ttk.Scrollbar(f,orient='vertical',command=tv.yview); tv.configure(yscroll=sb.set)
+        tv.pack(side='left',fill='both',expand=True,padx=(14,0),pady=(0,12)); sb.pack(side='left',fill='y',pady=(0,12))
+        self.paid_tv=tv
+        bf=tk.Frame(f,bg=BG); bf.pack(side='left',fill='y',padx=10,pady=8)
+        tk.Button(bf,text="✔ Mark PAID",bg=GREEN,fg='white',font=('Segoe UI',10,'bold'),relief='flat',width=20,command=lambda:self._paid_set('paid')).pack(pady=4)
+        tk.Button(bf,text="◐ Proof Submitted",bg='#B07A00',fg='white',font=('Segoe UI',10,'bold'),relief='flat',width=20,command=lambda:self._paid_set('pending')).pack(pady=4)
+        tk.Button(bf,text="○ Mark Unpaid",width=20,command=lambda:self._paid_set('unpaid')).pack(pady=4)
+        tk.Label(bf,text="Tip: hold Ctrl or Shift\nto select several lines.",bg=BG,fg='#777',font=('Segoe UI',9),justify='left').pack(pady=(10,0))
+        self._paid_rows=[]; self._paid_state={'paid':set(),'pending':set()}
+    def _settled_path(self): return os.path.join(HERE,'settled.json')
+    def _paid_loadstate(self):
+        try: s=json.load(open(self._settled_path(),encoding='utf-8'))
+        except Exception: s={'paid':[],'pending':[]}
+        self._paid_state={'paid':set(s.get('paid',[])),'pending':set(s.get('pending',[]))-set(s.get('paid',[]))}
+    def _paid_savestate(self):
+        s={'_how_to_use':'Per-line paid tracking (managed by the app Mark Paid tab). paid=green/subtracted, pending=yellow/awaiting review. After changes: Generate + Publish.',
+           'paid':sorted(self._paid_state['paid']),'pending':sorted(self._paid_state['pending']-self._paid_state['paid'])}
+        from safewrite import write_via_temp
+        write_via_temp(self._settled_path(),lambda tmp: json.dump(s,open(tmp,'w',encoding='utf-8'),indent=1))
+    def _paid_load(self):
+        folder=self.folder.get() or self.cfg.get('last_folder')
+        if not folder or not os.path.isdir(folder):
+            messagebox.showwarning("Mark Paid","Pick your Bills folder on the Generate tab first."); return
+        self.paid_count_lbl.config(text="loading…"); self.update_idletasks()
+        try:
+            import categorize
+            rows=categorize.apply_split(categorize.build(folder))
+        except Exception as e:
+            messagebox.showerror("Mark Paid","Could not read lines: %s"%e); return
+        self._paid_loadstate()
+        out=[]
+        for r in rows:
+            if not (r.get('include') and r.get('in_window',True) and r.get('amount') is not None and r.get('her_share') is not None): continue
+            out.append(dict(id=categorize.item_id(r),date=r.get('date') or '',cat=r['category'],vendor=r['vendor'],
+                            amount=r['amount'],share=r['her_share']))
+        out.sort(key=lambda x:(x['cat'],x['date']))
+        self._paid_rows=out; self._paid_fill()
+    def _paid_fill(self):
+        tv=self.paid_tv
+        for iid in tv.get_children(): tv.delete(iid)
+        flt=(self.paid_filter.get() or '').lower()
+        shown=0
+        for r in self._paid_rows:
+            if flt and flt not in (r['cat']+' '+r['vendor']+' '+r['date']).lower(): continue
+            if r['id'] in self._paid_state['paid']: stat='PAID ✓'; tag='paid'
+            elif r['id'] in self._paid_state['pending']: stat='Proof submitted'; tag='pending'
+            else: stat=''; tag=''
+            tv.insert('','end',iid=r['id'],tags=(tag,),
+                      values=(r['date'],r['cat'],r['vendor'][:24],'$%,.2f'%r['amount'],'$%,.2f'%r['share'],stat))
+            shown+=1
+        paidtot=sum(r['share'] for r in self._paid_rows if r['id'] in self._paid_state['paid'])
+        self.paid_count_lbl.config(text="%d paid · $%,.2f settled"%(len(self._paid_state['paid']),paidtot))
+    def _paid_set(self,state):
+        sel=self.paid_tv.selection()
+        if not sel:
+            messagebox.showinfo("Mark Paid","Select one or more lines first."); return
+        for iid in sel:
+            self._paid_state['paid'].discard(iid); self._paid_state['pending'].discard(iid)
+            if state=='paid': self._paid_state['paid'].add(iid)
+            elif state=='pending': self._paid_state['pending'].add(iid)
+        self._paid_savestate(); self._paid_fill()
     def _paidback_dialog(self):
         dlg=tk.Toplevel(self); dlg.title("Record Paid Back"); dlg.configure(bg=BG); dlg.grab_set()
         fields=[("Date (YYYY-MM-DD)",datetime.date.today().isoformat()),

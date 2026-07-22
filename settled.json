@@ -1,0 +1,5 @@
+{
+ "_how_to_use": "Per-line paid tracking. Use the app's 'Mark Paid' tab (select lines, click Paid / Proof Submitted / Unpaid), or edit here. 'paid' = line ids Ned confirmed paid (turn GREEN, subtracted from the balance). 'pending' = line ids where Lindsey emailed proof, awaiting Ned's review (turn YELLOW, NOT yet subtracted). After any change: Generate + Publish to Web.",
+ "paid": [],
+ "pending": []
+}

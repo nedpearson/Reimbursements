@@ -17,6 +17,12 @@ except Exception:
 HERE=os.path.dirname(os.path.abspath(__file__))
 CFG=json.load(open(os.path.join(HERE,'config.json')))
 
+def item_id(r):
+    """Stable short id for one ledger line — used to mark it Paid / proof-submitted.
+    Same inputs -> same id in the app and the portal builder."""
+    key='%s|%s|%s|%s'%(r.get('category',''),r.get('date',''),r.get('vendor',''),r.get('amount',''))
+    return hashlib.md5(key.encode('utf-8')).hexdigest()[:10]
+
 def infer_venmo_dates(raw, asof_year=2026):
     """raw: list of (datestr, amt, note). Assign real dates walking newest->oldest."""
     out=[]; year=asof_year; prev_m=13
