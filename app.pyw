@@ -61,6 +61,9 @@ class App(tk.Tk):
         self.gen_btn=tk.Button(act,text="⚙  Generate All Documents",bg=GREEN,fg='white',
                  font=('Segoe UI',12,'bold'),relief='flat',padx=18,pady=8,command=self._run)
         self.gen_btn.pack(side='left')
+        tk.Button(act,text="✉  Email Full Packet",bg=NAVY,fg='white',
+                 font=('Segoe UI',12,'bold'),relief='flat',padx=18,pady=8,
+                 command=self._email_packet).pack(side='left',padx=(10,0))
         self.net_lbl=tk.Label(act,text="",bg=BG,fg=GREEN,font=('Segoe UI',15,'bold')); self.net_lbl.pack(side='left',padx=16)
         ob=tk.Frame(f,bg=BG); ob.pack(fill='x',padx=14)
         self.buttons={}
@@ -223,6 +226,12 @@ class App(tk.Tk):
     def _browse(self):
         d=filedialog.askdirectory(initialdir=self.folder.get() or os.path.expanduser('~'))
         if d: self.folder.set(d)
+    def _email_packet(self):
+        try:
+            import email_packet
+            email_packet.main()
+        except Exception as e:
+            messagebox.showerror("Email Full Packet", str(e))
     def _log(self,m): self.log.insert('end',m+"\n"); self.log.see('end')
     def _save_settings(self):
         try: self.cfg=load_cfg()
