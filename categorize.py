@@ -48,11 +48,14 @@ def build(folder):
         for r in EX.reconcile_studyville(study, folder, EX.get_lines):
             rows.append(r)
     SUPERSEDED={'venmo _ eli pearson.pdf','venmo _ lions lawncare.pdf'}
+    OWN_OUTPUT=('reimbursement_','amounts_paid_for_lindsey')   # our own generated documents
     for p in files:
         if 'studyville' in os.path.basename(p).lower():
             continue
         if os.path.basename(p).lower() in SUPERSEDED:
             continue  # replaced by full Venmo CSV statements
+        if os.path.basename(p).lower().startswith(OWN_OUTPUT):
+            continue  # never re-ingest documents this program generated
         rel=os.path.relpath(p,folder); base=os.path.basename(p)
         try:
             lines,src=EX.get_lines(p)
@@ -168,6 +171,10 @@ def build(folder):
 def apply_split(rows):
     sp=CFG['split_percent']; cutoff=CFG.get('date_cutoff')
     for r in rows:
+        # a row with no date AND no amount is unusable — send to Review, never the claim
+        if r.get('include') and not r.get('date') and not r.get('amount') and r.get('flat_share') is None:
+            r['include']=False
+            r['note']=((r.get('note') or '')+' | no date/amount readable - moved to Review').strip(' |')
         if cutoff and r['date'] and r['date']<cutoff:
             r['in_window']=False
         else:
