@@ -57,7 +57,7 @@ def build_pdf(rows, cfg, out, prepared_for="Lindsey Pearson", prepared_by='Geral
     E.append(HRFlowable(width='100%',thickness=1.4,color=NAVY))
     E.append(Spacer(1,10))
     meta=[[Paragraph("<b>Prepared by</b>",body),Paragraph(prepared_by,body),
-           Paragraph("<b>Statement date</b>",body),Paragraph(_dt.date(2026,7,18).strftime('%B %d, %Y'),body)],
+           Paragraph("<b>Statement date</b>",body),Paragraph(_dt.date.today().strftime('%B %d, %Y'),body)],
           [Paragraph("<b>Reimbursement from</b>",body),Paragraph(prepared_for,body),
            Paragraph("<b>Period covered</b>",body),Paragraph(span,body)]]
     mt=Table(meta,colWidths=[1.35*inch,2.1*inch,1.3*inch,2.15*inch])

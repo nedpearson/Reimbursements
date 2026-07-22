@@ -90,7 +90,7 @@ def build_workbook(rows, OUT):
             h=wl.cell(rr,8,r_['her_share']); h.font=ARIAL(); h.number_format=MONEY
         else:
             p=wl.cell(rr,7,f'=IFERROR(INDEX({PCT_VALCOL},MATCH(C{rr},{PCT_CATCOL},0)),0)'); p.font=ARIAL(); p.number_format=PCT
-            h=wl.cell(rr,8,f'=IF(F{rr}="Yes",E{rr}*G{rr},0)'); h.font=ARIAL(); h.number_format=MONEY
+            h=wl.cell(rr,8,f'=IF(F{rr}="Yes",ROUND(E{rr}*G{rr},2),0)'); h.font=ARIAL(); h.number_format=MONEY
         wl.cell(rr,9,r_['file']).font=ARIAL(size=8,color='808080')
         wl.cell(rr,10,r_['note']).font=ARIAL(size=8,color='808080')
         for c in range(1,11): wl.cell(rr,c).border=box
@@ -121,7 +121,13 @@ def build_workbook(rows, OUT):
         cr+=1
     CR_F,CR_L=4,cr-1
     wc.cell(cr,2,'TOTAL CREDITS').font=ARIAL(bold=True)
-    tc=wc.cell(cr,3,f'=SUM(C{CR_F}:C{CR_L})'); tc.font=ARIAL(bold=True); tc.number_format=MONEY
+    if CR_L>=CR_F:
+        tc=wc.cell(cr,3,f'=SUM(C{CR_F}:C{CR_L})')
+    else:
+        wc.cell(cr-0,1,'').font=ARIAL()
+        wc.cell(4,2,'None — advances to Lindsey are claimed as a category in the Ledger.').font=ARIAL(italic=True,color='808080')
+        tc=wc.cell(cr,3,0)
+    tc.font=ARIAL(bold=True); tc.number_format=MONEY
     for c in range(1,5): wc.cell(cr,c).fill=totfill; wc.cell(cr,c).border=box
     CRED_TOTAL=f"'Credits (Paid to Lindsey)'!$C${cr}"
     for i,w in enumerate([12,44,13,34],1): wc.column_dimensions[get_column_letter(i)].width=w
@@ -151,7 +157,7 @@ def build_workbook(rows, OUT):
     # ============ SUMMARY ============
     wsum=wb.create_sheet('Summary'); wb.move_sheet('Summary', -(len(wb.sheetnames)-1))
     wsum['A1']='REIMBURSEMENT SUMMARY'; wsum['A1'].font=H1
-    wsum['A2']=f'Gerald "Ned" Pearson — bills in "House Bills" folder. Prepared {_dt.date(2026,7,18).strftime("%B %d, %Y")}.'
+    wsum['A2']=f'Gerald "Ned" Pearson — bills in "House Bills" folder. Prepared {_dt.date.today().strftime("%B %d, %Y")}.'
     wsum['A2'].font=ARIAL(italic=True,size=10,color='606060')
     for i,h in enumerate(['Category','Total Billed','% She Owes','She Owes'],1): wsum.cell(4,i,h)
     style_header(wsum,4,4)

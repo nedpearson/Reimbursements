@@ -178,10 +178,12 @@ def apply_split(rows):
         if _ae and r['category']=='AT&T Business' and r.get('date') and r['date'][:7]>_ae:
             r['in_window']=False; r['note']=(r.get('note') or '')+f' | after AT&T end {_ae}'
         billable = r['include'] and r['in_window'] and r['amount'] is not None and pct is not None
+        from decimal import Decimal, ROUND_HALF_UP
+        def _m(v): return float(Decimal(str(v)).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP))
         if r.get('flat_share') is not None:
-            r['her_share']=round(float(r['flat_share']),2) if billable else 0.0
+            r['her_share']=_m(r['flat_share']) if billable else 0.0
         else:
-            r['her_share']=round(r['amount']*pct/100,2) if billable else 0.0
+            r['her_share']=_m(r['amount']*pct/100) if billable else 0.0
     return rows
 
 def generate(folder, outdir=None, progress=None):
@@ -210,7 +212,7 @@ def generate(folder, outdir=None, progress=None):
     subtotal=sum(v[2] for v in bycat.values())
     credit_applied=credits if CFG.get('subtract_payments_to_lindsey') else 0.0
     net=subtotal-credit_applied
-    lines=["REIMBURSEMENT SUMMARY  (generated %s)"%_dt.date(2026,7,18).isoformat(),"="*60]
+    lines=["REIMBURSEMENT SUMMARY  (generated %s)"%_dt.date.today().isoformat(),"="*60]
     for c in sorted(bycat):
         n,amt,her=bycat[c]
         lines.append(f"{c:22s} {n:3d} items  billed ${amt:11,.2f}  @{CFG['split_percent'].get(c)}%  -> ${her:11,.2f}")
