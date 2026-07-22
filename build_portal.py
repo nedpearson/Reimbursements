@@ -105,7 +105,16 @@ def build(bills_folder=None, progress=print):
             disputes={'items':[i for i in _d.get('items',[]) if i.get('item')]}
         except Exception as _e:
             progress('disputes.json unreadable, skipping: %s'%_e)
-    html=tpl.replace('__DATA__',json.dumps(data,separators=(',',':'))).replace('__ADDITIONAL__',json.dumps(addl,separators=(',',':'))).replace('__DISPUTES__',json.dumps(disputes,separators=(',',':'))).replace('__NET__',format(data['net'],',.2f')).replace('__CREDITS__',format(data['credit_total'],',.2f')).replace('__UPDATED__',data['updated'])
+    paidback={'payments':[],'total':0.0}
+    pb=os.path.join(HERE,'paidback.json')
+    if os.path.exists(pb):
+        try:
+            _p=json.load(open(pb,encoding='utf-8'))
+            pays=[x for x in _p.get('payments',[]) if x.get('amount')]
+            paidback={'payments':pays,'total':round(sum(float(x['amount']) for x in pays),2)}
+        except Exception as _e:
+            progress('paidback.json unreadable, skipping: %s'%_e)
+    html=tpl.replace('__DATA__',json.dumps(data,separators=(',',':'))).replace('__ADDITIONAL__',json.dumps(addl,separators=(',',':'))).replace('__DISPUTES__',json.dumps(disputes,separators=(',',':'))).replace('__PAIDBACK__',json.dumps(paidback,separators=(',',':'))).replace('__NET__',format(data['net'],',.2f')).replace('__CREDITS__',format(data['credit_total'],',.2f')).replace('__UPDATED__',data['updated'])
     from safewrite import write_text, copy_file
     write_text(os.path.join(docs,'index.html'),html,progress)
     try:

@@ -98,6 +98,10 @@ class App(tk.Tk):
                  bg=BG,fg=NAVY,font=('Segoe UI',10,'bold')).pack(anchor='w',padx=14)
         tk.Button(f,text="Open additional.json in Notepad",command=lambda:os.startfile(os.path.join(HERE,'additional.json')) if sys.platform.startswith('win') else open_path(os.path.join(HERE,'additional.json'))).pack(anchor='w',padx=14,pady=4)
         tk.Button(f,text="Open disputes.json in Notepad (Lindsey's disputes & your responses)",command=lambda:os.startfile(os.path.join(HERE,'disputes.json')) if sys.platform.startswith('win') else open_path(os.path.join(HERE,'disputes.json'))).pack(anchor='w',padx=14,pady=4)
+        pbf=tk.Frame(f,bg=BG); pbf.pack(anchor='w',padx=14,pady=4)
+        tk.Button(pbf,text="✔  Record Paid Back…",bg=GREEN,fg='white',font=('Segoe UI',10,'bold'),
+                 relief='flat',padx=14,pady=4,command=self._paidback_dialog).pack(side='left')
+        tk.Button(pbf,text="Open paidback.json in Notepad",command=lambda:os.startfile(os.path.join(HERE,'paidback.json')) if sys.platform.startswith('win') else open_path(os.path.join(HERE,'paidback.json'))).pack(side='left',padx=8)
         tk.Label(f,text="After ANY change here: go to Generate & Export and click Generate, then Publish to Web.bat to update the shared link.",
                  bg=BG,fg='#777',font=('Segoe UI',9)).pack(anchor='w',padx=14,pady=(4,10))
         self._amt_reload()
@@ -235,6 +239,40 @@ class App(tk.Tk):
             email_packet.main()
         except Exception as e:
             messagebox.showerror("Email Full Packet", str(e))
+    def _paidback_dialog(self):
+        dlg=tk.Toplevel(self); dlg.title("Record Paid Back"); dlg.configure(bg=BG); dlg.grab_set()
+        fields=[("Date (YYYY-MM-DD)",datetime.date.today().isoformat()),
+                ("Amount (e.g. 500.00)",""),("Method (Venmo / check / cash / Zelle)",""),
+                ("What it covers (e.g. Pool + Utilities Jan-Mar)",""),
+                ("Exhibit #s fully covered, comma-separated (optional)",""),("Note (optional)","")]
+        ents=[]
+        for i,(lab,dv) in enumerate(fields):
+            tk.Label(dlg,text=lab,bg=BG,anchor='w').grid(row=i*2,column=0,sticky='w',padx=14,pady=(8 if i==0 else 4,0))
+            e=tk.Entry(dlg,width=52); e.insert(0,dv); e.grid(row=i*2+1,column=0,padx=14,sticky='we'); ents.append(e)
+        st=tk.Label(dlg,text="Only record money you have actually received (or verified proof of).",bg=BG,fg='#777',font=('Segoe UI',9))
+        st.grid(row=98,column=0,padx=14,pady=(8,0),sticky='w')
+        def save():
+            try: amt=round(float(ents[1].get().replace('$','').replace(',','').strip()),2)
+            except ValueError:
+                messagebox.showerror("Record Paid Back","Amount must be a number.",parent=dlg); return
+            if amt<=0:
+                messagebox.showerror("Record Paid Back","Amount must be positive.",parent=dlg); return
+            exh=[]
+            for tok in ents[4].get().replace(' ','').split(','):
+                if tok.isdigit(): exh.append(int(tok))
+            p={'date':ents[0].get().strip(),'amount':amt,'method':ents[2].get().strip() or 'payment',
+               'covers':ents[3].get().strip(),'exh':exh,'note':ents[5].get().strip()}
+            path=os.path.join(HERE,'paidback.json')
+            try: data=json.load(open(path,encoding='utf-8'))
+            except Exception: data={'payments':[]}
+            data.setdefault('payments',[]).append(p)
+            from safewrite import write_via_temp
+            write_via_temp(path,lambda tmp: json.dump(data,open(tmp,'w',encoding='utf-8'),indent=1))
+            dlg.destroy()
+            messagebox.showinfo("Record Paid Back","Recorded %s.\n\nNow click Generate, then Publish to Web — the portal balance will drop and the payment will show in the Paid Back section."%('$%,.2f'%amt if False else '$'+format(amt,',.2f')))
+        bf=tk.Frame(dlg,bg=BG); bf.grid(row=99,column=0,pady=12)
+        tk.Button(bf,text="Save Payment",bg=GREEN,fg='white',relief='flat',padx=16,pady=5,command=save).pack(side='left',padx=6)
+        tk.Button(bf,text="Cancel",command=dlg.destroy).pack(side='left',padx=6)
     def _log(self,m): self.log.insert('end',m+"\n"); self.log.see('end')
     def _save_settings(self):
         try: self.cfg=load_cfg()

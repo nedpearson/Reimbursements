@@ -1,0 +1,4 @@
+{
+ "_how_to_use": "Ned records money Lindsey has paid back here (app button 'Record Paid Back' or edit by hand), then Generate + Publish to Web. Each payment: date, amount, method (Venmo/check/cash/...), covers (free text like 'Pool + Utilities Jan-Mar'), exh (optional list of exhibit numbers to mark those lines PAID on the portal), note. Only add entries when YOU confirm the money arrived - or when she sends proof (subject PAID BACK) and it checks out.",
+ "payments": []
+}
