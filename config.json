@@ -130,5 +130,14 @@
   "output_dir": "output",
   "att_business_end": "2026-05",
   "user_email": "nedpearson@gmail.com",
-  "form_email": "nedpearson@gmail.com"
+  "form_email": "nedpearson@gmail.com",
+  "exclude_business": [
+    "degraw",
+    "interloc",
+    "pearson's travel world",
+    "peopleready",
+    "servicargo",
+    "servicargo"
+  ],
+  "_exclude_business_note": "Vendors/terms that are BUSINESS, never household. Any bill whose vendor/description/file matches one of these is auto-excluded from the reimbursement claim."
 }

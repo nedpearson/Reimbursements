@@ -198,7 +198,14 @@ def build(folder):
 
 def apply_split(rows):
     sp=CFG['split_percent']; cutoff=CFG.get('date_cutoff')
+    biz=[t.lower() for t in CFG.get('exclude_business',[]) if t]
     for r in rows:
+        # permanent business exclusion: these vendors are NOT household and never enter the claim
+        if biz:
+            hay=(str(r.get('vendor',''))+' '+str(r.get('desc',''))+' '+str(r.get('file',''))).lower()
+            if any(t in hay for t in biz):
+                r['include']=False
+                r['note']=((r.get('note') or '')+' | business expense - excluded (not household)').strip(' |')
         # a row with no date AND no amount is unusable — send to Review, never the claim
         if r.get('include') and not r.get('date') and not r.get('amount') and r.get('flat_share') is None:
             r['include']=False
