@@ -1,114 +1,172 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow"><title>Pearson Expense Reimbursement</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet">
 <style>
-:root{--navy:#1B2E52;--navy2:#28457c;--green:#217a43;--grey:#5b6472;--light:#F4F6FB;--line:#E2E6EF;--gold:#8a6100}
+:root{
+ --ink:#17233a;--navy:#14294d;--navy2:#22406f;--gold:#b0873b;--gold2:#caa25a;
+ --green:#1c7a46;--green2:#249256;--paper:#EEF1F6;--card:#ffffff;--line:#E4E8F0;
+ --muted:#6a7486;--shadow:0 1px 2px rgba(20,30,60,.04),0 6px 20px rgba(20,30,60,.06)}
 *{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
 html{-webkit-text-size-adjust:100%}
-body{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;background:#EDF0F6;color:#232a36;line-height:1.5;font-size:16px}
-.wrap{max-width:1000px;margin:0 auto;padding:20px 16px 70px}
-header{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;padding:26px 16px 30px;border-radius:0 0 18px 18px;box-shadow:0 6px 18px rgba(20,30,60,.18)}
-h1{font-size:1.55rem;letter-spacing:-.01em;font-weight:700}.sub{color:#C9D3EA;font-size:.9rem;margin-top:5px}
-.banner{display:flex;justify-content:space-between;align-items:center;background:var(--green);color:#fff;border-radius:12px;padding:16px 20px;margin:18px 0;flex-wrap:wrap;gap:8px}
-.banner b{font-size:1.6rem}
-.card{background:#fff;border-radius:12px;box-shadow:0 1px 4px rgba(20,30,60,.08);margin:14px 0;overflow:hidden}
-.cat{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;cursor:pointer;gap:10px}
-.cat:hover{background:var(--light)}.cat .nm{font-weight:600;color:var(--navy)}
-.cat .meta{color:var(--grey);font-size:.82rem}.cat .owed{font-weight:700;color:var(--navy);white-space:nowrap}
-.chev{transition:.2s;color:#999}.open .chev{transform:rotate(90deg)}
-.items{display:none;border-top:1px solid var(--line);overflow-x:auto}.open .items{display:block}
-table{width:100%;border-collapse:collapse;font-size:.84rem}
-th{background:var(--light);color:var(--navy);text-align:left;padding:8px 10px;font-size:.72rem;text-transform:uppercase;letter-spacing:.03em}
-td{padding:8px 10px;border-top:1px solid #EEF0F5;vertical-align:top}
-td.r,th.r{text-align:right;white-space:nowrap}
-.src a{color:var(--navy);font-weight:600;text-decoration:none;border-bottom:1px dashed var(--navy)}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+ background:var(--paper);color:var(--ink);line-height:1.55;font-size:16px;
+ background-image:radial-gradient(1200px 400px at 50% -120px,rgba(34,64,111,.05),transparent);}
+.serif{font-family:'Source Serif 4',Georgia,'Times New Roman',serif}
+.wrap{max-width:1060px;margin:0 auto;padding:0 20px}
+/* ---------- header ---------- */
+header{position:relative;background:linear-gradient(160deg,#0f1f3d 0%,#17305c 55%,#20386b 100%);color:#fff;padding:0;overflow:hidden}
+header::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--gold2),var(--gold))}
+header::after{content:"";position:absolute;right:-80px;top:-80px;width:320px;height:320px;border-radius:50%;
+ background:radial-gradient(circle,rgba(176,135,59,.14),transparent 68%)}
+.hd{display:flex;align-items:center;gap:18px;padding:30px 20px 26px;position:relative;z-index:1}
+.seal{flex:0 0 auto;width:58px;height:58px;border-radius:50%;border:1.5px solid rgba(202,162,90,.6);
+ display:flex;align-items:center;justify-content:center;font-family:'Source Serif 4',serif;font-weight:700;font-size:1.5rem;
+ color:#e7d4a8;background:rgba(255,255,255,.04);letter-spacing:.02em}
+.hd h1{font-family:'Source Serif 4',Georgia,serif;font-weight:700;font-size:1.85rem;letter-spacing:.005em;line-height:1.15}
+.hd .sub{color:#b9c6de;font-size:.9rem;margin-top:5px;font-weight:400}
+.hd .matter{margin-left:auto;text-align:right;font-size:.78rem;color:#9db0d0;line-height:1.5;white-space:nowrap}
+.hd .matter b{color:#e7d4a8;font-weight:600;letter-spacing:.02em}
+.hd .conf{display:inline-block;margin-top:6px;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;
+ color:#d9c49a;border:1px solid rgba(202,162,90,.45);border-radius:20px;padding:3px 10px}
+/* ---------- hero / balance ---------- */
+.hero{background:linear-gradient(135deg,var(--green) 0%,var(--green2) 100%);color:#fff;border-radius:16px;
+ padding:24px 26px;margin:22px 0 6px;box-shadow:0 10px 30px rgba(28,122,70,.22);position:relative;overflow:hidden;
+ display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}
+.hero::after{content:"";position:absolute;right:-40px;bottom:-60px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.06)}
+.hero .lbl{font-size:.72rem;letter-spacing:.13em;text-transform:uppercase;opacity:.92;font-weight:700}
+.hero .note{font-size:.82rem;color:rgba(255,255,255,.92);opacity:1;margin-top:5px;max-width:540px}
+.hero .balrow{font-size:.82rem;opacity:.95;margin-top:7px}
+.hero .right{display:flex;align-items:center;gap:18px;flex-wrap:wrap;position:relative;z-index:1}
+.hero b#bignum{font-family:'Source Serif 4',Georgia,serif;font-size:2.5rem;font-weight:700;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.emailbtn{display:inline-flex;align-items:center;gap:6px;background:#fff;color:var(--green);font-weight:700;
+ border:none;border-radius:11px;padding:12px 18px;text-decoration:none;font-size:.92rem;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.12)}
+.emailbtn:hover{background:#f0fbf4}
+/* ---------- stat strip ---------- */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0 8px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow)}
+.stat .k{font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.stat .v{font-family:'Source Serif 4',Georgia,serif;font-size:1.35rem;font-weight:700;color:var(--navy);margin-top:3px;font-variant-numeric:tabular-nums}
+.stat.g .v{color:var(--green)}.stat.gold .v{color:var(--gold)}
+/* ---------- section headings ---------- */
+h2{font-family:'Source Serif 4',Georgia,serif;color:var(--navy);font-size:1.28rem;font-weight:700;margin:34px 2px 12px;letter-spacing:.005em}
+.subhead{color:var(--muted);font-size:.9rem;margin:-6px 2px 10px}
+.note{color:var(--muted);font-size:.82rem;margin:10px 2px;line-height:1.6}
+/* ---------- category cards ---------- */
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);margin:12px 0;overflow:hidden;transition:box-shadow .18s,transform .18s}
+.card:hover{box-shadow:0 4px 12px rgba(20,30,60,.06),0 14px 34px rgba(20,30,60,.09)}
+.cat{display:flex;justify-content:space-between;align-items:center;padding:18px 22px;cursor:pointer;gap:14px;position:relative}
+.cat::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--navy2);opacity:.85;
+ border-radius:0 4px 4px 0;transform:scaleY(.0);transition:transform .18s;transform-origin:center}
+.card:hover .cat::before,.open .cat::before{transform:scaleY(1)}
+.cat .nm{font-weight:700;color:var(--navy);font-size:1.08rem;letter-spacing:.005em}
+.cat .meta{color:var(--muted);font-size:.8rem;margin-top:3px;font-weight:500}
+.cat .rt{display:flex;align-items:center;gap:16px}
+.cat .owedwrap{text-align:right}
+.cat .owedwrap .ol{font-size:.62rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.cat .owed{font-family:'Source Serif 4',Georgia,serif;font-weight:700;color:var(--navy);white-space:nowrap;font-size:1.32rem;font-variant-numeric:tabular-nums}
+.chev{transition:.22s;color:#b7c0d2;font-size:.9rem}.open .chev{transform:rotate(90deg);color:var(--navy2)}
+.items{display:none;border-top:1px solid var(--line);overflow-x:auto;background:#FBFCFE}.open .items{display:block}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th{background:#F1F4FA;color:var(--navy);text-align:left;padding:10px 12px;font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;font-weight:700;border-bottom:1px solid var(--line)}
+td{padding:10px 12px;border-top:1px solid #EDF0F6;vertical-align:top}
+td.r,th.r{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.src a{color:var(--navy2);font-weight:600;text-decoration:none;border-bottom:1px dashed #a9b6d0}
 .src a:hover{color:var(--green);border-color:var(--green)}
-.badge{display:inline-block;font-size:.7rem;padding:2px 8px;border-radius:10px;background:#E8EDF7;color:var(--navy)}
-.badge.email{background:#FDF3E3;color:#8a6100}.badge.venmo{background:#E7F5EC;color:#20603c}
-.docs{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;padding:16px 18px}
-.doc{border:1px solid var(--line);border-radius:10px;padding:12px 14px;text-decoration:none;color:#222;display:block}
-.doc:hover{border-color:var(--navy);background:var(--light)}.doc b{color:var(--navy);display:block;font-size:.9rem}.doc span{color:var(--grey);font-size:.78rem}
-h2{color:var(--navy);font-size:1.05rem;margin:26px 4px 8px}.note{color:var(--grey);font-size:.8rem;margin:8px 4px}
-.credit td{color:#20603c}footer{color:#8a8fa3;font-size:.75rem;text-align:center;margin-top:34px}
-tr.vgrp td{background:#EAF0FA;color:var(--navy);font-weight:700;font-size:.8rem;padding:7px 10px;border-top:2px solid #cdd8ee}
-tr.vgrp .vmeta{font-weight:600;color:#5a6b8c;font-size:.74rem}
-.emailbtn{display:inline-block;background:#fff;color:var(--navy);font-weight:700;border:2px solid #fff;border-radius:9px;padding:9px 16px;text-decoration:none;font-size:.92rem;cursor:pointer}
-.emailbtn:hover{background:#E8F5EC}
-.dbtn{display:inline-block;font-size:.72rem;color:#9a3324;border:1px solid #e3b7ae;border-radius:8px;padding:1px 8px;text-decoration:none;white-space:nowrap}
-.dbtn:hover{background:#FDEDEA}
-.dstat{display:inline-block;font-size:.72rem;font-weight:700;padding:2px 10px;border-radius:10px}
-.dstat.review{background:#FDF3E3;color:#8a6100}.dstat.accepted{background:#E7F5EC;color:#20603c}.dstat.declined{background:#FDEDEA;color:#9a3324}.dstat.resolved{background:#E8EDF7;color:#1F3864}
-.paid{display:inline-block;font-size:.68rem;font-weight:700;padding:1px 8px;border-radius:10px;background:#E7F5EC;color:#20603c;white-space:nowrap}
+.badge{display:inline-block;font-size:.7rem;padding:2px 9px;border-radius:20px;background:#EAEEF7;color:var(--navy)}
+.badge.email{background:#FBF1E0;color:#8a6100}.badge.venmo{background:#E5F4EB;color:#1c6b3a}
+tr.vgrp td{background:#EEF2FA;color:var(--navy);font-weight:700;font-size:.82rem;padding:9px 12px;border-top:2px solid #d5deee}
+tr.vgrp .vmeta{font-weight:600;color:#6d7c98;font-size:.74rem}
+/* ---------- documents ---------- */
+.docs{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;padding:18px 20px}
+.doc{border:1px solid var(--line);border-radius:12px;padding:14px 16px;text-decoration:none;color:var(--ink);display:block;transition:.15s;background:#FCFDFF}
+.doc:hover{border-color:var(--navy2);background:#F3F6FC;transform:translateY(-1px)}
+.doc b{color:var(--navy);display:block;font-size:.92rem;margin-bottom:2px}.doc span{color:var(--muted);font-size:.78rem}
+/* ---------- credits / paid / disputes ---------- */
+.credit td{color:#1c6b3a}
+footer{color:#8a92a4;font-size:.76rem;text-align:center;margin:40px 0 20px;line-height:1.7}
+footer .rule{height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);margin:0 0 16px}
+.dbtn{display:inline-block;font-size:.72rem;color:#9a3324;border:1px solid #e0b3aa;border-radius:20px;padding:4px 11px;text-decoration:none;white-space:nowrap;cursor:pointer;background:#fff;font-weight:600}
+.dbtn:hover{background:#FDEEEA;border-color:#c98a7d}
+.dstat{display:inline-block;font-size:.72rem;font-weight:700;padding:3px 11px;border-radius:20px}
+.dstat.review{background:#FBF1E0;color:#8a6100}.dstat.accepted{background:#E5F4EB;color:#1c6b3a}.dstat.declined{background:#FDEEEA;color:#9a3324}.dstat.resolved{background:#EAEEF7;color:var(--navy)}
+.paid{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 9px;border-radius:20px;background:#E5F4EB;color:#1c6b3a;white-space:nowrap}
 .balrow{font-size:.82rem;opacity:.92;margin-top:4px}
-.pbitem{border-top:1px solid var(--line);padding:12px 18px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.pbitem .amt{font-weight:700;color:#20603c;white-space:nowrap}
-.howto{padding:16px 18px;font-size:.86rem}
-.howto ol{margin:8px 0 0 20px}.howto li{margin:4px 0}
-.dispitem{border-top:1px solid var(--line);padding:12px 18px}
-.dispitem .q{margin:4px 0;color:#222}.dispitem .a{margin:4px 0;color:var(--navy)}
-.banner{background:linear-gradient(135deg,#217a43,#2e9256);box-shadow:0 4px 14px rgba(33,122,67,.28)}
-.card{box-shadow:0 2px 10px rgba(20,30,60,.07);border:1px solid #EDF0F6}
-.cat{transition:background .15s}.cat .nm{font-size:1.02rem}
-.owed{font-size:1.05rem}
-h2{font-size:1.12rem;font-weight:700}
-/* ---- Submission / upload center ---- */
-.tabs{display:flex;gap:6px;padding:14px 16px 0;flex-wrap:wrap}
-.tab{border:none;background:var(--light);color:var(--navy);font-weight:600;font-size:.9rem;padding:10px 16px;border-radius:10px 10px 0 0;cursor:pointer}
-.tab.on{background:var(--navy);color:#fff}
-.form{padding:16px 18px}
-.form label{display:block;font-weight:600;color:var(--navy);font-size:.86rem;margin:12px 0 5px}
-.form input,.form select,.form textarea{width:100%;font:inherit;font-size:1rem;padding:12px 13px;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:#222}
-.form input:focus,.form select:focus,.form textarea:focus{outline:none;border-color:var(--navy2);box-shadow:0 0 0 3px rgba(40,69,124,.12)}
+.pbitem{border-top:1px solid var(--line);padding:14px 20px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.pbitem .amt{font-weight:700;color:#1c6b3a;white-space:nowrap;font-variant-numeric:tabular-nums}
+.howto{padding:18px 20px;font-size:.88rem;line-height:1.65}
+.howto ol{margin:8px 0 0 20px}.howto li{margin:6px 0}
+.dispitem{border-top:1px solid var(--line);padding:14px 20px}
+.dispitem .q{margin:4px 0;color:var(--ink)}.dispitem .a{margin:4px 0;color:var(--navy)}
+/* ---------- forms ---------- */
+.tabs{display:flex;gap:6px;padding:16px 18px 0;flex-wrap:wrap}
+.tab{border:1px solid var(--line);border-bottom:none;background:#F3F5FA;color:var(--navy);font-weight:600;font-size:.9rem;padding:11px 17px;border-radius:11px 11px 0 0;cursor:pointer}
+.tab.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.form{padding:18px 20px}
+.form label{display:block;font-weight:600;color:var(--navy);font-size:.84rem;margin:13px 0 5px}
+.form input,.form select,.form textarea{width:100%;font:inherit;font-size:1rem;padding:12px 14px;border:1.5px solid var(--line);border-radius:11px;background:#fff;color:var(--ink)}
+.form input:focus,.form select:focus,.form textarea:focus{outline:none;border-color:var(--navy2);box-shadow:0 0 0 3px rgba(34,64,111,.12)}
 .form textarea{min-height:96px;resize:vertical}
-.filewrap{border:2px dashed #c3ccdd;border-radius:12px;padding:16px;text-align:center;background:#FAFBFE;cursor:pointer;transition:.15s}
+.filewrap{border:2px dashed #c3ccdd;border-radius:12px;padding:18px;text-align:center;background:#FAFBFE;cursor:pointer;transition:.15s}
 .filewrap:hover,.filewrap.drag{border-color:var(--navy2);background:#F1F5FD}
-.filewrap .fi{color:var(--navy);font-weight:600;font-size:.92rem}.filewrap .fs{color:var(--grey);font-size:.78rem;margin-top:3px}
+.filewrap .fi{color:var(--navy);font-weight:600;font-size:.92rem}.filewrap .fs{color:var(--muted);font-size:.78rem;margin-top:3px}
 .subbtn{width:100%;margin-top:16px;background:var(--navy);color:#fff;border:none;border-radius:11px;padding:15px;font-size:1.02rem;font-weight:700;cursor:pointer;transition:.15s}
 .subbtn:hover{background:var(--navy2)}.subbtn:disabled{opacity:.6;cursor:default}
 .formmsg{margin-top:12px;padding:12px 14px;border-radius:10px;font-size:.9rem;display:none}
-.formmsg.ok{display:block;background:#E7F5EC;color:#1c6b3a}.formmsg.err{display:block;background:#FDEDEA;color:#9a3324}
-.setupnote{padding:16px 18px;font-size:.9rem;color:var(--grey);background:#FDF9EF;border-radius:10px;margin:14px}
-/* ---- sticky mobile balance ---- */
+.formmsg.ok{display:block;background:#E5F4EB;color:#1c6b3a}.formmsg.err{display:block;background:#FDEEEA;color:#9a3324}
+.setupnote{padding:16px 18px;font-size:.9rem;color:var(--muted);background:#FBF6EC;border-radius:11px;margin:14px}
+/* ---------- additional (gold) ---------- */
+.addcard .cat::before{background:var(--gold)}
+.goldbanner{background:linear-gradient(135deg,#7a5c22,#9a7b3f);color:#fff;border-radius:14px;padding:20px 24px;margin:14px 0;
+ display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;box-shadow:0 8px 24px rgba(122,92,34,.2)}
+.goldbanner .lbl{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700}
+.goldbanner b{font-family:'Source Serif 4',Georgia,serif;font-size:1.7rem;font-weight:700;font-variant-numeric:tabular-nums}
+.courtbox{border-left:4px solid var(--navy);background:#F6F8FC;border-radius:0 12px 12px 0;padding:16px 20px;font-size:.92rem;line-height:1.6;margin:12px 0}
+/* ---------- sticky mobile bar ---------- */
 #mbar{display:none}
-/* ---- mobile ---- */
-@media(max-width:660px){
+/* ---------- mobile ---------- */
+@media(max-width:680px){
  body{font-size:16px}
- .wrap{padding:14px 11px 80px}
- header{padding:20px 14px 24px}h1{font-size:1.3rem}.sub{font-size:.82rem}
- .banner{padding:16px}.banner b{font-size:1.7rem}
- .banner .emailbtn{width:100%;text-align:center;padding:12px}
- .cat{padding:15px 15px}.cat .nm{font-size:1.05rem}.cat .meta{font-size:.8rem}
- .owed{font-size:1.1rem}
- /* stacked cards instead of wide tables */
+ .wrap{padding:0 13px}
+ .hd{flex-wrap:wrap;padding:22px 14px 20px;gap:14px}.hd h1{font-size:1.42rem}.hd .sub{font-size:.82rem}
+ .seal{width:48px;height:48px;font-size:1.25rem}
+ .hd .matter{margin-left:0;text-align:left;width:100%;white-space:normal;order:3}
+ .hero{padding:20px;margin:16px 0 6px}.hero b#bignum{font-size:2.1rem}.hero .emailbtn{width:100%;justify-content:center}
+ .hero .right{width:100%}
+ .stats{grid-template-columns:1fr 1fr;gap:9px}
+ .stat .v{font-size:1.18rem}
+ h2{font-size:1.15rem;margin:26px 2px 10px}
+ .cat{padding:16px 16px 16px 18px}.cat .nm{font-size:1.05rem}.cat .owed{font-size:1.2rem}
  .items table,.items thead,.items tbody,.items tr,.items td{display:block;width:100%}
- .items thead{position:absolute;left:-9999px}
- .items{overflow-x:visible}
- .items tbody tr:not(.vgrp){border-top:1px solid #EAEDF4;padding:10px 4px 12px}
- .items td{border:none;padding:4px 14px;display:flex;justify-content:space-between;align-items:baseline;gap:14px;text-align:right}
- .items td::before{content:attr(data-label);font-weight:600;color:var(--grey);font-size:.78rem;text-align:left;flex:0 0 auto}
+ .items thead{position:absolute;left:-9999px}.items{overflow-x:visible}
+ .items tbody tr:not(.vgrp){border-top:1px solid #E7EBF3;padding:10px 4px 12px}
+ .items td{border:none;padding:4px 16px;display:flex;justify-content:space-between;align-items:baseline;gap:14px;text-align:right}
+ .items td::before{content:attr(data-label);font-weight:600;color:var(--muted);font-size:.76rem;text-align:left;flex:0 0 auto}
  .items td[data-label=""]{justify-content:flex-end}.items td[data-label=""]::before{content:""}
  .items td.desc{text-align:left}.items td.desc::before{display:block;margin-bottom:2px}
- tr.vgrp{margin-top:2px}tr.vgrp td{display:block;background:#E8EEF9;padding:9px 14px}
- tr.vgrp td:not(:first-child){display:none}
- tr.vgrp td:first-child::after{content:"";}
- .dbtn,.emailbtn{font-size:.82rem;padding:8px 12px}
+ tr.vgrp td{display:block;background:#EBF0F8;padding:10px 16px}tr.vgrp td:not(:first-child){display:none}
  .actcell{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end}
- .tab{flex:1;text-align:center;padding:11px 8px;font-size:.86rem}
- /* sticky mini balance bar */
+ .tab{flex:1;text-align:center;padding:11px 6px;font-size:.84rem}
+ .docs{grid-template-columns:1fr}
  #mbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:50;justify-content:space-between;align-items:center;
-   background:var(--navy);color:#fff;padding:11px 16px;box-shadow:0 -3px 12px rgba(0,0,0,.2)}
- #mbar .l{font-size:.72rem;opacity:.85;text-transform:uppercase;letter-spacing:.04em}
- #mbar .v{font-size:1.15rem;font-weight:700}
- #mbar a{background:#fff;color:var(--navy);font-weight:700;border-radius:9px;padding:9px 14px;text-decoration:none;font-size:.85rem}
+  background:var(--navy);color:#fff;padding:11px 16px;box-shadow:0 -3px 14px rgba(0,0,0,.22);border-top:2px solid var(--gold)}
+ #mbar .l{font-size:.66rem;opacity:.8;text-transform:uppercase;letter-spacing:.06em}
+ #mbar .v{font-family:'Source Serif 4',serif;font-size:1.18rem;font-weight:700}
+ #mbar a{background:var(--gold);color:#fff;font-weight:700;border-radius:9px;padding:9px 14px;text-decoration:none;font-size:.85rem}
 }
-@media(max-width:660px){.docs{grid-template-columns:1fr}}
 </style></head><body>
-<header><div class="wrap"><h1>Expense Reimbursement &mdash; Pearson</h1>
-<div class="sub">Shared household &amp; child-related expenses &middot; 8792 W Fairway Dr &middot; Aug 2024 &ndash; Jul 2026 &middot; Updated __UPDATED__</div></div></header>
+<header><div class="wrap hd">
+ <div class="seal">P</div>
+ <div><h1>Expense Reimbursement</h1>
+ <div class="sub">Shared household &amp; child-related expenses &middot; 8792 W Fairway Dr, Baton Rouge &middot; Aug 2024 – Jul 2026</div></div>
+ <div class="matter"><b>Pearson v. Pearson</b><br>No. 236951 · Family Court, EBR Parish<br>Updated __UPDATED__<br><span class="conf">Confidential · For Settlement</span></div>
+</div></header>
 <div id="mbar"><div><div class="l" id="mbarlbl">Net due to Ned</div><div class="v" id="mbarval">$__NET__</div></div><a href="#submit">Upload / Dispute</a></div>
 <div class="wrap">
-<div class="banner"><div><span id="bannerlbl">NET AMOUNT DUE TO NED</span><br><span style="font-size:.78rem;opacity:.85">__CREDITNOTE__</span><div class="balrow" id="balrow" style="display:none"></div></div><div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap"><b id="bignum">$__NET__</b><a id="emailbtn" class="emailbtn" href="#">&#9993;&nbsp;Email this out</a></div></div>
-<h2>Categories &mdash; tap any row to see every charge, then tap a source to open the actual bill</h2>
+<div class="hero"><div><div class="lbl" id="bannerlbl">Net Amount Due to Ned</div><div class="note" id="crednote">__CREDITNOTE__</div><div class="balrow" id="balrow" style="display:none"></div></div><div class="right"><b id="bignum">$__NET__</b><a id="emailbtn" class="emailbtn" href="#">&#9993;&nbsp;Email this out</a></div></div>
+<div class="stats" id="statstrip"></div>
+<h2>Expense Categories</h2>
+<div class="subhead">Tap any category to see every charge — each line links to the actual bill or a source record.</div>
 <div id="cats"></div>
 
 <div class="note"><b>Note on child support:</b> separate from everything on this page, Ned paid the court-ordered child support (Consent Judgment of Jan 12, 2025; guideline worksheet: $1,011.95/month) through May 1, 2026, via lump-sum check — worksheet and judgment on file. Child support is not part of this reimbursement claim and is not credited against it. Likewise, direct support Ned provided to his son Eli during this period (approximately $7,700 — fuel, food, and school needs) is not claimed and does not appear as line items.</div>
@@ -209,20 +267,29 @@ const wrap=document.getElementById('cats');
 D.cats.forEach(c=>{const items=D.items.filter(i=>i.cat===c.name);
  var nv=new Set(items.map(i=>i.v)).size;
  const card=document.createElement('div');card.className='card';
- card.innerHTML='<div class="cat"><div><div class="nm">'+c.name+'</div><div class="meta">'+c.n+' charge'+(c.n>1?'s':'')+' · '+nv+' vendor'+(nv>1?'s':'')+' · billed '+money(c.billed)+' · her share: '+c.basis+'</div></div><div style="display:flex;align-items:center;gap:12px"><div class="owed">'+money(c.owed)+'</div><div class="chev">▶</div></div></div><div class="items"><table><thead><tr><th>Date</th><th>Vendor</th><th>Description</th><th class="r">Bill amount</th><th class="r">Her share</th><th>Source of truth</th><th></th></tr></thead><tbody>'+groupedRows(items)+'</tbody></table></div>';
+ card.innerHTML='<div class="cat"><div><div class="nm">'+c.name+'</div><div class="meta">'+c.n+' charge'+(c.n>1?'s':'')+' · '+nv+' vendor'+(nv>1?'s':'')+' · billed '+money(c.billed)+' · her share '+c.basis+'</div></div><div class="rt"><div class="owedwrap"><div class="ol">Lindsey owes</div><div class="owed">'+money(c.owed)+'</div></div><div class="chev">▶</div></div></div><div class="items"><table><thead><tr><th>Date</th><th>Vendor</th><th>Description</th><th class="r">Bill amount</th><th class="r">Her share</th><th>Source of truth</th><th></th></tr></thead><tbody>'+groupedRows(items)+'</tbody></table></div>';
  card.querySelector('.cat').onclick=()=>card.classList.toggle('open');wrap.appendChild(card);});
 
-
 const ADD=__ADDITIONAL__;
+// ---- executive stat strip ----
+(function(){
+ var billed=D.cats.reduce((t,c)=>t+c.billed,0);
+ var add=(ADD&&ADD.grand_total)?ADD.grand_total:0;
+ var exh=new Set();(D.items||[]).forEach(function(i){if(i.src&&i.src.t==='exh')exh.add(i.src.exh);});
+ var cells=[['Total billed',money(billed),''],['Lindsey’s share (net)',money(D.net),'g'],
+   ['Voluntary support',add?money(add):'—','gold'],['Documented exhibits',String(exh.size||(D.items||[]).length),'']];
+ document.getElementById('statstrip').innerHTML=cells.map(function(c){
+   return '<div class="stat '+c[2]+'"><div class="k">'+c[0]+'</div><div class="v">'+c[1]+'</div></div>';}).join('');
+})();
 if(ADD&&ADD.sections){
  if(ADD.title) document.getElementById('addl-h').textContent=ADD.title;
  document.getElementById('addl-h').insertAdjacentHTML('afterend','<div class="note" style="margin-top:-2px">'+ADD.subtitle+'</div>');
  const aw=document.getElementById('addl');
- ADD.sections.forEach(sec=>{const card=document.createElement('div');card.className='card';
-  card.innerHTML='<div class="cat" style="border-left:5px solid #B07A00"><div><div class="nm">'+sec.name+'</div><div class="meta">'+sec.items.length+' payments · '+sec.basis+'</div></div><div style="display:flex;align-items:center;gap:12px"><div class="owed">'+money(sec.total)+'</div><div class="chev">▶</div></div></div><div class="items"><table><thead><tr><th>Date</th><th>Detail</th><th class="r">Amount paid</th></tr></thead><tbody>'+sec.items.map(i=>'<tr><td>'+i.d+'</td><td>'+i.desc+'</td><td class="r"><b>'+money(i.a)+'</b></td></tr>').join('')+'</tbody></table></div>';
+ ADD.sections.forEach(sec=>{const card=document.createElement('div');card.className='card addcard';
+  card.innerHTML='<div class="cat"><div><div class="nm">'+sec.name+'</div><div class="meta">'+sec.items.length+' payments · '+sec.basis+'</div></div><div class="rt"><div class="owedwrap"><div class="ol">Ned paid</div><div class="owed">'+money(sec.total)+'</div></div><div class="chev">▶</div></div></div><div class="items"><table><thead><tr><th>Date</th><th>Detail</th><th class="r">Amount paid</th></tr></thead><tbody>'+sec.items.map(i=>'<tr><td data-label="Date">'+i.d+'</td><td class="desc" data-label="Detail">'+i.desc+'</td><td class="r" data-label="Amount"><b>'+money(i.a)+'</b></td></tr>').join('')+'</tbody></table></div>';
   card.querySelector('.cat').onclick=()=>card.classList.toggle('open');aw.appendChild(card);});
- aw.insertAdjacentHTML('beforeend','<div class="banner" style="background:#8a6100"><div>'+(ADD.grand_label||'TOTAL VOLUNTARY SUPPORT PROVIDED')+' (separate from the amount above)<br><span style="font-size:.78rem;opacity:.85">'+ADD.alt+'</span></div><b>'+money(ADD.grand_total)+'</b></div>');
- if(ADD.statement) aw.insertAdjacentHTML('beforeend','<div class="card" style="border-left:5px solid var(--navy)"><div style="padding:14px 18px;font-size:.9rem;color:#333"><b style="color:var(--navy)">Statement for the court.</b> '+ADD.statement+'</div></div>');
+ aw.insertAdjacentHTML('beforeend','<div class="goldbanner"><div><div class="lbl">'+(ADD.grand_label||'TOTAL VOLUNTARY SUPPORT PROVIDED')+'</div><div style="font-size:.8rem;opacity:.9;margin-top:4px">Separate from the amount above · '+ADD.alt+'</div></div><b>'+money(ADD.grand_total)+'</b></div>');
+ if(ADD.statement) aw.insertAdjacentHTML('beforeend','<div class="courtbox"><b style="color:var(--navy)">Statement for the court.</b> '+ADD.statement+'</div>');
  aw.insertAdjacentHTML('beforeend','<div class="note">Full detail &amp; chart: <a href="'+ADD.doc+'" target="_blank">Voluntary Support Provided (Vehicle &amp; Insurance)</a>. Underlying GM Financial / GEICO / health-plan statements available on request.</div>');
 }
 
