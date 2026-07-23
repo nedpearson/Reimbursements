@@ -213,7 +213,8 @@ def build(bills_folder=None, progress=print):
     settled['paid_total']=round(sum(i['h'] for i in items if i['id'] in paidset),2)
     settled['paid_count']=sum(1 for i in items if i['id'] in paidset)
     settled['item_count']=len(items)
-    html=tpl.replace('__DATA__',json.dumps(data,separators=(',',':'))).replace('__ADDITIONAL__',json.dumps(addl,separators=(',',':'))).replace('__DISPUTES__',json.dumps(disputes,separators=(',',':'))).replace('__PAIDBACK__',json.dumps(paidback,separators=(',',':'))).replace('__SETTLED__',json.dumps(settled,separators=(',',':'))).replace('__NET__',format(data['net'],',.2f')).replace('__CREDITS__',format(data['credit_total'],',.2f')).replace('__UPDATED__',data['updated'])
+    w3fkey=str(cfg.get('web3forms_key','') or '')
+    html=tpl.replace('__DATA__',json.dumps(data,separators=(',',':'))).replace('__ADDITIONAL__',json.dumps(addl,separators=(',',':'))).replace('__DISPUTES__',json.dumps(disputes,separators=(',',':'))).replace('__PAIDBACK__',json.dumps(paidback,separators=(',',':'))).replace('__SETTLED__',json.dumps(settled,separators=(',',':'))).replace('__W3FKEY__',w3fkey).replace('__NET__',format(data['net'],',.2f')).replace('__CREDITS__',format(data['credit_total'],',.2f')).replace('__UPDATED__',data['updated'])
     from safewrite import write_text, copy_file
     # .nojekyll: serve the docs/ folder exactly as-is (skip GitHub's Jekyll build,
     # which can fail on large sites and take the whole page down with a 404).

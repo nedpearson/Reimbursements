@@ -12,7 +12,7 @@ HERE=os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0,HERE)
 CFG_PATH=os.path.join(HERE,'config.json')
 OUTDIR=os.path.join(HERE,'output')
-NAVY='#1F3864'; GREEN='#2E7D32'; BG='#F4F6FB'
+NAVY='#1B2E52'; NAVY2='#28457c'; GREEN='#217a43'; BG='#EDF0F6'; CARD='#FFFFFF'; LINE='#DBE0EC'; MUTED='#5b6472'; GOLD='#8a6100'; RED='#9a3324'
 
 def load_cfg(): return json.load(open(CFG_PATH))
 def save_cfg(c):
@@ -29,19 +29,53 @@ class App(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Reimbursement Manager"); self.configure(bg=BG)
-        self.geometry("860x700"); self.minsize(780,620)
+        self.geometry("960x760"); self.minsize(860,660)
         try: self.iconbitmap(os.path.join(HERE,'assets','icon.ico'))
         except Exception: pass
+        self._setup_style()
         self.cfg=load_cfg(); self.q=queue.Queue(); self.result=None
         self._build(); self.after(120,self._drain)
 
+    def _setup_style(self):
+        st=ttk.Style(self)
+        try: st.theme_use('clam')
+        except Exception: pass
+        st.configure('.',font=('Segoe UI',10))
+        st.configure('TNotebook',background=BG,borderwidth=0,tabmargins=(10,8,10,0))
+        st.configure('TNotebook.Tab',font=('Segoe UI',10,'bold'),padding=(18,9),
+                     background='#DDE3EF',foreground=NAVY,borderwidth=0)
+        st.map('TNotebook.Tab',background=[('selected',CARD)],foreground=[('selected',NAVY)],
+               expand=[('selected',(0,0,0,0))])
+        st.configure('Treeview',font=('Segoe UI',9),rowheight=24,fieldbackground=CARD,background=CARD)
+        st.configure('Treeview.Heading',font=('Segoe UI',9,'bold'),background=NAVY,foreground='white')
+        st.map('Treeview.Heading',background=[('active',NAVY2)])
+        st.configure('TScrollbar',background='#C7CFDE',troughcolor=BG,borderwidth=0,arrowcolor=NAVY)
+
+    def _btn(self,parent,text,cmd,kind='ghost',**kw):
+        colors={'primary':(NAVY,'white'),'go':(GREEN,'white'),'accent':(NAVY2,'white'),
+                'gold':(GOLD,'white'),'ghost':('#E7ECF6',NAVY)}
+        bg,fg=colors.get(kind,colors['ghost'])
+        b=tk.Button(parent,text=text,command=cmd,bg=bg,fg=fg,activebackground=bg,activeforeground=fg,
+                    relief='flat',bd=0,font=('Segoe UI',10,'bold'),cursor='hand2',
+                    padx=kw.pop('padx',14),pady=kw.pop('pady',7),**kw)
+        return b
+
     # ---------- UI ----------
     def _build(self):
-        hdr=tk.Frame(self,bg=NAVY); hdr.pack(fill='x')
-        tk.Label(hdr,text="Reimbursement Manager",bg=NAVY,fg='white',
-                 font=('Segoe UI',18,'bold')).pack(anchor='w',padx=18,pady=(12,0))
-        tk.Label(hdr,text="Import bills → categorize → generate documents for Lindsey",
-                 bg=NAVY,fg='#C9D3EA',font=('Segoe UI',10)).pack(anchor='w',padx=18,pady=(0,12))
+        # gradient header (canvas) for a polished, professional look
+        H=78; hdr=tk.Canvas(self,height=H,highlightthickness=0,bd=0); hdr.pack(fill='x')
+        def _grad(ev=None):
+            hdr.delete('g'); w=hdr.winfo_width() or 960
+            c1=(27,46,82); c2=(41,75,133)
+            for x in range(0,w+1):
+                t=x/max(1,w); r=int(c1[0]+(c2[0]-c1[0])*t); g=int(c1[1]+(c2[1]-c1[1])*t); b=int(c1[2]+(c2[2]-c1[2])*t)
+                hdr.create_line(x,0,x,H,fill='#%02x%02x%02x'%(r,g,b),width=1,tags='g')
+            hdr.create_text(20,20,text="Reimbursement Manager",anchor='w',fill='white',font=('Segoe UI',19,'bold'),tags='g')
+            hdr.create_text(21,50,text="Import bills  →  categorize  →  generate & publish the shared reimbursement record",
+                            anchor='w',fill='#C9D3EA',font=('Segoe UI',10),tags='g')
+            hdr.create_text(w-18,26,text="Pearson v. Pearson",anchor='e',fill='#9db0d4',font=('Segoe UI',10,'bold'),tags='g')
+            hdr.create_text(w-18,46,text="No. 236951 · EBR Parish",anchor='e',fill='#7f93bd',font=('Segoe UI',8),tags='g')
+        hdr.bind('<Configure>',_grad); self.after(60,_grad)
         nb=ttk.Notebook(self); nb.pack(fill='both',expand=True,padx=12,pady=10)
         self.tab_run=tk.Frame(nb,bg=BG); self.tab_add=tk.Frame(nb,bg=BG)
         self.tab_set=tk.Frame(nb,bg=BG)
@@ -54,31 +88,53 @@ class App(tk.Tk):
         nb.add(self.tab_set,text='  Settings  ')
         self._build_run(); self._build_amounts(); self._build_paid(); self._build_add(); self._build_settings()
 
+    def _card(self,parent,**kw):
+        c=tk.Frame(parent,bg=CARD,highlightbackground=LINE,highlightthickness=1,bd=0)
+        c.pack(fill='x',padx=16,pady=(10,0),**kw); return c
     def _build_run(self):
         f=self.tab_run
-        tk.Label(f,text="Bills folder",bg=BG,fg=NAVY,font=('Segoe UI',11,'bold')).pack(anchor='w',padx=14,pady=(12,2))
-        fr=tk.Frame(f,bg=BG); fr.pack(fill='x',padx=14)
+        # --- stat dashboard ---
+        dash=tk.Frame(f,bg=BG); dash.pack(fill='x',padx=12,pady=(14,2))
+        self.stat=[]
+        for i,(lab,col) in enumerate([('LINDSEY OWES (NET)',GREEN),('LINE ITEMS',NAVY),('CATEGORIES',NAVY2)]):
+            card=tk.Frame(dash,bg=CARD,highlightbackground=LINE,highlightthickness=1)
+            card.grid(row=0,column=i,sticky='ew',padx=(0 if i==0 else 8,0))
+            dash.columnconfigure(i,weight=1)
+            tk.Label(card,text=lab,bg=CARD,fg=MUTED,font=('Segoe UI',8,'bold')).pack(anchor='w',padx=14,pady=(11,0))
+            v=tk.Label(card,text='—',bg=CARD,fg=col,font=('Segoe UI',19,'bold')); v.pack(anchor='w',padx=14,pady=(0,11))
+            self.stat.append(v)
+        # --- folder + actions ---
+        card=self._card(f)
+        tk.Label(card,text="BILLS FOLDER",bg=CARD,fg=MUTED,font=('Segoe UI',8,'bold')).pack(anchor='w',padx=14,pady=(11,3))
+        fr=tk.Frame(card,bg=CARD); fr.pack(fill='x',padx=14,pady=(0,12))
         self.folder=tk.StringVar(value=self.cfg.get('last_folder') or '')
-        tk.Entry(fr,textvariable=self.folder,font=('Segoe UI',10)).pack(side='left',fill='x',expand=True)
-        tk.Button(fr,text="Browse…",command=self._browse).pack(side='left',padx=6)
-        act=tk.Frame(f,bg=BG); act.pack(fill='x',padx=14,pady=12)
-        self.gen_btn=tk.Button(act,text="⚙  Generate All Documents",bg=GREEN,fg='white',
-                 font=('Segoe UI',12,'bold'),relief='flat',padx=18,pady=8,command=self._run)
-        self.gen_btn.pack(side='left')
-        tk.Button(act,text="✉  Email Full Packet",bg=NAVY,fg='white',
-                 font=('Segoe UI',12,'bold'),relief='flat',padx=18,pady=8,
-                 command=self._email_packet).pack(side='left',padx=(10,0))
+        tk.Entry(fr,textvariable=self.folder,font=('Segoe UI',10),relief='solid',bd=1).pack(side='left',fill='x',expand=True,ipady=4)
+        self._btn(fr,"Browse…",self._browse,'ghost').pack(side='left',padx=(8,0))
+        act=tk.Frame(f,bg=BG); act.pack(fill='x',padx=16,pady=14)
+        self.gen_btn=self._btn(act,"⚙  Generate All Documents",self._run,'go',padx=20,pady=10)
+        self.gen_btn.configure(font=('Segoe UI',12,'bold')); self.gen_btn.pack(side='left')
+        b2=self._btn(act,"✉  Email Full Packet",self._email_packet,'primary',padx=20,pady=10)
+        b2.configure(font=('Segoe UI',12,'bold')); b2.pack(side='left',padx=(10,0))
+        b3=self._btn(act,"🌐  Publish to Web",self._publish,'accent',padx=20,pady=10)
+        b3.configure(font=('Segoe UI',12,'bold')); b3.pack(side='left',padx=(10,0))
         self.net_lbl=tk.Label(act,text="",bg=BG,fg=GREEN,font=('Segoe UI',15,'bold')); self.net_lbl.pack(side='left',padx=16)
-        ob=tk.Frame(f,bg=BG); ob.pack(fill='x',padx=14)
+        ob=tk.Frame(f,bg=BG); ob.pack(fill='x',padx=16)
         self.buttons={}
-        for key,label in [('xlsx','Open Workbook'),('pdf','Open Statement'),('cover','Open Cover Letter'),
-                          ('proof','Open Proof Pack'),('print','Open PRINT Package'),('out','Open Output Folder')]:
-            b=tk.Button(ob,text=label,state='disabled',
-                        command=(lambda k=key: open_path(OUTDIR) if k=='out' else open_path(self._f(k))))
-            b.pack(side='left',padx=(0,7)); self.buttons[key]=b
-        tk.Label(f,text="Progress",bg=BG,fg=NAVY,font=('Segoe UI',10,'bold')).pack(anchor='w',padx=14,pady=(10,0))
-        self.log=tk.Text(f,height=14,font=('Consolas',9),bg='white',relief='solid',bd=1)
-        self.log.pack(fill='both',expand=True,padx=14,pady=(2,12))
+        for key,label in [('xlsx','Workbook'),('pdf','Statement'),('cover','Cover Letter'),
+                          ('proof','Proof Pack'),('print','PRINT Package'),('out','Output Folder')]:
+            b=self._btn(ob,label,(lambda k=key: open_path(OUTDIR) if k=='out' else open_path(self._f(k))),'ghost',padx=11,pady=6)
+            b.configure(state='disabled',font=('Segoe UI',9,'bold')); b.pack(side='left',padx=(0,7)); self.buttons[key]=b
+        tk.Label(f,text="PROGRESS",bg=BG,fg=MUTED,font=('Segoe UI',8,'bold')).pack(anchor='w',padx=16,pady=(12,2))
+        lf=tk.Frame(f,bg=CARD,highlightbackground=LINE,highlightthickness=1); lf.pack(fill='both',expand=True,padx=16,pady=(0,14))
+        self.log=tk.Text(lf,height=12,font=('Consolas',9),bg=CARD,relief='flat',bd=0,fg='#2b3444',padx=10,pady=8)
+        self.log.pack(fill='both',expand=True)
+    def _publish(self):
+        p=os.path.join(HERE,'Publish to Web.bat')
+        if sys.platform.startswith('win') and os.path.exists(p):
+            try: os.startfile(p)
+            except Exception as e: messagebox.showerror("Publish",str(e))
+        else:
+            messagebox.showinfo("Publish","Run 'Publish to Web.bat' in the program folder to update the shared link.")
 
     # ---------- Edit Amounts tab ----------
     def _build_amounts(self):
@@ -226,9 +282,17 @@ class App(tk.Tk):
         cf=tk.Frame(f,bg=BG); cf.grid(row=rr+1,column=0,columnspan=2,sticky='w',padx=14,pady=2)
         tk.Label(cf,text="Only count bills on/after:",bg=BG,font=('Segoe UI',10)).pack(side='left')
         self.cutoff=tk.StringVar(value=self.cfg.get('date_cutoff') or '')
-        tk.Entry(cf,textvariable=self.cutoff,width=12,font=('Segoe UI',10)).pack(side='left',padx=6)
-        tk.Button(f,text="Save Settings",bg=NAVY,fg='white',relief='flat',padx=12,pady=5,
-                  font=('Segoe UI',10,'bold'),command=self._save_settings).grid(row=rr+2,column=0,sticky='w',padx=14,pady=12)
+        tk.Entry(cf,textvariable=self.cutoff,width=12,font=('Segoe UI',10),relief='solid',bd=1).pack(side='left',padx=6)
+        # Web3Forms key — enables on-page uploads on the portal
+        wf=tk.Frame(f,bg=CARD,highlightbackground=LINE,highlightthickness=1)
+        wf.grid(row=rr+2,column=0,columnspan=4,sticky='ew',padx=14,pady=(12,4))
+        f.columnconfigure(0,weight=1); f.columnconfigure(1,weight=1)
+        tk.Label(wf,text="ON-PAGE UPLOADS (Web3Forms key)",bg=CARD,fg=MUTED,font=('Segoe UI',8,'bold')).pack(anchor='w',padx=12,pady=(10,2))
+        tk.Label(wf,text="Lets both parties upload files right on the shared page. Get a free key at web3forms.com (enter your email), paste it here, Save, then Publish.",
+                 bg=CARD,fg=MUTED,font=('Segoe UI',9),wraplength=820,justify='left').pack(anchor='w',padx=12)
+        self.w3f=tk.StringVar(value=self.cfg.get('web3forms_key') or '')
+        tk.Entry(wf,textvariable=self.w3f,font=('Consolas',10),relief='solid',bd=1).pack(fill='x',padx=12,pady=(6,12),ipady=4)
+        self._btn(f,"💾  Save Settings",self._save_settings,'primary',padx=16,pady=8).grid(row=rr+3,column=0,sticky='w',padx=14,pady=14)
 
     # ---------- actions ----------
     def _f(self,k): return (self.result or {}).get(k)
@@ -366,7 +430,8 @@ class App(tk.Tk):
             except ValueError: pass
         c['subtract_payments_to_lindsey']=bool(self.sub_credits.get())
         c['date_cutoff']=self.cutoff.get().strip() or None
-        save_cfg(c); messagebox.showinfo("Saved","Settings saved. Re-run Generate to apply.")
+        if hasattr(self,'w3f'): c['web3forms_key']=self.w3f.get().strip()
+        save_cfg(c); messagebox.showinfo("Saved","Settings saved. Re-run Generate, then Publish to apply on the shared page.")
     def _add_expense(self):
         try:
             amt=float(self.add_vars['Amount ($)'].get())
@@ -424,7 +489,14 @@ class App(tk.Tk):
                     self._log("ERROR:\n"+payload); self.gen_btn.config(state='normal',text="⚙  Generate All Documents")
                 elif kind=='done':
                     self.result=payload['files']; self._log("Finished.")
-                    self.net_lbl.config(text="Lindsey owes:  ${:,.2f}".format(payload['net']))
+                    self.net_lbl.config(text="")
+                    try:
+                        rows=payload.get('rows') or []
+                        n=sum(1 for r in rows if r.get('include') and r.get('her_share'))
+                        cats=len({r['category'] for r in rows if r.get('include') and r.get('her_share')})
+                        self.stat[0].config(text="${:,.2f}".format(payload['net']))
+                        self.stat[1].config(text=str(n)); self.stat[2].config(text=str(cats))
+                    except Exception: pass
                     self.gen_btn.config(state='normal',text="⚙  Generate All Documents")
                     for k,b in self.buttons.items():
                         b.config(state='normal' if (k=='out' or self._f(k)) else 'disabled')

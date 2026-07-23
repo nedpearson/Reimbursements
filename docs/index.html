@@ -2,11 +2,13 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow"><title>Pearson Expense Reimbursement</title>
 <style>
-:root{--navy:#1F3864;--green:#2E7D32;--grey:#606060;--light:#F4F6FB;--line:#D9D9E3}
-*{box-sizing:border-box;margin:0}body{font-family:'Segoe UI',system-ui,sans-serif;background:#EEF1F7;color:#222;line-height:1.45}
-.wrap{max-width:980px;margin:0 auto;padding:22px 16px 60px}
-header{background:var(--navy);color:#fff;padding:26px 16px;border-radius:0 0 14px 14px}
-h1{font-size:1.5rem}.sub{color:#C9D3EA;font-size:.9rem;margin-top:4px}
+:root{--navy:#1B2E52;--navy2:#28457c;--green:#217a43;--grey:#5b6472;--light:#F4F6FB;--line:#E2E6EF;--gold:#8a6100}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;background:#EDF0F6;color:#232a36;line-height:1.5;font-size:16px}
+.wrap{max-width:1000px;margin:0 auto;padding:20px 16px 70px}
+header{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;padding:26px 16px 30px;border-radius:0 0 18px 18px;box-shadow:0 6px 18px rgba(20,30,60,.18)}
+h1{font-size:1.55rem;letter-spacing:-.01em;font-weight:700}.sub{color:#C9D3EA;font-size:.9rem;margin-top:5px}
 .banner{display:flex;justify-content:space-between;align-items:center;background:var(--green);color:#fff;border-radius:12px;padding:16px 20px;margin:18px 0;flex-wrap:wrap;gap:8px}
 .banner b{font-size:1.6rem}
 .card{background:#fff;border-radius:12px;box-shadow:0 1px 4px rgba(20,30,60,.08);margin:14px 0;overflow:hidden}
@@ -44,9 +46,66 @@ tr.vgrp .vmeta{font-weight:600;color:#5a6b8c;font-size:.74rem}
 .howto ol{margin:8px 0 0 20px}.howto li{margin:4px 0}
 .dispitem{border-top:1px solid var(--line);padding:12px 18px}
 .dispitem .q{margin:4px 0;color:#222}.dispitem .a{margin:4px 0;color:var(--navy)}
+.banner{background:linear-gradient(135deg,#217a43,#2e9256);box-shadow:0 4px 14px rgba(33,122,67,.28)}
+.card{box-shadow:0 2px 10px rgba(20,30,60,.07);border:1px solid #EDF0F6}
+.cat{transition:background .15s}.cat .nm{font-size:1.02rem}
+.owed{font-size:1.05rem}
+h2{font-size:1.12rem;font-weight:700}
+/* ---- Submission / upload center ---- */
+.tabs{display:flex;gap:6px;padding:14px 16px 0;flex-wrap:wrap}
+.tab{border:none;background:var(--light);color:var(--navy);font-weight:600;font-size:.9rem;padding:10px 16px;border-radius:10px 10px 0 0;cursor:pointer}
+.tab.on{background:var(--navy);color:#fff}
+.form{padding:16px 18px}
+.form label{display:block;font-weight:600;color:var(--navy);font-size:.86rem;margin:12px 0 5px}
+.form input,.form select,.form textarea{width:100%;font:inherit;font-size:1rem;padding:12px 13px;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:#222}
+.form input:focus,.form select:focus,.form textarea:focus{outline:none;border-color:var(--navy2);box-shadow:0 0 0 3px rgba(40,69,124,.12)}
+.form textarea{min-height:96px;resize:vertical}
+.filewrap{border:2px dashed #c3ccdd;border-radius:12px;padding:16px;text-align:center;background:#FAFBFE;cursor:pointer;transition:.15s}
+.filewrap:hover,.filewrap.drag{border-color:var(--navy2);background:#F1F5FD}
+.filewrap .fi{color:var(--navy);font-weight:600;font-size:.92rem}.filewrap .fs{color:var(--grey);font-size:.78rem;margin-top:3px}
+.subbtn{width:100%;margin-top:16px;background:var(--navy);color:#fff;border:none;border-radius:11px;padding:15px;font-size:1.02rem;font-weight:700;cursor:pointer;transition:.15s}
+.subbtn:hover{background:var(--navy2)}.subbtn:disabled{opacity:.6;cursor:default}
+.formmsg{margin-top:12px;padding:12px 14px;border-radius:10px;font-size:.9rem;display:none}
+.formmsg.ok{display:block;background:#E7F5EC;color:#1c6b3a}.formmsg.err{display:block;background:#FDEDEA;color:#9a3324}
+.setupnote{padding:16px 18px;font-size:.9rem;color:var(--grey);background:#FDF9EF;border-radius:10px;margin:14px}
+/* ---- sticky mobile balance ---- */
+#mbar{display:none}
+/* ---- mobile ---- */
+@media(max-width:660px){
+ body{font-size:16px}
+ .wrap{padding:14px 11px 80px}
+ header{padding:20px 14px 24px}h1{font-size:1.3rem}.sub{font-size:.82rem}
+ .banner{padding:16px}.banner b{font-size:1.7rem}
+ .banner .emailbtn{width:100%;text-align:center;padding:12px}
+ .cat{padding:15px 15px}.cat .nm{font-size:1.05rem}.cat .meta{font-size:.8rem}
+ .owed{font-size:1.1rem}
+ /* stacked cards instead of wide tables */
+ .items table,.items thead,.items tbody,.items tr,.items td{display:block;width:100%}
+ .items thead{position:absolute;left:-9999px}
+ .items{overflow-x:visible}
+ .items tbody tr:not(.vgrp){border-top:1px solid #EAEDF4;padding:10px 4px 12px}
+ .items td{border:none;padding:4px 14px;display:flex;justify-content:space-between;align-items:baseline;gap:14px;text-align:right}
+ .items td::before{content:attr(data-label);font-weight:600;color:var(--grey);font-size:.78rem;text-align:left;flex:0 0 auto}
+ .items td[data-label=""]{justify-content:flex-end}.items td[data-label=""]::before{content:""}
+ .items td.desc{text-align:left}.items td.desc::before{display:block;margin-bottom:2px}
+ tr.vgrp{margin-top:2px}tr.vgrp td{display:block;background:#E8EEF9;padding:9px 14px}
+ tr.vgrp td:not(:first-child){display:none}
+ tr.vgrp td:first-child::after{content:"";}
+ .dbtn,.emailbtn{font-size:.82rem;padding:8px 12px}
+ .actcell{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end}
+ .tab{flex:1;text-align:center;padding:11px 8px;font-size:.86rem}
+ /* sticky mini balance bar */
+ #mbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:50;justify-content:space-between;align-items:center;
+   background:var(--navy);color:#fff;padding:11px 16px;box-shadow:0 -3px 12px rgba(0,0,0,.2)}
+ #mbar .l{font-size:.72rem;opacity:.85;text-transform:uppercase;letter-spacing:.04em}
+ #mbar .v{font-size:1.15rem;font-weight:700}
+ #mbar a{background:#fff;color:var(--navy);font-weight:700;border-radius:9px;padding:9px 14px;text-decoration:none;font-size:.85rem}
+}
+@media(max-width:660px){.docs{grid-template-columns:1fr}}
 </style></head><body>
 <header><div class="wrap"><h1>Expense Reimbursement &mdash; Pearson</h1>
 <div class="sub">Shared household &amp; child-related expenses &middot; 8792 W Fairway Dr &middot; Aug 2024 &ndash; Jul 2026 &middot; Updated July 22, 2026</div></div></header>
+<div id="mbar"><div><div class="l" id="mbarlbl">Net due to Ned</div><div class="v" id="mbarval">$89,114.84</div></div><a href="#submit">Upload / Dispute</a></div>
 <div class="wrap">
 <div class="banner"><div><span id="bannerlbl">NET AMOUNT DUE TO NED</span><br><span style="font-size:.78rem;opacity:.85">includes the direct payments/advances Ned made to Lindsey — see the Advances category below</span><div class="balrow" id="balrow" style="display:none"></div></div><div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap"><b id="bignum">$89,114.84</b><a id="emailbtn" class="emailbtn" href="#">&#9993;&nbsp;Email this out</a></div></div>
 <h2>Categories &mdash; tap any row to see every charge, then tap a source to open the actual bill</h2>
@@ -57,19 +116,16 @@ tr.vgrp .vmeta{font-weight:600;color:#5a6b8c;font-size:.74rem}
 <div id="addl"></div>
 <h2 id="pb-h" style="display:none">Paid Back — payments received from Lindsey</h2>
 <div class="card" id="pbcard" style="display:none"><div id="pblist"></div></div>
-<h2>Notes &amp; Disputes</h2>
-<div class="card"><div class="howto">
-<b style="color:var(--navy)">Lindsey — if you believe any charge is wrong, dispute it right from this page:</b>
-<ol>
-<li>Open the category, find the line, and click <span class="dbtn">Dispute</span> next to it. An email opens already filled in with that exact charge.</li>
-<li>Say why you dispute it and <b>attach your proof documents</b> (receipts, statements, screenshots) to that email before sending.</li>
-<li>Every dispute gets reviewed against the source bills. The outcome is posted below with a response, and the totals above are corrected if you're right.</li>
-</ol>
-<div class="note" style="margin:10px 0 0"><b style="color:#20603c">Already paid a specific line?</b> Click the green <span class="paid" style="font-size:.72rem">I paid this ✓</span> button on that line — an email opens for that exact item. Attach your proof (Venmo/bank/check) and send. It shows as <span class="dstat review" style="font-size:.72rem">proof submitted — under review</span> until Ned verifies it, then the line turns <span class="paid" style="font-size:.72rem">PAID ✓</span> green and drops off the balance.</div>
-<div class="note" style="margin:10px 0 0">To send general notes or documents that aren't about one specific line, email <a href="mailto:nedpearson@gmail.com?subject=NOTE%20%E2%80%94%20Pearson%20reimbursement">nedpearson@gmail.com</a> with subject "NOTE".</div>
-<div class="note" style="margin:6px 0 0"><b>Already paid something back?</b> Email the proof (Venmo/bank screenshot, check image) to <a href="mailto:nedpearson@gmail.com?subject=PAID%20BACK%20%E2%80%94%20Pearson%20reimbursement&body=I%20paid%20back%3A%0A%0A  Amount%3A%20%0A  Date%3A%20%0A  Method%3A%20%0A  What%20it%20covers%3A%20%0A%0AProof%20is%20attached.">nedpearson@gmail.com</a> with subject "PAID BACK". Once verified it's recorded above and the balance drops.</div>
-</div>
-<div id="displist"></div>
+<h2 id="submit">Upload &amp; Submit — documents, disputes, payments</h2>
+<div class="card">
+ <div class="tabs">
+  <button class="tab on" data-p="dispute">Dispute a charge</button>
+  <button class="tab" data-p="paid">I paid this</button>
+  <button class="tab" data-p="doc">Upload a document</button>
+  <button class="tab" data-p="expense">Submit an expense (Ned)</button>
+ </div>
+ <div id="formhost"></div>
+ <div id="displist"></div>
 </div>
 <h2>Documents</h2>
 <div class="card"><div class="docs">
@@ -95,18 +151,11 @@ function srcCell(s){if(!s)return '';
  if(s.t==='venmo')return '<span class="badge venmo">'+s.doc+'</span>';
  return '<span class="badge">'+(s.doc||'')+'</span>';}
 function itemRef(i){return (i.src&&i.src.t==='exh'?('Exhibit '+i.src.exh+' — '):'')+i.v+' '+(i.d||'')+' '+money(i.a);}
-function paidProofBtn(i){
- var ref=itemRef(i);
- var subj='PAID PROOF — '+ref+' — Pearson reimbursement';
- var body='I already paid this item:\n\n  '+ref+'\n  Category: '+i.cat+'\n  Her share: '+money(i.h)+'\n\nHow/when I paid it:\n(amount, date, method — write here)\n\nIMPORTANT: attach your proof (Venmo/bank screenshot, check image, receipt) to this email before sending. Once Ned verifies it, this line turns green to PAID.\n\n— Lindsey';
- return '<a class="dbtn" style="color:#20603c;border-color:#a9d5ba" href="mailto:nedpearson@gmail.com?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body)+'">I paid this ✓ send proof</a>';}
 function statusCell(i){
  if(PAID.has(i.id)||(i.src&&i.src.t==='exh'&&PAID_EXH.has(i.src.exh))) return '<span class="paid">PAID ✓</span>';
  if(PENDING.has(i.id)) return '<span class="dstat review">PROOF SUBMITTED — under review</span>';
- var ref=itemRef(i);
- var subj='DISPUTE — '+ref+' — Pearson reimbursement';
- var body='I dispute this charge:\n\n  '+ref+'\n  Category: '+i.cat+'\n  Description: '+i.desc+'\n  Her share claimed: '+money(i.h)+'\n\nReason for dispute:\n(write your reason here)\n\nIMPORTANT: attach your proof documents (receipts, statements, screenshots) to this email before sending.\n\n— Lindsey';
- return '<a class="dbtn" href="mailto:nedpearson@gmail.com?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body)+'">Dispute</a> '+paidProofBtn(i);}
+ return '<span class="actcell"><button class="dbtn" onclick="openSubmit(\'dispute\',\''+i.id+'\')">Dispute</button> '
+  +'<button class="dbtn" style="color:#20603c;border-color:#a9d5ba" onclick="openSubmit(\'paid\',\''+i.id+'\')">I paid this ✓</button></span>';}
 const DISP={"items":[]};
 const PB={"payments":[],"total":0};
 const SETTLED={"paid":[],"pending":[],"paid_total":0,"paid_count":0,"item_count":238};
@@ -141,7 +190,7 @@ const PAID_EXH=new Set();
    +(d.response?('<div class="a"><b>Ned:</b> '+d.response+'</div>'):'')+'</div>');
  });
 })();
-function itemRow(i){return '<tr'+((PAID.has(i.id)||(i.src&&i.src.t==='exh'&&PAID_EXH.has(i.src.exh)))?' style="background:#F1F9F3"':'')+'><td>'+(i.d||'—')+'</td><td>'+i.v+'</td><td>'+i.desc+'</td><td class="r">'+money(i.a)+'</td><td class="r"><b>'+money(i.h)+'</b></td><td class="src">'+srcCell(i.src)+'</td><td>'+statusCell(i)+'</td></tr>';}
+function itemRow(i){return '<tr'+((PAID.has(i.id)||(i.src&&i.src.t==='exh'&&PAID_EXH.has(i.src.exh)))?' style="background:#F1F9F3"':'')+'><td data-label="Date">'+(i.d||'—')+'</td><td data-label="Vendor">'+i.v+'</td><td class="desc" data-label="Description">'+i.desc+'</td><td class="r" data-label="Bill amount">'+money(i.a)+'</td><td class="r" data-label="Her share"><b>'+money(i.h)+'</b></td><td class="src" data-label="Source of truth">'+srcCell(i.src)+'</td><td data-label="">'+statusCell(i)+'</td></tr>';}
 function groupedRows(items){
  // group the category's charges by vendor, with a subtotal header per vendor
  var g={},order=[];
@@ -190,4 +239,87 @@ if(ADD&&ADD.sections){
  var el=document.getElementById('emailbtn');
  if(el) el.href='mailto:?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body);
 })();
+
+/* ===== mobile sticky-bar sync ===== */
+(function(){
+ var lbl=document.getElementById('bannerlbl'),val=document.getElementById('bignum');
+ if(lbl&&document.getElementById('mbarlbl')) document.getElementById('mbarlbl').textContent=(lbl.textContent||'').replace('BALANCE STILL DUE TO NED','Balance due').replace('NET AMOUNT DUE TO NED','Net due to Ned');
+ if(val&&document.getElementById('mbarval')) document.getElementById('mbarval').textContent=val.textContent;
+})();
+
+/* ===== Upload & Submit center (Web3Forms) ===== */
+var W3FKEY='';
+var ITEMBYID={}; (D.items||[]).forEach(function(i){ITEMBYID[i.id]=i;});
+var TABMETA={
+ dispute:{t:'Dispute a charge',sub:'Tell us which charge is wrong and why. Attach any proof.',needItem:1},
+ paid:{t:'I already paid this',sub:'Say what you paid and attach your proof (Venmo/bank/check). Ned verifies, then the line turns green.',needItem:1},
+ doc:{t:'Upload a document',sub:'Send any supporting document or general note.',needItem:0},
+ expense:{t:'Submit an expense',sub:'For Ned — snap a bill and it lands in your inbox to add to the ledger.',needItem:0}
+};
+function esc(s){return (s||'').replace(/"/g,'&quot;');}
+function mailtoFallback(kind,ref){
+ var to='nedpearson@gmail.com';
+ var subj=({dispute:'DISPUTE',paid:'PAID PROOF',doc:'NOTE',expense:'NEW EXPENSE'}[kind]||'NOTE')+(ref?(' — '+ref):'')+' — Pearson reimbursement';
+ return 'mailto:'+to+'?subject='+encodeURIComponent(subj);
+}
+function renderForm(kind,item){
+ var m=TABMETA[kind]||TABMETA.doc, host=document.getElementById('formhost');
+ var ref=item?itemRef(item):'';
+ var fields='';
+ if(m.needItem){fields+='<label>Charge in question</label><input name="Charge" value="'+esc(ref)+'" readonly>';}
+ if(kind==='dispute'){fields+='<label>Why is this charge wrong?</label><textarea name="Reason" placeholder="Explain why you dispute this charge…" required></textarea>';}
+ if(kind==='paid'){fields+='<label>How &amp; when you paid it</label><textarea name="Payment details" placeholder="Amount, date, and method (Venmo / check / cash…)" required></textarea>';}
+ if(kind==='doc'){fields+='<label>Subject</label><input name="Subject line" placeholder="What is this about?"><label>Message</label><textarea name="Message" placeholder="Add any note…"></textarea>';}
+ if(kind==='expense'){fields+='<label>Vendor / payee</label><input name="Vendor" placeholder="e.g. Hager Painting" required>'
+   +'<div style="display:flex;gap:10px"><div style="flex:1"><label>Amount</label><input name="Amount" inputmode="decimal" placeholder="$0.00" required></div>'
+   +'<div style="flex:1"><label>Date</label><input name="Date" placeholder="YYYY-MM-DD"></div></div>'
+   +'<label>What was it for?</label><textarea name="Description" placeholder="Describe the expense…"></textarea>';}
+ if(!W3FKEY||W3FKEY.indexOf('__')===0){
+  host.innerHTML='<div class="setupnote"><b>On-page uploads aren’t switched on yet.</b> Ned: get a free key at web3forms.com and paste it into the app’s Settings (Web3Forms key), then Publish. Meanwhile you can '
+   +'<a href="'+mailtoFallback(kind,ref)+'">send it by email</a> with your file attached.</div>';
+  return;
+ }
+ var who=(kind==='expense')?'':'<label>Your name</label><input name="Your name" placeholder="Your name">';
+ host.innerHTML='<form class="form" id="w3form">'
+  +'<input type="hidden" name="access_key" value="'+W3FKEY+'">'
+  +'<input type="hidden" name="from_name" value="Pearson Reimbursement Portal">'
+  +'<input type="hidden" name="subject" value="'+esc(m.t+(ref?(' — '+ref):''))+' — Pearson reimbursement">'
+  +'<input type="hidden" name="Type" value="'+kind+'">'
+  +'<p style="color:var(--grey);font-size:.9rem;margin-bottom:4px">'+m.sub+'</p>'
+  +fields+who
+  +'<label>Attach a file (photo, PDF, screenshot — up to 5 MB)</label>'
+  +'<label class="filewrap" id="fw"><div class="fi" id="fi">Tap to choose a file or take a photo</div><div class="fs" id="fs">receipts, statements, checks, screenshots</div>'
+  +'<input type="file" name="attachment" id="fin" accept="image/*,application/pdf" style="display:none"></label>'
+  +'<button class="subbtn" type="submit">Submit securely</button>'
+  +'<div class="formmsg" id="fmsg"></div></form>';
+ var fin=document.getElementById('fin'),fw=document.getElementById('fw');
+ fin.addEventListener('change',function(){var f=fin.files[0];if(f){document.getElementById('fi').textContent=f.name;document.getElementById('fs').textContent=(f.size/1048576).toFixed(1)+' MB selected';}});
+ ['dragover','dragenter'].forEach(function(e){fw.addEventListener(e,function(ev){ev.preventDefault();fw.classList.add('drag');});});
+ ['dragleave','drop'].forEach(function(e){fw.addEventListener(e,function(ev){ev.preventDefault();fw.classList.remove('drag');});});
+ fw.addEventListener('drop',function(ev){if(ev.dataTransfer.files.length){fin.files=ev.dataTransfer.files;fin.dispatchEvent(new Event('change'));}});
+ document.getElementById('w3form').addEventListener('submit',function(ev){
+  ev.preventDefault();
+  var f=ev.target, msg=document.getElementById('fmsg'), btn=f.querySelector('.subbtn');
+  var file=fin.files[0];
+  if(file&&file.size>5*1048576){msg.className='formmsg err';msg.textContent='That file is over 5 MB. Please attach a smaller photo or PDF (or email it).';return;}
+  btn.disabled=true;btn.textContent='Sending…';msg.className='formmsg';msg.style.display='none';
+  fetch('https://api.web3forms.com/submit',{method:'POST',body:new FormData(f)})
+   .then(function(r){return r.json();})
+   .then(function(j){
+     if(j.success){f.reset();document.getElementById('fi').textContent='Tap to choose a file or take a photo';document.getElementById('fs').textContent='receipts, statements, checks, screenshots';
+       msg.className='formmsg ok';msg.textContent='✓ Sent to Ned. He’ll review it and the page will reflect the outcome after his next update.';}
+     else{msg.className='formmsg err';msg.textContent='Could not send: '+(j.message||'unknown error')+'. You can email it instead.';}
+     btn.disabled=false;btn.textContent='Submit securely';})
+   .catch(function(){msg.className='formmsg err';msg.textContent='Network problem sending the form. Please try again, or email your file.';btn.disabled=false;btn.textContent='Submit securely';});
+ });
+}
+function setTab(kind){
+ document.querySelectorAll('.tab').forEach(function(t){t.classList.toggle('on',t.getAttribute('data-p')===kind);});
+}
+function openSubmit(kind,id){
+ setTab(kind); renderForm(kind, id?ITEMBYID[id]:null);
+ document.getElementById('submit').scrollIntoView({behavior:'smooth',block:'start'});
+}
+document.querySelectorAll('.tab').forEach(function(t){t.addEventListener('click',function(){openSubmit(t.getAttribute('data-p'),null);});});
+renderForm('dispute',null);
 </script></body></html>
