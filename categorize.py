@@ -207,6 +207,12 @@ def generate(folder, outdir=None, progress=None):
     os.makedirs(outdir,exist_ok=True)
     def say(m):
         if progress: progress(m)
+    try:                                   # safety net: snapshot the prior data state first
+        import backup
+        sid=backup.snapshot(note='auto — before generate', auto=True)
+        if sid: say("Backup saved (archive): %s"%sid)
+    except Exception as _be:
+        say("(backup skipped: %s)"%_be)
     say("Reading bills in: "+folder)
     rows=apply_split(build(folder))
     say("Categorized %d line items."%len(rows))

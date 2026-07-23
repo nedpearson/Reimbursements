@@ -2,5 +2,5 @@ __pycache__/
 *.pyc
 output/
 *.log
+archive/
 .deps_installed
-_to_delete/

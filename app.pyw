@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+r"""
 Reimbursement Manager — desktop app.
 Add expenses, import bills/Venmo statements, generate & export all documents.
 Lives at C:\dev\github\personal\Reimbursements (github.com/nedpearson/Reimbursements).
@@ -37,19 +37,27 @@ class App(tk.Tk):
         self._build(); self.after(120,self._drain)
 
     def _setup_style(self):
-        st=ttk.Style(self)
-        try: st.theme_use('clam')
-        except Exception: pass
-        st.configure('.',font=('Segoe UI',10))
-        st.configure('TNotebook',background=BG,borderwidth=0,tabmargins=(10,8,10,0))
-        st.configure('TNotebook.Tab',font=('Segoe UI',10,'bold'),padding=(18,9),
-                     background='#DDE3EF',foreground=NAVY,borderwidth=0)
-        st.map('TNotebook.Tab',background=[('selected',CARD)],foreground=[('selected',NAVY)],
-               expand=[('selected',(0,0,0,0))])
-        st.configure('Treeview',font=('Segoe UI',9),rowheight=24,fieldbackground=CARD,background=CARD)
-        st.configure('Treeview.Heading',font=('Segoe UI',9,'bold'),background=NAVY,foreground='white')
-        st.map('Treeview.Heading',background=[('active',NAVY2)])
-        st.configure('TScrollbar',background='#C7CFDE',troughcolor=BG,borderwidth=0,arrowcolor=NAVY)
+        # each styling call is best-effort — a theme quirk must never stop the app from opening
+        try:
+            st=ttk.Style(self)
+            try: st.theme_use('clam')
+            except Exception: pass
+            def _c(*a,**k):
+                try: st.configure(*a,**k)
+                except Exception: pass
+            def _m(*a,**k):
+                try: st.map(*a,**k)
+                except Exception: pass
+            _c('.',font=('Segoe UI',10))
+            _c('TNotebook',background=BG,borderwidth=0,tabmargins=(10,8,10,0))
+            _c('TNotebook.Tab',font=('Segoe UI',10,'bold'),padding=(18,9),background='#DDE3EF',foreground=NAVY,borderwidth=0)
+            _m('TNotebook.Tab',background=[('selected',CARD)],foreground=[('selected',NAVY)])
+            _c('Treeview',font=('Segoe UI',9),rowheight=24,fieldbackground=CARD,background=CARD)
+            _c('Treeview.Heading',font=('Segoe UI',9,'bold'),background=NAVY,foreground='white')
+            _m('Treeview.Heading',background=[('active',NAVY2)])
+            _c('TScrollbar',background='#C7CFDE',troughcolor=BG,borderwidth=0,arrowcolor=NAVY)
+        except Exception:
+            pass
 
     def _btn(self,parent,text,cmd,kind='ghost',**kw):
         colors={'primary':(NAVY,'white'),'go':(GREEN,'white'),'accent':(NAVY2,'white'),
@@ -65,6 +73,7 @@ class App(tk.Tk):
         # gradient header (canvas) for a polished, professional look
         H=78; hdr=tk.Canvas(self,height=H,highlightthickness=0,bd=0); hdr.pack(fill='x')
         def _grad(ev=None):
+          try:
             hdr.delete('g'); w=hdr.winfo_width() or 960
             c1=(27,46,82); c2=(41,75,133)
             for x in range(0,w+1):
@@ -75,18 +84,22 @@ class App(tk.Tk):
                             anchor='w',fill='#C9D3EA',font=('Segoe UI',10),tags='g')
             hdr.create_text(w-18,26,text="Pearson v. Pearson",anchor='e',fill='#9db0d4',font=('Segoe UI',10,'bold'),tags='g')
             hdr.create_text(w-18,46,text="No. 236951 · EBR Parish",anchor='e',fill='#7f93bd',font=('Segoe UI',8),tags='g')
+          except Exception:
+            pass
         hdr.bind('<Configure>',_grad); self.after(60,_grad)
         nb=ttk.Notebook(self); nb.pack(fill='both',expand=True,padx=12,pady=10)
         self.tab_run=tk.Frame(nb,bg=BG); self.tab_add=tk.Frame(nb,bg=BG)
         self.tab_set=tk.Frame(nb,bg=BG)
         self.tab_amt=tk.Frame(nb,bg=BG)
         self.tab_paid=tk.Frame(nb,bg=BG)
+        self.tab_arch=tk.Frame(nb,bg=BG)
         nb.add(self.tab_run,text='  Generate & Export  ')
         nb.add(self.tab_amt,text='  Edit Amounts  ')
         nb.add(self.tab_paid,text='  Mark Paid  ')
         nb.add(self.tab_add,text='  Add / Import  ')
+        nb.add(self.tab_arch,text='  Archive / Backups  ')
         nb.add(self.tab_set,text='  Settings  ')
-        self._build_run(); self._build_amounts(); self._build_paid(); self._build_add(); self._build_settings()
+        self._build_run(); self._build_amounts(); self._build_paid(); self._build_add(); self._build_archive(); self._build_settings()
 
     def _card(self,parent,**kw):
         c=tk.Frame(parent,bg=CARD,highlightbackground=LINE,highlightthickness=1,bd=0)
@@ -128,6 +141,63 @@ class App(tk.Tk):
         lf=tk.Frame(f,bg=CARD,highlightbackground=LINE,highlightthickness=1); lf.pack(fill='both',expand=True,padx=16,pady=(0,14))
         self.log=tk.Text(lf,height=12,font=('Consolas',9),bg=CARD,relief='flat',bd=0,fg='#2b3444',padx=10,pady=8)
         self.log.pack(fill='both',expand=True)
+    # ---------- Archive / Backups tab ----------
+    def _build_archive(self):
+        f=self.tab_arch
+        tk.Label(f,text="Archive & backups — a safety net if the wrong button is pushed",
+                 bg=BG,fg=NAVY,font=('Segoe UI',11,'bold')).pack(anchor='w',padx=16,pady=(14,2))
+        tk.Label(f,text="A snapshot of your data is saved automatically every time you Generate. "
+                 "You can also save one anytime, and restore any snapshot to roll everything back.",
+                 bg=BG,fg=MUTED,font=('Segoe UI',9),justify='left',wraplength=880).pack(anchor='w',padx=16)
+        bar=tk.Frame(f,bg=BG); bar.pack(fill='x',padx=16,pady=8)
+        self._btn(bar,"📦  Save a snapshot now",self._arch_save,'go').pack(side='left')
+        self._btn(bar,"↩  Restore selected",self._arch_restore,'accent').pack(side='left',padx=(8,0))
+        self._btn(bar,"🗑  Delete selected",self._arch_delete,'ghost').pack(side='left',padx=(8,0))
+        self._btn(bar,"↻  Refresh",self._arch_fill,'ghost').pack(side='left',padx=(8,0))
+        self._btn(bar,"📂  Open archive folder",self._arch_open,'ghost').pack(side='right')
+        cols=('when','net','kind','note')
+        tv=ttk.Treeview(f,columns=cols,show='headings',selectmode='browse',height=16)
+        for c,w,t in [('when',180,'Saved'),('net',120,'Net at the time'),('kind',80,'Type'),('note',420,'Note')]:
+            tv.heading(c,text=t); tv.column(c,width=w,anchor='w')
+        sb=ttk.Scrollbar(f,orient='vertical',command=tv.yview); tv.configure(yscroll=sb.set)
+        tv.pack(side='left',fill='both',expand=True,padx=(16,0),pady=(2,14)); sb.pack(side='left',fill='y',pady=(2,14))
+        self.arch_tv=tv; self._arch_fill()
+    def _arch_fill(self):
+        try: import backup
+        except Exception as e: messagebox.showerror("Archive",str(e)); return
+        tv=self.arch_tv
+        for i in tv.get_children(): tv.delete(i)
+        for s in backup.snapshots():
+            net=('${:,.2f}'.format(s['net']) if s.get('net') is not None else '—')
+            kind=('auto' if s.get('auto') else 'saved')
+            tv.insert('','end',iid=s['id'],values=(s.get('when_human',s['id']),net,kind,s.get('note','')))
+    def _arch_save(self):
+        try:
+            import backup
+            note=simpledialog.askstring("Save snapshot","Optional label for this snapshot:",parent=self) or ''
+            sid=backup.snapshot(note=note,auto=False)
+            self._arch_fill(); messagebox.showinfo("Archive","Snapshot saved:  %s"%sid)
+        except Exception as e: messagebox.showerror("Archive",str(e))
+    def _arch_restore(self):
+        sel=self.arch_tv.selection()
+        if not sel: messagebox.showinfo("Restore","Select a snapshot to restore first."); return
+        sid=sel[0]
+        if not messagebox.askyesno("Restore snapshot",
+            "Restore your data to this snapshot?\n\n  %s\n\nYour current data is backed up first, so this is undoable. "
+            "After restoring, click Generate (then Publish) to rebuild everything."%sid): return
+        try:
+            import backup; backup.restore(sid); self._arch_fill()
+            messagebox.showinfo("Restored","Restored %s.\n\nNow click Generate (and Publish) to apply it."%sid)
+        except Exception as e: messagebox.showerror("Restore",str(e))
+    def _arch_delete(self):
+        sel=self.arch_tv.selection()
+        if not sel: return
+        if not messagebox.askyesno("Delete","Delete snapshot %s permanently?"%sel[0]): return
+        try:
+            import backup; backup.delete(sel[0]); self._arch_fill()
+        except Exception as e: messagebox.showerror("Delete",str(e))
+    def _arch_open(self):
+        d=os.path.join(HERE,'archive'); os.makedirs(d,exist_ok=True); open_path(d)
     def _publish(self):
         p=os.path.join(HERE,'Publish to Web.bat')
         if sys.platform.startswith('win') and os.path.exists(p):
@@ -503,5 +573,21 @@ class App(tk.Tk):
         except queue.Empty: pass
         self.after(120,self._drain)
 
+def _fatal(exc):
+    # pythonw shows no console, so a startup crash would just vanish — log it and pop a dialog
+    try:
+        with open(os.path.join(HERE,'app_error.log'),'w',encoding='utf-8') as fh:
+            fh.write(traceback.format_exc())
+    except Exception: pass
+    try:
+        r=tk.Tk(); r.withdraw()
+        messagebox.showerror("Reimbursement Manager — startup error",
+            "The app hit an error while starting:\n\n%s\n\nDetails saved to app_error.log in the program folder."%exc)
+        r.destroy()
+    except Exception: pass
+
 if __name__=='__main__':
-    App().mainloop()
+    try:
+        App().mainloop()
+    except Exception as e:
+        _fatal(e)
