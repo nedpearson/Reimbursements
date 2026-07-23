@@ -1,6 +1,9 @@
 @echo off
 cd /d "%~dp0"
 
+rem --- clear any stale git lock left by an interrupted process (prevents "index.lock exists") ---
+if exist ".git\index.lock" del /f /q ".git\index.lock" 2>nul
+
 rem --- SAFETY: tag the current published state as a restore point BEFORE changing anything ---
 rem If the wrong thing gets published, "Undo Last Publish.bat" rolls back to this point.
 for /f "tokens=1-6 delims=/:. " %%a in ("%date% %time%") do set STAMP=%%c%%a%%b-%%d%%e

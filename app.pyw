@@ -353,14 +353,14 @@ class App(tk.Tk):
         tk.Label(cf,text="Only count bills on/after:",bg=BG,font=('Segoe UI',10)).pack(side='left')
         self.cutoff=tk.StringVar(value=self.cfg.get('date_cutoff') or '')
         tk.Entry(cf,textvariable=self.cutoff,width=12,font=('Segoe UI',10),relief='solid',bd=1).pack(side='left',padx=6)
-        # Web3Forms key — enables on-page uploads on the portal
+        # On-page uploads (FormSubmit) — destination inbox for uploaded files/disputes
         wf=tk.Frame(f,bg=CARD,highlightbackground=LINE,highlightthickness=1)
         wf.grid(row=rr+2,column=0,columnspan=4,sticky='ew',padx=14,pady=(12,4))
         f.columnconfigure(0,weight=1); f.columnconfigure(1,weight=1)
-        tk.Label(wf,text="ON-PAGE UPLOADS (Web3Forms key)",bg=CARD,fg=MUTED,font=('Segoe UI',8,'bold')).pack(anchor='w',padx=12,pady=(10,2))
-        tk.Label(wf,text="Lets both parties upload files right on the shared page. Get a free key at web3forms.com (enter your email), paste it here, Save, then Publish.",
-                 bg=CARD,fg=MUTED,font=('Segoe UI',9),wraplength=820,justify='left').pack(anchor='w',padx=12)
-        self.w3f=tk.StringVar(value=self.cfg.get('web3forms_key') or '')
+        tk.Label(wf,text="ON-PAGE UPLOADS  —  where uploaded files & disputes are emailed",bg=CARD,fg=MUTED,font=('Segoe UI',8,'bold')).pack(anchor='w',padx=12,pady=(10,2))
+        tk.Label(wf,text="Uploads on the shared page are LIVE (no account/key needed). Anything uploaded is emailed to the address below. Change it only if you want a different inbox.",
+                 bg=CARD,fg=GREEN,font=('Segoe UI',9),wraplength=820,justify='left').pack(anchor='w',padx=12)
+        self.w3f=tk.StringVar(value=self.cfg.get('form_email') or 'nedpearson@gmail.com')
         tk.Entry(wf,textvariable=self.w3f,font=('Consolas',10),relief='solid',bd=1).pack(fill='x',padx=12,pady=(6,12),ipady=4)
         self._btn(f,"💾  Save Settings",self._save_settings,'primary',padx=16,pady=8).grid(row=rr+3,column=0,sticky='w',padx=14,pady=14)
 
@@ -500,7 +500,7 @@ class App(tk.Tk):
             except ValueError: pass
         c['subtract_payments_to_lindsey']=bool(self.sub_credits.get())
         c['date_cutoff']=self.cutoff.get().strip() or None
-        if hasattr(self,'w3f'): c['web3forms_key']=self.w3f.get().strip()
+        if hasattr(self,'w3f'): c['form_email']=self.w3f.get().strip() or 'nedpearson@gmail.com'
         save_cfg(c); messagebox.showinfo("Saved","Settings saved. Re-run Generate, then Publish to apply on the shared page.")
     def _add_expense(self):
         try:

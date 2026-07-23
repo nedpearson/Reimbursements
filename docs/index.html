@@ -314,8 +314,10 @@ if(ADD&&ADD.sections){
  if(val&&document.getElementById('mbarval')) document.getElementById('mbarval').textContent=val.textContent;
 })();
 
-/* ===== Upload & Submit center (Web3Forms) ===== */
-var W3FKEY='';
+/* ===== Upload & Submit center (FormSubmit — no account/key needed) ===== */
+var FORM_EMAIL='nedpearson@gmail.com';
+var FS_STD='https://formsubmit.co/'+FORM_EMAIL;        // supports file attachments (redirects)
+var FS_AJAX='https://formsubmit.co/ajax/'+FORM_EMAIL;  // JSON, text-only (no files)
 var ITEMBYID={}; (D.items||[]).forEach(function(i){ITEMBYID[i.id]=i;});
 var TABMETA={
  dispute:{t:'Dispute a charge',sub:'Tell us which charge is wrong and why. Attach any proof.',needItem:1},
@@ -324,69 +326,64 @@ var TABMETA={
  expense:{t:'Submit an expense',sub:'For Ned — snap a bill and it lands in your inbox to add to the ledger.',needItem:0}
 };
 function esc(s){return (s||'').replace(/"/g,'&quot;');}
-function mailtoFallback(kind,ref){
- var to='nedpearson@gmail.com';
- var subj=({dispute:'DISPUTE',paid:'PAID PROOF',doc:'NOTE',expense:'NEW EXPENSE'}[kind]||'NOTE')+(ref?(' — '+ref):'')+' — Pearson reimbursement';
- return 'mailto:'+to+'?subject='+encodeURIComponent(subj);
-}
+function pageURL(){return location.origin+location.pathname;}
 function renderForm(kind,item){
  var m=TABMETA[kind]||TABMETA.doc, host=document.getElementById('formhost');
  var ref=item?itemRef(item):'';
  var fields='';
  if(m.needItem){fields+='<label>Charge in question</label><input name="Charge" value="'+esc(ref)+'" readonly>';}
  if(kind==='dispute'){fields+='<label>Why is this charge wrong?</label><textarea name="Reason" placeholder="Explain why you dispute this charge…" required></textarea>';}
- if(kind==='paid'){fields+='<label>How &amp; when you paid it</label><textarea name="Payment details" placeholder="Amount, date, and method (Venmo / check / cash…)" required></textarea>';}
- if(kind==='doc'){fields+='<label>Subject</label><input name="Subject line" placeholder="What is this about?"><label>Message</label><textarea name="Message" placeholder="Add any note…"></textarea>';}
+ if(kind==='paid'){fields+='<label>How &amp; when you paid it</label><textarea name="Payment_details" placeholder="Amount, date, and method (Venmo / check / cash…)" required></textarea>';}
+ if(kind==='doc'){fields+='<label>Subject</label><input name="Subject_line" placeholder="What is this about?"><label>Message</label><textarea name="Message" placeholder="Add any note…"></textarea>';}
  if(kind==='expense'){fields+='<label>Vendor / payee</label><input name="Vendor" placeholder="e.g. Hager Painting" required>'
    +'<div style="display:flex;gap:10px"><div style="flex:1"><label>Amount</label><input name="Amount" inputmode="decimal" placeholder="$0.00" required></div>'
    +'<div style="flex:1"><label>Date</label><input name="Date" placeholder="YYYY-MM-DD"></div></div>'
    +'<label>What was it for?</label><textarea name="Description" placeholder="Describe the expense…"></textarea>';}
- if(!W3FKEY||W3FKEY.indexOf('__')===0){
-  host.innerHTML='<div class="setupnote"><b>On-page uploads aren’t switched on yet.</b> Ned: get a free key at web3forms.com and paste it into the app’s Settings (Web3Forms key), then Publish. Meanwhile you can '
-   +'<a href="'+mailtoFallback(kind,ref)+'">send it by email</a> with your file attached.</div>';
-  return;
- }
- var who=(kind==='expense')?'':'<label>Your name</label><input name="Your name" placeholder="Your name">';
- host.innerHTML='<form class="form" id="w3form">'
-  +'<input type="hidden" name="access_key" value="'+W3FKEY+'">'
-  +'<input type="hidden" name="from_name" value="Pearson Reimbursement Portal">'
-  +'<input type="hidden" name="subject" value="'+esc(m.t+(ref?(' — '+ref):''))+' — Pearson reimbursement">'
+ var who=(kind==='expense')?'':'<label>Your name</label><input name="Your_name" placeholder="Your name">';
+ var subject=m.t+(ref?(' — '+ref):'')+' — Pearson reimbursement';
+ host.innerHTML='<form class="form" id="upform" action="'+FS_STD+'" method="POST" enctype="multipart/form-data" accept-charset="UTF-8">'
+  +'<input type="hidden" name="_subject" value="'+esc(subject)+'">'
+  +'<input type="hidden" name="_captcha" value="false">'
+  +'<input type="hidden" name="_template" value="table">'
+  +'<input type="hidden" name="_next" value="'+esc(pageURL()+'?sent='+kind)+'">'
+  +'<input type="text" name="_honey" style="display:none">'
   +'<input type="hidden" name="Type" value="'+kind+'">'
-  +'<p style="color:var(--grey);font-size:.9rem;margin-bottom:4px">'+m.sub+'</p>'
+  +'<p style="color:var(--muted);font-size:.9rem;margin-bottom:4px">'+m.sub+'</p>'
   +fields+who
   +'<label>Attach a file (photo, PDF, screenshot — up to 5 MB)</label>'
   +'<label class="filewrap" id="fw"><div class="fi" id="fi">Tap to choose a file or take a photo</div><div class="fs" id="fs">receipts, statements, checks, screenshots</div>'
   +'<input type="file" name="attachment" id="fin" accept="image/*,application/pdf" style="display:none"></label>'
-  +'<button class="subbtn" type="submit">Submit securely</button>'
+  +'<button class="subbtn" type="submit">Send to Ned</button>'
   +'<div class="formmsg" id="fmsg"></div></form>';
  var fin=document.getElementById('fin'),fw=document.getElementById('fw');
  fin.addEventListener('change',function(){var f=fin.files[0];if(f){document.getElementById('fi').textContent=f.name;document.getElementById('fs').textContent=(f.size/1048576).toFixed(1)+' MB selected';}});
  ['dragover','dragenter'].forEach(function(e){fw.addEventListener(e,function(ev){ev.preventDefault();fw.classList.add('drag');});});
  ['dragleave','drop'].forEach(function(e){fw.addEventListener(e,function(ev){ev.preventDefault();fw.classList.remove('drag');});});
  fw.addEventListener('drop',function(ev){if(ev.dataTransfer.files.length){fin.files=ev.dataTransfer.files;fin.dispatchEvent(new Event('change'));}});
- document.getElementById('w3form').addEventListener('submit',function(ev){
-  ev.preventDefault();
-  var f=ev.target, msg=document.getElementById('fmsg'), btn=f.querySelector('.subbtn');
-  var file=fin.files[0];
-  if(file&&file.size>5*1048576){msg.className='formmsg err';msg.textContent='That file is over 5 MB. Please attach a smaller photo or PDF (or email it).';return;}
-  btn.disabled=true;btn.textContent='Sending…';msg.className='formmsg';msg.style.display='none';
-  fetch('https://api.web3forms.com/submit',{method:'POST',body:new FormData(f)})
+ document.getElementById('upform').addEventListener('submit',function(ev){
+  var f=ev.target, msg=document.getElementById('fmsg'), btn=f.querySelector('.subbtn'), file=fin.files[0];
+  if(file&&file.size>5*1048576){ev.preventDefault();msg.className='formmsg err';msg.textContent='That file is over 5 MB — please attach a smaller photo or PDF.';return;}
+  if(file){ btn.disabled=true; btn.textContent='Sending…'; return; }   // has a file → native submit (redirects back)
+  // text-only → smooth AJAX, stay on the page
+  ev.preventDefault(); btn.disabled=true; btn.textContent='Sending…'; msg.style.display='none';
+  fetch(FS_AJAX,{method:'POST',headers:{'Accept':'application/json','Content-Type':'application/json'},
+    body:JSON.stringify(fieldsToObj(f))})
    .then(function(r){return r.json();})
    .then(function(j){
-     if(j.success){f.reset();document.getElementById('fi').textContent='Tap to choose a file or take a photo';document.getElementById('fs').textContent='receipts, statements, checks, screenshots';
-       msg.className='formmsg ok';msg.textContent='✓ Sent to Ned. He’ll review it and the page will reflect the outcome after his next update.';}
-     else{msg.className='formmsg err';msg.textContent='Could not send: '+(j.message||'unknown error')+'. You can email it instead.';}
-     btn.disabled=false;btn.textContent='Submit securely';})
-   .catch(function(){msg.className='formmsg err';msg.textContent='Network problem sending the form. Please try again, or email your file.';btn.disabled=false;btn.textContent='Submit securely';});
+     if(String(j.success)==='true'){f.reset();msg.className='formmsg ok';
+       msg.textContent='✓ Sent to Ned. He’ll review it and the page updates after his next refresh.';}
+     else{msg.className='formmsg err';msg.textContent='Could not send: '+(j.message||'try again')+'.';}
+     btn.disabled=false;btn.textContent='Send to Ned';})
+   .catch(function(){msg.className='formmsg err';msg.textContent='Network problem — please try again.';btn.disabled=false;btn.textContent='Send to Ned';});
  });
 }
-function setTab(kind){
- document.querySelectorAll('.tab').forEach(function(t){t.classList.toggle('on',t.getAttribute('data-p')===kind);});
-}
-function openSubmit(kind,id){
- setTab(kind); renderForm(kind, id?ITEMBYID[id]:null);
- document.getElementById('submit').scrollIntoView({behavior:'smooth',block:'start'});
-}
+function fieldsToObj(f){var o={};Array.prototype.forEach.call(f.elements,function(el){if(el.name&&el.type!=='file'&&el.name[0]!=='_'&&el.name!=='_honey')o[el.name]=el.value;});return o;}
+function setTab(kind){document.querySelectorAll('.tab').forEach(function(t){t.classList.toggle('on',t.getAttribute('data-p')===kind);});}
+function openSubmit(kind,id){setTab(kind);renderForm(kind,id?ITEMBYID[id]:null);document.getElementById('submit').scrollIntoView({behavior:'smooth',block:'start'});}
 document.querySelectorAll('.tab').forEach(function(t){t.addEventListener('click',function(){openSubmit(t.getAttribute('data-p'),null);});});
 renderForm('dispute',null);
+// success banner after a file upload redirect (?sent=<kind>)
+(function(){var m=location.search.match(/[?&]sent=(\w+)/);if(m){var host=document.getElementById('formhost');
+ host.insertAdjacentHTML('afterbegin','<div class="formmsg ok" style="display:block;margin:0 0 12px">✓ Sent to Ned. He’ll review it and the page updates after his next refresh.</div>');
+ document.getElementById('submit').scrollIntoView({block:'start'});}})();
 </script></body></html>
