@@ -48,6 +48,18 @@ header::after{content:"";position:absolute;right:-80px;top:-80px;width:320px;hei
 .stat .k{font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700}
 .stat .v{font-family:'Source Serif 4',Georgia,serif;font-size:1.35rem;font-weight:700;color:var(--navy);margin-top:3px;font-variant-numeric:tabular-nums}
 .stat.g .v{color:var(--green)}.stat.gold .v{color:var(--gold)}
+.stat{cursor:pointer;position:relative;transition:.15s}
+.stat:hover{border-color:var(--navy2);transform:translateY(-1px);box-shadow:0 4px 14px rgba(20,30,60,.1)}
+.stat.active{border-color:var(--navy);box-shadow:0 0 0 2px rgba(20,41,77,.16)}
+.stat .more{font-size:.6rem;color:var(--navy2);font-weight:700;margin-top:7px;letter-spacing:.03em;text-transform:uppercase;opacity:.75}
+#statdetail{margin:2px 0 6px}
+.sd{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--navy);border-radius:12px;padding:16px 20px;box-shadow:var(--shadow)}
+.sd h3{font-family:'Source Serif 4',Georgia,serif;color:var(--navy);font-size:1.08rem;margin-bottom:7px}
+.sd p{font-size:.9rem;color:#2b3444;line-height:1.6;margin-bottom:11px}
+.sd table{font-size:.82rem;margin-top:2px}.sd th{background:#F1F4FA}.sd th,.sd td{padding:6px 11px}
+.sd .tot td{font-weight:700;color:var(--navy);border-top:2px solid #cdd8ee;background:#F4F6FB}
+.sd .close{float:right;color:var(--muted);cursor:pointer;font-size:.78rem;font-weight:600}
+.sd .close:hover{color:var(--navy)}
 /* ---------- section headings ---------- */
 h2{font-family:'Source Serif 4',Georgia,serif;color:var(--navy);font-size:1.28rem;font-weight:700;margin:34px 2px 12px;letter-spacing:.005em}
 .subhead{color:var(--muted);font-size:.9rem;margin:-6px 2px 10px}
@@ -166,6 +178,7 @@ footer .rule{height:1px;background:linear-gradient(90deg,transparent,var(--line)
 <div class="wrap">
 <div class="hero"><div><div class="lbl" id="bannerlbl">Net Amount Due to Ned</div><div class="note" id="crednote">includes the direct payments/advances Ned made to Lindsey — see the Advances category below</div><div class="balrow" id="balrow" style="display:none"></div></div><div class="right"><b id="bignum">$89,114.84</b><a id="emailbtn" class="emailbtn" href="#">&#9993;&nbsp;Email this out</a></div></div>
 <div class="stats" id="statstrip"></div>
+<div id="statdetail"></div>
 <h2>Expense Categories</h2>
 <div class="subhead">Tap any category to see every charge — each line links to the actual bill or a source record.</div>
 <div id="cats"></div>
@@ -272,15 +285,41 @@ D.cats.forEach(c=>{const items=D.items.filter(i=>i.cat===c.name);
  card.querySelector('.cat').onclick=()=>card.classList.toggle('open');wrap.appendChild(card);});
 
 const ADD={"title":"Voluntary Support Provided to Help Lindsey Start Over","subtitle":"Beyond every shared expense listed above \u2014 and beyond anything any court has ordered \u2014 Gerald has voluntarily and continuously carried Lindsey's vehicle, its insurance, and her health coverage since their separation, so that she could re-establish herself on stable footing. These amounts were never billed to her and are documented here to show the full, good-faith extent of the support he has provided.","grand_total":58248.92,"doc":"Amounts_Paid_For_Lindsey.pdf","sections":[{"name":"GMC Yukon Denali \u2014 vehicle loan Gerald carried for Lindsey (GM Financial)","basis":"Aug 2024 \u2013 Mar 2026 (monthly $1,199.96; catch-up/2-month payments and separate acct *1890 shown as recorded)","total":28031.48,"items":[{"d":"2024-08-21","desc":"acct *2563","a":1199.96},{"d":"2024-09-12","desc":"acct *2563","a":1199.96},{"d":"2024-11-19","desc":"acct *2563","a":1199.96},{"d":"2024-11-19","desc":"acct *1890","a":1017.48},{"d":"2025-01-24","desc":"acct *2563 (2 mo)","a":2399.92},{"d":"2025-01-24","desc":"acct *1890","a":1017.48},{"d":"2025-03-15","desc":"acct *2563 (monthly loan payment)","a":1199.96},{"d":"2025-03-17","desc":"acct *2563 (2 mo)","a":2399.92},{"d":"2025-03-17","desc":"acct *1890","a":1017.48},{"d":"2025-04-15","desc":"acct *2563 (monthly loan payment)","a":1199.96},{"d":"2025-05-15","desc":"acct *2563 (monthly loan payment)","a":1199.96},{"d":"2025-06-15","desc":"acct *2563 (monthly loan payment)","a":1199.96},{"d":"2025-07-15","desc":"acct *2563 (monthly loan payment)","a":1199.96},{"d":"2025-08-15","desc":"acct *2563 (monthly loan payment)","a":1199.96},{"d":"2025-09-15","desc":"acct *2563 (monthly loan payment)","a":1199.96},{"d":"2025-10-15","desc":"acct *2563 (monthly loan payment)","a":1199.96},{"d":"2025-11-15","desc":"acct *2563 (monthly loan payment)","a":1199.96},{"d":"2025-12-15","desc":"acct *2563 (monthly loan payment)","a":1199.96},{"d":"2026-01-15","desc":"acct *2563 (monthly loan payment)","a":1199.96},{"d":"2026-02-15","desc":"acct *2563 (monthly loan payment)","a":1199.96},{"d":"2026-02-25","desc":"acct *1890 (partial)","a":600.0},{"d":"2026-03-18","desc":"acct *2563","a":1579.8}]},{"name":"Auto insurance Gerald carried for Lindsey \u2014 Yukon's portion (GEICO)","basis":"$391.14/mo x 22 months (Aug 2024 - May 2026)","total":8605.08,"items":[{"d":"2024-08","desc":"Yukon share of GEICO household premium (at documented rate)","a":391.14},{"d":"2024-09","desc":"Yukon share of GEICO household premium (at documented rate)","a":391.14},{"d":"2024-10","desc":"Yukon share of GEICO household premium (at documented rate)","a":391.14},{"d":"2024-11","desc":"Yukon share of GEICO household premium (at documented rate)","a":391.14},{"d":"2024-12","desc":"Yukon share of GEICO household premium (at documented rate)","a":391.14},{"d":"2025-01","desc":"Yukon share of GEICO household premium (at documented rate)","a":391.14},{"d":"2025-02","desc":"Yukon share of GEICO household premium (at documented rate)","a":391.14},{"d":"2025-03","desc":"Yukon share of GEICO household premium (at documented rate)","a":391.14},{"d":"2025-04","desc":"Yukon share of GEICO household premium (at documented rate)","a":391.14},{"d":"2025-05","desc":"Yukon share of GEICO household premium (at documented rate)","a":391.14},{"d":"2025-06","desc":"Yukon share of GEICO household premium (at documented rate)","a":391.14},{"d":"2025-07","desc":"Yukon share of GEICO household premium (at documented rate)","a":391.14},{"d":"2025-08","desc":"Yukon share of GEICO household premium (at documented rate)","a":391.14},{"d":"2025-09","desc":"Yukon share of GEICO household premium (at documented rate)","a":391.14},{"d":"2025-10","desc":"Yukon share of GEICO household premium","a":391.14},{"d":"2025-11","desc":"Yukon share of GEICO household premium","a":391.14},{"d":"2025-12","desc":"Yukon share of GEICO household premium","a":391.14},{"d":"2026-01","desc":"Yukon share of GEICO household premium","a":391.14},{"d":"2026-02","desc":"Yukon share of GEICO household premium","a":391.14},{"d":"2026-03","desc":"Yukon share of GEICO household premium","a":391.14},{"d":"2026-04","desc":"Yukon share of GEICO household premium","a":391.14},{"d":"2026-05","desc":"Yukon share of GEICO household premium","a":391.14}]},{"name":"Health insurance Gerald carried for Lindsey \u2014 monthly premium (NFP group plan)","basis":"$982.38/mo x 22 months (Aug 2024 - May 2026)","total":21612.36,"items":[{"d":"2024-08","desc":"Lindsey's spouse premium (payroll, at documented rate)","a":982.38},{"d":"2024-09","desc":"Lindsey's spouse premium (payroll, at documented rate)","a":982.38},{"d":"2024-10","desc":"Lindsey's spouse premium (payroll, at documented rate)","a":982.38},{"d":"2024-11","desc":"Lindsey's spouse premium (payroll, at documented rate)","a":982.38},{"d":"2024-12","desc":"Lindsey's spouse premium (payroll, at documented rate)","a":982.38},{"d":"2025-01","desc":"Lindsey's spouse premium (payroll, at documented rate)","a":982.38},{"d":"2025-02","desc":"Lindsey's spouse premium (payroll, at documented rate)","a":982.38},{"d":"2025-03","desc":"Lindsey's spouse premium (payroll, at documented rate)","a":982.38},{"d":"2025-04","desc":"Lindsey's spouse premium (payroll, at documented rate)","a":982.38},{"d":"2025-05","desc":"Lindsey's spouse premium (payroll, at documented rate)","a":982.38},{"d":"2025-06","desc":"Lindsey's spouse premium (payroll, at documented rate)","a":982.38},{"d":"2025-07","desc":"Lindsey's spouse premium (payroll, at documented rate)","a":982.38},{"d":"2025-08","desc":"Lindsey's spouse premium (payroll, at documented rate)","a":982.38},{"d":"2025-09","desc":"Lindsey's spouse premium (payroll, at documented rate)","a":982.38},{"d":"2025-10","desc":"Lindsey's spouse premium (payroll)","a":982.38},{"d":"2025-11","desc":"Lindsey's spouse premium (payroll)","a":982.38},{"d":"2025-12","desc":"Lindsey's spouse premium (payroll)","a":982.38},{"d":"2026-01","desc":"Lindsey's spouse premium (payroll)","a":982.38},{"d":"2026-02","desc":"Lindsey's spouse premium (payroll)","a":982.38},{"d":"2026-03","desc":"Lindsey's spouse premium (payroll)","a":982.38},{"d":"2026-04","desc":"Lindsey's spouse premium (payroll)","a":982.38},{"d":"2026-05","desc":"Lindsey's spouse premium (payroll)","a":982.38}]}],"alt":"Paid voluntarily by Gerald, of his own accord, to ease Lindsey's transition to an independent household. Health & GEICO auto: Aug 2024 \u2013 May 2026; vehicle loan: Aug 2024 \u2013 Mar 2026. Underlying statements available on request.","grand_label":"TOTAL VOLUNTARY SUPPORT PROVIDED TO LINDSEY","statement":"For the court's context: none of the payments in this section were ordered or required of Gerald. He made them by choice, month after month \u2014 keeping Lindsey mobile, insured, and covered \u2014 to ease her transition into an independent household. This is support extended in good faith, well beyond his obligations, to help the mother of his children get back on her feet."};
-// ---- executive stat strip ----
+// ---- executive stat strip with click-to-explain drill-downs ----
 (function(){
- var billed=D.cats.reduce((t,c)=>t+c.billed,0);
+ var billed=Math.round(D.cats.reduce(function(t,c){return t+c.billed;},0)*100)/100;
  var add=(ADD&&ADD.grand_total)?ADD.grand_total:0;
- var exh=new Set();(D.items||[]).forEach(function(i){if(i.src&&i.src.t==='exh')exh.add(i.src.exh);});
- var cells=[['Total billed',money(billed),''],['Lindsey’s share (net)',money(D.net),'g'],
-   ['Voluntary support',add?money(add):'—','gold'],['Documented exhibits',String(exh.size||(D.items||[]).length),'']];
- document.getElementById('statstrip').innerHTML=cells.map(function(c){
-   return '<div class="stat '+c[2]+'"><div class="k">'+c[0]+'</div><div class="v">'+c[1]+'</div></div>';}).join('');
+ var reals=new Set(),recs=new Set();
+ (D.items||[]).forEach(function(i){if(i.src&&i.src.t==='exh'){(i.src.rec?recs:reals).add(i.src.exh);}});
+ var exhCount=reals.size+recs.size;
+ var cells=[{k:'billed',lab:'Total billed',v:money(billed),cls:''},
+            {k:'net',lab:'Lindsey’s share (net)',v:money(D.net),cls:'g'},
+            {k:'vol',lab:'Voluntary support',v:add?money(add):'—',cls:'gold'},
+            {k:'exh',lab:'Documented exhibits',v:String(exhCount||(D.items||[]).length),cls:''}];
+ var strip=document.getElementById('statstrip');
+ strip.innerHTML=cells.map(function(c){return '<div class="stat '+c.cls+'" data-k="'+c.k+'"><div class="k">'+c.lab+'</div><div class="v">'+c.v+'</div><div class="more">tap for details ▾</div></div>';}).join('');
+ function catRows(showPct){return D.cats.map(function(c){return '<tr><td>'+c.name+'</td><td class="r">'+money(c.billed)+'</td>'+(showPct?'<td class="r">'+c.basis+'</td>':'')+'<td class="r"><b>'+money(c.owed)+'</b></td></tr>';}).join('');}
+ function detail(k){
+  if(k==='billed')return '<h3>Total billed — '+money(billed)+'</h3><p>The gross total of every bill and invoice in the record, before any split. Lindsey owes only her agreed share of each category — never the full amount. Here is what was billed in each category and her share of it:</p>'
+   +'<table><thead><tr><th>Category</th><th class="r">Total billed</th><th class="r">Lindsey’s share</th></tr></thead><tbody>'+catRows(false)+'<tr class="tot"><td>Total</td><td class="r">'+money(billed)+'</td><td class="r">'+money(D.net)+'</td></tr></tbody></table>';
+  if(k==='net')return '<h3>Lindsey’s share (net) — '+money(D.net)+'</h3><p>What Lindsey owes. Each category is multiplied by its agreed or court-ordered percentage, then added together — nothing here is a full bill, only her portion. Household &amp; utilities split 50/50; school and medical 12% (her income share under the Consent Judgment of Jan 12, 2025); moving 80%; direct advances to Lindsey 100%.</p>'
+   +'<table><thead><tr><th>Category</th><th class="r">Billed</th><th class="r">Her %</th><th class="r">She owes</th></tr></thead><tbody>'+catRows(true)+'<tr class="tot"><td>NET DUE TO NED</td><td></td><td></td><td class="r">'+money(D.net)+'</td></tr></tbody></table>';
+  if(k==='vol'){var rows=(ADD&&ADD.sections)?ADD.sections.map(function(s){return '<tr><td>'+s.name+'</td><td class="r">'+(s.basis||'')+'</td><td class="r"><b>'+money(s.total)+'</b></td></tr>';}).join(''):'';
+   return '<h3>Voluntary support — '+money(add)+'</h3><p>Amounts Ned paid on Lindsey’s behalf that are <b>separate from the claim above and NOT added to what she owes</b> — her vehicle loan, its insurance, and her health premium, carried voluntarily to help her re-establish. Shown for the court’s context.</p>'
+   +'<table><thead><tr><th>What Ned carried</th><th class="r">Period</th><th class="r">Total</th></tr></thead><tbody>'+rows+'<tr class="tot"><td>Total voluntary support</td><td></td><td class="r">'+money(add)+'</td></tr></tbody></table>';}
+  if(k==='exh')return '<h3>Documented exhibits — '+exhCount+'</h3><p>Every charge on this page links to proof. Of the '+exhCount+' exhibits, <b>'+reals.size+'</b> are the actual bills, invoices, or receipts, and <b>'+recs.size+'</b> are source records that document a figure taken from a lender or biller statement (the underlying statement available on request). All are viewable in the four proof volumes in the Documents section below.</p>'
+   +'<p style="margin:0"><span class="badge">'+reals.size+' actual bills</span> &nbsp; <span class="badge">'+recs.size+' source records</span> &nbsp; <span class="badge">4 proof volumes</span></p>';
+  return '';
+ }
+ var det=document.getElementById('statdetail'),cur=null;
+ function show(k){
+  if(cur===k){det.innerHTML='';cur=null;strip.querySelectorAll('.stat').forEach(function(s){s.classList.remove('active');});return;}
+  cur=k;det.innerHTML='<div class="sd"><span class="close">✕ close</span>'+detail(k)+'</div>';
+  strip.querySelectorAll('.stat').forEach(function(s){s.classList.toggle('active',s.getAttribute('data-k')===k);});
+  det.querySelector('.close').onclick=function(){show(k);};
+  det.scrollIntoView({behavior:'smooth',block:'nearest'});
+ }
+ strip.querySelectorAll('.stat').forEach(function(s){s.onclick=function(){show(s.getAttribute('data-k'));};});
 })();
 if(ADD&&ADD.sections){
  if(ADD.title) document.getElementById('addl-h').textContent=ADD.title;
