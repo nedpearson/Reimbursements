@@ -169,7 +169,7 @@ def build(folder):
         else:
             row=dict(date=me.get('date',''),vendor=me['vendor'],category=me['category'],
                 desc=me['description'],amount=round(float(me['amount']),2),
-                file='(manual entry - config.json)',include=True,note='manual')
+                file=me.get('source','(manual entry - config.json)'),include=True,note='manual')
             if me.get('flat_share') is not None: row['flat_share']=float(me['flat_share'])
             rows.append(row)
     return rows

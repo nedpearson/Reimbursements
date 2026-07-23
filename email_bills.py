@@ -79,9 +79,9 @@ ENTRIES=[
  dict(v='PODS (Storage)',cat='Storage',d='2026-04-10',a=279.00,n='recurring rate from PODS order (email)'),
  dict(v='PODS (Storage)',cat='Storage',d='2026-05-15',a=330.75,n='final month + pickup fee 51.75 (email)'),
  # --- De Roman's Construction (sale-prep work at 8792 W Fairway) — 50% per Ned ---
- dict(v="De Roman's Construction",cat="Construction (De Roman's)",d='2026-03-24',a=5600.00,
+ dict(v="De Roman's Construction",cat="Construction & Home Improvements",d='2026-03-24',a=5600.00,
       n="inv#0000717 - renovation phase 1, sale prep (paid; 'payment to Paco')",inv='DR0000717'),
- dict(v="De Roman's Construction",cat="Construction (De Roman's)",d='2026-05-31',a=10300.00,
+ dict(v="De Roman's Construction",cat="Construction & Home Improvements",d='2026-05-31',a=10300.00,
       n="inv#0001127 - shower & laundry room completion, realtor punch list (paid)",inv='DR0001127'),
  # --- BR Water Jan-May 2025 (from unlocked bills in Ned's 6/17/25 email; current charges per month) ---
  dict(v='BR Water',cat='Utilities',d='2025-01-20',a=177.42,n='Water/Sewer Jan 2025 current charges (email)',inv='BRW-2501-R'),

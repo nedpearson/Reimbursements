@@ -11,7 +11,7 @@
     "Medical/Dental/Vision": 12,
     "Mortgage": 50,
     "Moving/Household": 80,
-    "Construction (De Roman's)": 50,
+    "Construction & Home Improvements": 50,
     "Labor": 50,
     "Home Repairs & A/C": 50,
     "Advances to Lindsey": 100
@@ -113,6 +113,15 @@
       "amount": 3600.0,
       "date": "2026-07-22",
       "_kidsac": true
+    },
+    {
+      "vendor": "Hager Painting",
+      "category": "Construction & Home Improvements",
+      "description": "Interior painting at 8792 W Fairway Dr - touch-up and partial painting throughout, plus fully painting six walls. Hager Painting invoice #811012, 6/5/2026 (Rick Hager, 225-954-7206).",
+      "amount": 600.0,
+      "date": "2026-06-05",
+      "source": "Misc/HagerPainting_Inv811012_June2026.jpg",
+      "_painting": true
     }
   ],
   "_manual_note": "Items with no bill/PDF in the folder. 'recurring_monthly' expands to one line per month (dated the 1st).",

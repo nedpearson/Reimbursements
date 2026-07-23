@@ -33,6 +33,11 @@ def _origin_of(r):
     if f.startswith('(from Gmail') or 'email' in note.lower():
         return ("Recorded from the biller's own bill/statement email (%s) in Gerald Pearson's email records."%(r.get('vendor') or 'biller'),
                 "The original email/PDF for this month is available on request.")
+    import re as _re
+    m=_re.search(r'invoice #?\s*(\w+)',desc)
+    if m or 'invoice' in desc or 'receipt' in desc:
+        return ("Recorded from the vendor's written invoice/receipt from %s%s."%(r.get('vendor') or 'the vendor',(' (invoice #%s)'%m.group(1)) if m else ''),
+                "The signed invoice/receipt is on file and available on request.")
     return ("Agreed amount recorded per the parties for this item.",
             "Supporting detail is available on request.")
 
@@ -42,6 +47,8 @@ def _origin_short(r):
     if cat=='AT&T Business' or r.get('flat_share') is not None: return 'AT&T shared-plan portion'
     if 'Venmo' in f or f.lower().endswith('.csv'): return 'Venmo statement'
     if f.startswith('(from Gmail'): return 'Biller email/statement'
+    d=(r.get('desc') or '').lower()
+    if 'invoice' in d or 'receipt' in d: return 'Vendor invoice/receipt'
     return 'Agreed amount'
 
 def _draw_source_record(body, exh, cat, r):
@@ -147,7 +154,7 @@ def build(bills_folder=None, progress=print):
     fin={rel:dict(exh=m['exh'],cat=m['cat'],vol=volmap[m['page']][0],page=volmap[m['page']][1],base=m['base']) for rel,m in mapping.items()}
     fin_id={rid:dict(exh=m['exh'],cat=m['cat'],vol=volmap[m['page']][0],page=volmap[m['page']][1],doc=m['doc']) for rid,m in mapping_id.items()}
     # ---- portal data ----
-    CATS=['Mortgage','Utilities','Pool',"Construction (De Roman's)",'Home Repairs & A/C','Advances to Lindsey','School/Tuition','AT&T Business','Storage','Cleaning','Lawn/Yard','Moving/Household','Labor','Medical/Dental/Vision']
+    CATS=['Mortgage','Utilities','Pool',"Construction & Home Improvements",'Home Repairs & A/C','Advances to Lindsey','School/Tuition','AT&T Business','Storage','Cleaning','Lawn/Yard','Moving/Household','Labor','Medical/Dental/Vision']
     items=[]; credits=[]
     for r in rows:
         if r['vendor']=='Paid TO Lindsey' and r.get('amount'):
