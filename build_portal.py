@@ -165,7 +165,7 @@ def build(bills_folder=None, progress=print):
         if f in fin: m=fin[f]; src=dict(t='exh',exh=m['exh'],vol=m['vol'],pg=m['page'],doc=m['base'],rec=False)
         elif rid in fin_id: m=fin_id[rid]; src=dict(t='exh',exh=m['exh'],vol=m['vol'],pg=m['page'],doc=m['doc'],rec=True)
         else: src=dict(t='manual',doc='Agreed amount' if not r.get('flat_share') else 'Agreed portion')
-        items.append(dict(cat=r['category'],d=r.get('date',''),v=r['vendor'],desc=(r.get('desc') or '')[:70],a=r['amount'],h=r['her_share'],src=src,id=rid))
+        items.append(dict(cat=r['category'],d=r.get('date',''),v=r['vendor'],desc=(r.get('desc') or '')[:70],a=r['amount'],h=r['her_share'],src=src,id=rid,ref=r.get('ref','')))
     cats={}
     for it in items:
         c=cats.setdefault(it['cat'],dict(n=0,billed=0.0,owed=0.0)); c['n']+=1; c['billed']+=it['a']; c['owed']+=it['h']

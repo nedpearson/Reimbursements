@@ -23,6 +23,28 @@ def item_id(r):
     key='%s|%s|%s|%s'%(r.get('category',''),r.get('date',''),r.get('vendor',''),r.get('amount',''))
     return hashlib.md5(key.encode('utf-8')).hexdigest()[:10]
 
+# order categories are displayed in (portal + statement) so ref numbers read top-to-bottom
+DISPLAY_CATS=['Mortgage','Utilities','Pool',"Construction & Home Improvements",'Home Repairs & A/C',
+    'Advances to Lindsey','School/Tuition','AT&T Business','Storage','Cleaning','Lawn/Yard',
+    'Moving/Household','Labor','Medical/Dental/Vision']
+def assign_refs(rows):
+    """Give every counted charge a stable, human-friendly reference like C-001, in the same
+    order it appears on the portal/statement (category, then vendor by share, then date)."""
+    from collections import defaultdict
+    pos={c:i for i,c in enumerate(DISPLAY_CATS)}
+    billable=[r for r in rows if r.get('include') and r.get('in_window',True)
+              and r.get('amount') is not None and r.get('her_share') is not None]
+    bycat=defaultdict(list)
+    for r in billable: bycat[r['category']].append(r)
+    n=0
+    for cat in sorted(bycat, key=lambda c: pos.get(c, 99)):
+        vg=defaultdict(list)
+        for r in bycat[cat]: vg[r['vendor']].append(r)
+        for v in sorted(vg, key=lambda vv:-sum(x['her_share'] for x in vg[vv])):
+            for r in sorted(vg[v], key=lambda x:(x.get('date') or '')):
+                n+=1; r['ref']='C-%03d'%n
+    return rows
+
 def infer_venmo_dates(raw, asof_year=2026):
     """raw: list of (datestr, amt, note). Assign real dates walking newest->oldest."""
     out=[]; year=asof_year; prev_m=13
@@ -215,9 +237,10 @@ def generate(folder, outdir=None, progress=None):
         say("(backup skipped: %s)"%_be)
     say("Reading bills in: "+folder)
     rows=apply_split(build(folder))
+    assign_refs(rows)
     say("Categorized %d line items."%len(rows))
     from safewrite import write_via_temp, write_text
-    cols=['date','vendor','category','desc','amount','pct','her_share','include','in_window','note','file']
+    cols=['ref','date','vendor','category','desc','amount','pct','her_share','include','in_window','note','file']
     def _wcsv(tmp):
         with open(tmp,'w',newline='',encoding='utf-8') as f:
             w=csv.DictWriter(f,fieldnames=cols); w.writeheader()

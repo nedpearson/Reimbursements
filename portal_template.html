@@ -77,6 +77,7 @@ td.r,th.r{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
 .badge.email{background:#FBF1E0;color:#8a6100}.badge.venmo{background:#E5F4EB;color:#1c6b3a}
 tr.vgrp td{background:#EEF2FA;color:var(--navy);font-weight:700;font-size:.82rem;padding:9px 12px;border-top:2px solid #d5deee}
 tr.vgrp .vmeta{font-weight:600;color:#6d7c98;font-size:.74rem}
+.refno{font-family:'Source Serif 4',Georgia,serif;font-size:.76rem;font-weight:700;color:var(--navy2);background:#EEF2FA;border:1px solid #dbe3f1;border-radius:6px;padding:1px 7px;white-space:nowrap}
 /* ---------- documents ---------- */
 .docs{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;padding:18px 20px}
 .doc{border:1px solid var(--line);border-radius:12px;padding:14px 16px;text-decoration:none;color:var(--ink);display:block;transition:.15s;background:#FCFDFF}
@@ -208,7 +209,7 @@ function srcCell(s){if(!s)return '';
  if(s.t==='email')return '<span class="badge email">'+s.doc+'</span>';
  if(s.t==='venmo')return '<span class="badge venmo">'+s.doc+'</span>';
  return '<span class="badge">'+(s.doc||'')+'</span>';}
-function itemRef(i){return (i.src&&i.src.t==='exh'?('Exhibit '+i.src.exh+' — '):'')+i.v+' '+(i.d||'')+' '+money(i.a);}
+function itemRef(i){return (i.ref?(i.ref+' · '):'')+(i.src&&i.src.t==='exh'?('Exhibit '+i.src.exh+' — '):'')+i.v+' '+(i.d||'')+' '+money(i.a);}
 function statusCell(i){
  if(PAID.has(i.id)||(i.src&&i.src.t==='exh'&&PAID_EXH.has(i.src.exh))) return '<span class="paid">PAID ✓</span>';
  if(PENDING.has(i.id)) return '<span class="dstat review">PROOF SUBMITTED — under review</span>';
@@ -248,7 +249,7 @@ const PAID_EXH=new Set();
    +(d.response?('<div class="a"><b>Ned:</b> '+d.response+'</div>'):'')+'</div>');
  });
 })();
-function itemRow(i){return '<tr'+((PAID.has(i.id)||(i.src&&i.src.t==='exh'&&PAID_EXH.has(i.src.exh)))?' style="background:#F1F9F3"':'')+'><td data-label="Date">'+(i.d||'—')+'</td><td data-label="Vendor">'+i.v+'</td><td class="desc" data-label="Description">'+i.desc+'</td><td class="r" data-label="Bill amount">'+money(i.a)+'</td><td class="r" data-label="Her share"><b>'+money(i.h)+'</b></td><td class="src" data-label="Source of truth">'+srcCell(i.src)+'</td><td data-label="">'+statusCell(i)+'</td></tr>';}
+function itemRow(i){return '<tr'+((PAID.has(i.id)||(i.src&&i.src.t==='exh'&&PAID_EXH.has(i.src.exh)))?' style="background:#F1F9F3"':'')+'><td data-label="Ref #"><span class="refno">'+(i.ref||'')+'</span></td><td data-label="Date">'+(i.d||'—')+'</td><td data-label="Vendor">'+i.v+'</td><td class="desc" data-label="Description">'+i.desc+'</td><td class="r" data-label="Bill amount">'+money(i.a)+'</td><td class="r" data-label="Her share"><b>'+money(i.h)+'</b></td><td class="src" data-label="Source of truth">'+srcCell(i.src)+'</td><td data-label="">'+statusCell(i)+'</td></tr>';}
 function groupedRows(items){
  // group the category's charges by vendor, with a subtotal header per vendor
  var g={},order=[];
@@ -258,7 +259,7 @@ function groupedRows(items){
  order.forEach(function(v){
   var rows=g[v].slice().sort((a,b)=>(a.d||'').localeCompare(b.d||''));
   var billed=rows.reduce((t,x)=>t+x.a,0),share=rows.reduce((t,x)=>t+x.h,0);
-  html+='<tr class="vgrp"><td colspan="3">'+v+' <span class="vmeta">· '+rows.length+' charge'+(rows.length>1?'s':'')+'</span></td><td class="r">'+money(billed)+'</td><td class="r">'+money(share)+'</td><td colspan="2" class="vmeta">vendor subtotal</td></tr>';
+  html+='<tr class="vgrp"><td colspan="4">'+v+' <span class="vmeta">· '+rows.length+' charge'+(rows.length>1?'s':'')+'</span></td><td class="r">'+money(billed)+'</td><td class="r">'+money(share)+'</td><td colspan="2" class="vmeta">vendor subtotal</td></tr>';
   html+=rows.map(itemRow).join('');
  });
  return html;
@@ -267,7 +268,7 @@ const wrap=document.getElementById('cats');
 D.cats.forEach(c=>{const items=D.items.filter(i=>i.cat===c.name);
  var nv=new Set(items.map(i=>i.v)).size;
  const card=document.createElement('div');card.className='card';
- card.innerHTML='<div class="cat"><div><div class="nm">'+c.name+'</div><div class="meta">'+c.n+' charge'+(c.n>1?'s':'')+' · '+nv+' vendor'+(nv>1?'s':'')+' · billed '+money(c.billed)+' · her share '+c.basis+'</div></div><div class="rt"><div class="owedwrap"><div class="ol">Lindsey owes</div><div class="owed">'+money(c.owed)+'</div></div><div class="chev">▶</div></div></div><div class="items"><table><thead><tr><th>Date</th><th>Vendor</th><th>Description</th><th class="r">Bill amount</th><th class="r">Her share</th><th>Source of truth</th><th></th></tr></thead><tbody>'+groupedRows(items)+'</tbody></table></div>';
+ card.innerHTML='<div class="cat"><div><div class="nm">'+c.name+'</div><div class="meta">'+c.n+' charge'+(c.n>1?'s':'')+' · '+nv+' vendor'+(nv>1?'s':'')+' · billed '+money(c.billed)+' · her share '+c.basis+'</div></div><div class="rt"><div class="owedwrap"><div class="ol">Lindsey owes</div><div class="owed">'+money(c.owed)+'</div></div><div class="chev">▶</div></div></div><div class="items"><table><thead><tr><th>Ref #</th><th>Date</th><th>Vendor</th><th>Description</th><th class="r">Bill amount</th><th class="r">Her share</th><th>Source of truth</th><th></th></tr></thead><tbody>'+groupedRows(items)+'</tbody></table></div>';
  card.querySelector('.cat').onclick=()=>card.classList.toggle('open');wrap.appendChild(card);});
 
 const ADD=__ADDITIONAL__;

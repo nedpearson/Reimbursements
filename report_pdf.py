@@ -128,21 +128,22 @@ def build_pdf(rows, cfg, out, prepared_for="Lindsey Pearson", prepared_by='Geral
         for r in items: vg.setdefault(r['vendor'],[]).append(r)
         vorder=sorted(vg,key=lambda v:-sum(round(x['amount']*pct(c),2) if x.get('her_share') is None else x['her_share'] for x in vg[v]))
         E.append(Paragraph(f"{c} &nbsp;—&nbsp; {_money(cats[c][1])} billed, {_money(cats[c][2])} owed at {pctlabel(c)}",h2))
-        d=[['Date','Vendor','Description','Amount']]; grp_rows=[]
+        d=[['Ref #','Date','Vendor','Description','Amount']]; grp_rows=[]
         for v in vorder:
             rows=sorted(vg[v],key=lambda x:x['date'] or '')
             vbill=sum(x['amount'] for x in rows)
-            d.append([f"{v}  ({len(rows)})",'',f"vendor subtotal — billed",_money(vbill)]); grp_rows.append(len(d)-1)
+            d.append([f"{v}  ({len(rows)})",'','',f"vendor subtotal — billed",_money(vbill)]); grp_rows.append(len(d)-1)
             for r in rows:
-                d.append([r['date'] or '',r['vendor'],(r['desc'] or '')[:52],_money(r['amount'])])
-        tt=Table(d,colWidths=[0.9*inch,1.7*inch,3.1*inch,1.0*inch],repeatRows=1)
+                d.append([r.get('ref',''),r['date'] or '',r['vendor'],(r['desc'] or '')[:52],_money(r['amount'])])
+        tt=Table(d,colWidths=[0.7*inch,0.85*inch,1.55*inch,2.7*inch,0.95*inch],repeatRows=1)
         stylecmds=[('BACKGROUND',(0,0),(-1,0),NAVY),('TEXTCOLOR',(0,0),(-1,0),colors.white),
             ('FONTNAME',(0,0),(-1,0),'Helvetica-Bold'),('FONTSIZE',(0,0),(-1,-1),7.6),
-            ('ALIGN',(3,0),(3,-1),'RIGHT'),('GRID',(0,0),(-1,-1),0.3,colors.HexColor('#CCCCCC')),
+            ('ALIGN',(4,0),(4,-1),'RIGHT'),('GRID',(0,0),(-1,-1),0.3,colors.HexColor('#CCCCCC')),
+            ('FONTNAME',(0,1),(0,-1),'Helvetica-Bold'),('TEXTCOLOR',(0,1),(0,-1),NAVY),
             ('TOPPADDING',(0,0),(-1,-1),3),('BOTTOMPADDING',(0,0),(-1,-1),3),('VALIGN',(0,0),(-1,-1),'MIDDLE')]
         for gr in grp_rows:
             stylecmds+=[('BACKGROUND',(0,gr),(-1,gr),colors.HexColor('#EAF0FA')),('FONTNAME',(0,gr),(-1,gr),'Helvetica-Bold'),
-                        ('SPAN',(0,gr),(1,gr)),('TEXTCOLOR',(0,gr),(-1,gr),NAVY)]
+                        ('SPAN',(0,gr),(2,gr)),('TEXTCOLOR',(0,gr),(-1,gr),NAVY)]
         tt.setStyle(TableStyle(stylecmds))
         E.append(tt); E.append(Spacer(1,10))
     if credits:
