@@ -1,12 +1,12 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="noindex,nofollow"><title>Divorce Ledger Reimbursements</title>
+<meta name="robots" content="noindex,nofollow"><title>Pearson Expense Reimbursement</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet">
 <style>
 :root{
- --ink:#f8fafc;--navy:#f8fafc;--navy2:#93c5fd;--gold:#b0873b;--gold2:#caa25a;
- --green:#3b82f6;--green2:#2563eb;--paper:#0f172a;--card:rgba(30,41,59,0.7);--line:rgba(255,255,255,0.08);
- --muted:#94a3b8;--shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.4)}
+ --ink:#17233a;--navy:#14294d;--navy2:#22406f;--gold:#b0873b;--gold2:#caa25a;
+ --green:#1c7a46;--green2:#249256;--paper:#EEF1F6;--card:#ffffff;--line:#E4E8F0;
+ --muted:#6a7486;--shadow:0 1px 2px rgba(20,30,60,.04),0 6px 20px rgba(20,30,60,.06)}
 *{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
 html{-webkit-text-size-adjust:100%}
 body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
@@ -15,7 +15,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,s
 .serif{font-family:'Source Serif 4',Georgia,'Times New Roman',serif}
 .wrap{max-width:1060px;margin:0 auto;padding:0 20px}
 /* ---------- header ---------- */
-header{position:relative;background:transparent;color:#fff;padding:0;overflow:hidden}
+header{position:relative;background:linear-gradient(160deg,#0f1f3d 0%,#17305c 55%,#20386b 100%);color:#fff;padding:0;overflow:hidden}
 header::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--gold2),var(--gold))}
 header::after{content:"";position:absolute;right:-80px;top:-80px;width:320px;height:320px;border-radius:50%;
  background:radial-gradient(circle,rgba(176,135,59,.14),transparent 68%)}
@@ -39,7 +39,7 @@ header::after{content:"";position:absolute;right:-80px;top:-80px;width:320px;hei
 .hero .balrow{font-size:.82rem;opacity:.95;margin-top:7px}
 .hero .right{display:flex;align-items:center;gap:18px;flex-wrap:wrap;position:relative;z-index:1}
 .hero b#bignum{font-family:'Source Serif 4',Georgia,serif;font-size:2.5rem;font-weight:700;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
-.emailbtn{display:inline-flex;align-items:center;gap:6px;background:var(--card);color:var(--green);font-weight:700;
+.emailbtn{display:inline-flex;align-items:center;gap:6px;background:#fff;color:var(--green);font-weight:700;
  border:none;border-radius:11px;padding:12px 18px;text-decoration:none;font-size:.92rem;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.12)}
 .emailbtn:hover{background:#f0fbf4}
 /* ---------- stat strip ---------- */
@@ -55,9 +55,9 @@ header::after{content:"";position:absolute;right:-80px;top:-80px;width:320px;hei
 #statdetail{margin:2px 0 6px}
 .sd{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--navy);border-radius:12px;padding:16px 20px;box-shadow:var(--shadow)}
 .sd h3{font-family:'Source Serif 4',Georgia,serif;color:var(--navy);font-size:1.08rem;margin-bottom:7px}
-.sd p{font-size:.9rem;color:#e2e8f0;line-height:1.6;margin-bottom:11px}
-.sd table{font-size:.82rem;margin-top:2px}.sd th{background:rgba(255,255,255,0.05)}.sd th,.sd td{padding:6px 11px}
-.sd .tot td{font-weight:700;color:var(--navy);border-top:2px solid var(--line);background:rgba(255,255,255,0.02)}
+.sd p{font-size:.9rem;color:#2b3444;line-height:1.6;margin-bottom:11px}
+.sd table{font-size:.82rem;margin-top:2px}.sd th{background:#F1F4FA}.sd th,.sd td{padding:6px 11px}
+.sd .tot td{font-weight:700;color:var(--navy);border-top:2px solid #cdd8ee;background:#F4F6FB}
 .sd .close{float:right;color:var(--muted);cursor:pointer;font-size:.78rem;font-weight:600}
 .sd .close:hover{color:var(--navy)}
 /* ---------- section headings ---------- */
@@ -78,63 +78,63 @@ h2{font-family:'Source Serif 4',Georgia,serif;color:var(--navy);font-size:1.28re
 .cat .owedwrap .ol{font-size:.62rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:700}
 .cat .owed{font-family:'Source Serif 4',Georgia,serif;font-weight:700;color:var(--navy);white-space:nowrap;font-size:1.32rem;font-variant-numeric:tabular-nums}
 .chev{transition:.22s;color:#b7c0d2;font-size:.9rem}.open .chev{transform:rotate(90deg);color:var(--navy2)}
-.items{display:none;border-top:1px solid var(--line);overflow-x:auto;background:transparent}.open .items{display:block}
+.items{display:none;border-top:1px solid var(--line);overflow-x:auto;background:#FBFCFE}.open .items{display:block}
 table{width:100%;border-collapse:collapse;font-size:.85rem}
-th{background:rgba(255,255,255,0.05);color:var(--navy);text-align:left;padding:10px 12px;font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;font-weight:700;border-bottom:1px solid var(--line)}
-td{padding:10px 12px;border-top:1px solid var(--line);vertical-align:top}
+th{background:#F1F4FA;color:var(--navy);text-align:left;padding:10px 12px;font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;font-weight:700;border-bottom:1px solid var(--line)}
+td{padding:10px 12px;border-top:1px solid #EDF0F6;vertical-align:top}
 td.r,th.r{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
 .src a{color:var(--navy2);font-weight:600;text-decoration:none;border-bottom:1px dashed #a9b6d0}
 .src a:hover{color:var(--green);border-color:var(--green)}
-.badge{display:inline-block;font-size:.7rem;padding:2px 9px;border-radius:20px;background:rgba(255,255,255,0.1);color:var(--navy)}
-.badge.email{background:rgba(217,119,6,0.2);color:#fbbf24}.badge.venmo{background:rgba(16,185,129,0.2);color:#34d399}
-tr.vgrp td{background:rgba(255,255,255,0.03);color:var(--navy);font-weight:700;font-size:.82rem;padding:9px 12px;border-top:2px solid var(--line)}
+.badge{display:inline-block;font-size:.7rem;padding:2px 9px;border-radius:20px;background:#EAEEF7;color:var(--navy)}
+.badge.email{background:#FBF1E0;color:#8a6100}.badge.venmo{background:#E5F4EB;color:#1c6b3a}
+tr.vgrp td{background:#EEF2FA;color:var(--navy);font-weight:700;font-size:.82rem;padding:9px 12px;border-top:2px solid #d5deee}
 tr.vgrp .vmeta{font-weight:600;color:#6d7c98;font-size:.74rem}
-.refno{font-family:'Source Serif 4',Georgia,serif;font-size:.76rem;font-weight:700;color:var(--navy2);background:rgba(255,255,255,0.03);border:1px solid var(--line);border-radius:6px;padding:1px 7px;white-space:nowrap}
+.refno{font-family:'Source Serif 4',Georgia,serif;font-size:.76rem;font-weight:700;color:var(--navy2);background:#EEF2FA;border:1px solid #dbe3f1;border-radius:6px;padding:1px 7px;white-space:nowrap}
 /* ---------- documents ---------- */
 .docs{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;padding:18px 20px}
-.doc{border:1px solid var(--line);border-radius:12px;padding:14px 16px;text-decoration:none;color:var(--ink);display:block;transition:.15s;background:rgba(30,41,59,0.5)}
-.doc:hover{border-color:var(--navy2);background:rgba(30,41,59,0.9);transform:translateY(-1px)}
+.doc{border:1px solid var(--line);border-radius:12px;padding:14px 16px;text-decoration:none;color:var(--ink);display:block;transition:.15s;background:#FCFDFF}
+.doc:hover{border-color:var(--navy2);background:#F3F6FC;transform:translateY(-1px)}
 .doc b{color:var(--navy);display:block;font-size:.92rem;margin-bottom:2px}.doc span{color:var(--muted);font-size:.78rem}
 /* ---------- credits / paid / disputes ---------- */
-.credit td{color:#34d399}
+.credit td{color:#1c6b3a}
 footer{color:#8a92a4;font-size:.76rem;text-align:center;margin:40px 0 20px;line-height:1.7}
 footer .rule{height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);margin:0 0 16px}
-.dbtn{display:inline-block;font-size:.72rem;color:#f87171;border:1px solid #e0b3aa;border-radius:20px;padding:4px 11px;text-decoration:none;white-space:nowrap;cursor:pointer;background:var(--card);font-weight:600}
-.dbtn:hover{background:rgba(239,68,68,0.2);border-color:#c98a7d}
+.dbtn{display:inline-block;font-size:.72rem;color:#9a3324;border:1px solid #e0b3aa;border-radius:20px;padding:4px 11px;text-decoration:none;white-space:nowrap;cursor:pointer;background:#fff;font-weight:600}
+.dbtn:hover{background:#FDEEEA;border-color:#c98a7d}
 .dstat{display:inline-block;font-size:.72rem;font-weight:700;padding:3px 11px;border-radius:20px}
-.dstat.review{background:rgba(217,119,6,0.2);color:#fbbf24}.dstat.accepted{background:rgba(16,185,129,0.2);color:#34d399}.dstat.declined{background:rgba(239,68,68,0.2);color:#f87171}.dstat.resolved{background:rgba(255,255,255,0.1);color:var(--navy)}
-.paid{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 9px;border-radius:20px;background:rgba(16,185,129,0.2);color:#34d399;white-space:nowrap}
+.dstat.review{background:#FBF1E0;color:#8a6100}.dstat.accepted{background:#E5F4EB;color:#1c6b3a}.dstat.declined{background:#FDEEEA;color:#9a3324}.dstat.resolved{background:#EAEEF7;color:var(--navy)}
+.paid{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 9px;border-radius:20px;background:#E5F4EB;color:#1c6b3a;white-space:nowrap}
 .balrow{font-size:.82rem;opacity:.92;margin-top:4px}
 .pbitem{border-top:1px solid var(--line);padding:14px 20px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.pbitem .amt{font-weight:700;color:#34d399;white-space:nowrap;font-variant-numeric:tabular-nums}
+.pbitem .amt{font-weight:700;color:#1c6b3a;white-space:nowrap;font-variant-numeric:tabular-nums}
 .howto{padding:18px 20px;font-size:.88rem;line-height:1.65}
 .howto ol{margin:8px 0 0 20px}.howto li{margin:6px 0}
 .dispitem{border-top:1px solid var(--line);padding:14px 20px}
 .dispitem .q{margin:4px 0;color:var(--ink)}.dispitem .a{margin:4px 0;color:var(--navy)}
 /* ---------- forms ---------- */
 .tabs{display:flex;gap:6px;padding:16px 18px 0;flex-wrap:wrap}
-.tab{border:1px solid var(--line);border-bottom:none;background:rgba(30,41,59,0.7);color:var(--navy);font-weight:600;font-size:.9rem;padding:11px 17px;border-radius:11px 11px 0 0;cursor:pointer}
-.tab.on{background:var(--green);color:#fff;border-color:var(--green)}
+.tab{border:1px solid var(--line);border-bottom:none;background:#F3F5FA;color:var(--navy);font-weight:600;font-size:.9rem;padding:11px 17px;border-radius:11px 11px 0 0;cursor:pointer}
+.tab.on{background:var(--navy);color:#fff;border-color:var(--navy)}
 .form{padding:18px 20px}
 .form label{display:block;font-weight:600;color:var(--navy);font-size:.84rem;margin:13px 0 5px}
-.form input,.form select,.form textarea{width:100%;font:inherit;font-size:1rem;padding:12px 14px;border:1.5px solid var(--line);border-radius:11px;background:rgba(15,23,42,0.8);color:var(--ink)}
+.form input,.form select,.form textarea{width:100%;font:inherit;font-size:1rem;padding:12px 14px;border:1.5px solid var(--line);border-radius:11px;background:#fff;color:var(--ink)}
 .form input:focus,.form select:focus,.form textarea:focus{outline:none;border-color:var(--navy2);box-shadow:0 0 0 3px rgba(34,64,111,.12)}
 .form textarea{min-height:96px;resize:vertical}
-.filewrap{border:2px dashed #c3ccdd;border-radius:12px;padding:18px;text-align:center;background:rgba(30,41,59,0.4);cursor:pointer;transition:.15s}
-.filewrap:hover,.filewrap.drag{border-color:var(--navy2);background:rgba(30,41,59,0.8)}
+.filewrap{border:2px dashed #c3ccdd;border-radius:12px;padding:18px;text-align:center;background:#FAFBFE;cursor:pointer;transition:.15s}
+.filewrap:hover,.filewrap.drag{border-color:var(--navy2);background:#F1F5FD}
 .filewrap .fi{color:var(--navy);font-weight:600;font-size:.92rem}.filewrap .fs{color:var(--muted);font-size:.78rem;margin-top:3px}
-.subbtn{width:100%;margin-top:16px;background:var(--green);color:#fff;border:none;border-radius:11px;padding:15px;font-size:1.02rem;font-weight:700;cursor:pointer;transition:.15s}
-.subbtn:hover{background:var(--green2)}.subbtn:disabled{opacity:.6;cursor:default}
+.subbtn{width:100%;margin-top:16px;background:var(--navy);color:#fff;border:none;border-radius:11px;padding:15px;font-size:1.02rem;font-weight:700;cursor:pointer;transition:.15s}
+.subbtn:hover{background:var(--navy2)}.subbtn:disabled{opacity:.6;cursor:default}
 .formmsg{margin-top:12px;padding:12px 14px;border-radius:10px;font-size:.9rem;display:none}
-.formmsg.ok{display:block;background:rgba(16,185,129,0.2);color:#34d399}.formmsg.err{display:block;background:rgba(239,68,68,0.2);color:#f87171}
-.setupnote{padding:16px 18px;font-size:.9rem;color:var(--muted);background:rgba(176,135,59,0.1);border-radius:11px;margin:14px}
+.formmsg.ok{display:block;background:#E5F4EB;color:#1c6b3a}.formmsg.err{display:block;background:#FDEEEA;color:#9a3324}
+.setupnote{padding:16px 18px;font-size:.9rem;color:var(--muted);background:#FBF6EC;border-radius:11px;margin:14px}
 /* ---------- additional (gold) ---------- */
 .addcard .cat::before{background:var(--gold)}
 .goldbanner{background:linear-gradient(135deg,#7a5c22,#9a7b3f);color:#fff;border-radius:14px;padding:20px 24px;margin:14px 0;
  display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;box-shadow:0 8px 24px rgba(122,92,34,.2)}
 .goldbanner .lbl{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700}
 .goldbanner b{font-family:'Source Serif 4',Georgia,serif;font-size:1.7rem;font-weight:700;font-variant-numeric:tabular-nums}
-.courtbox{border-left:4px solid var(--navy);background:rgba(255,255,255,0.03);border-radius:0 12px 12px 0;padding:16px 20px;font-size:.92rem;line-height:1.6;margin:12px 0}
+.courtbox{border-left:4px solid var(--navy);background:#F6F8FC;border-radius:0 12px 12px 0;padding:16px 20px;font-size:.92rem;line-height:1.6;margin:12px 0}
 /* ---------- sticky mobile bar ---------- */
 #mbar{display:none}
 /* ---------- mobile ---------- */
@@ -157,12 +157,12 @@ footer .rule{height:1px;background:linear-gradient(90deg,transparent,var(--line)
  .items td::before{content:attr(data-label);font-weight:600;color:var(--muted);font-size:.76rem;text-align:left;flex:0 0 auto}
  .items td[data-label=""]{justify-content:flex-end}.items td[data-label=""]::before{content:""}
  .items td.desc{text-align:left}.items td.desc::before{display:block;margin-bottom:2px}
- tr.vgrp td{display:block;background:rgba(255,255,255,0.02);padding:10px 16px}tr.vgrp td:not(:first-child){display:none}
+ tr.vgrp td{display:block;background:#EBF0F8;padding:10px 16px}tr.vgrp td:not(:first-child){display:none}
  .actcell{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end}
  .tab{flex:1;text-align:center;padding:11px 6px;font-size:.84rem}
  .docs{grid-template-columns:1fr}
  #mbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:50;justify-content:space-between;align-items:center;
-  background:var(--green);color:#fff;padding:11px 16px;box-shadow:0 -3px 14px rgba(0,0,0,.22);border-top:2px solid var(--gold)}
+  background:var(--navy);color:#fff;padding:11px 16px;box-shadow:0 -3px 14px rgba(0,0,0,.22);border-top:2px solid var(--gold)}
  #mbar .l{font-size:.66rem;opacity:.8;text-transform:uppercase;letter-spacing:.06em}
  #mbar .v{font-family:'Source Serif 4',serif;font-size:1.18rem;font-weight:700}
  #mbar a{background:var(--gold);color:#fff;font-weight:700;border-radius:9px;padding:9px 14px;text-decoration:none;font-size:.85rem}
@@ -170,13 +170,13 @@ footer .rule{height:1px;background:linear-gradient(90deg,transparent,var(--line)
 </style></head><body>
 <header><div class="wrap hd">
  <div class="seal">P</div>
- <div><h1>Divorce Ledger Reimbursements</h1>
- <div class="sub">Shared household &amp; child-related expenses &middot; 8792 W Fairway Dr &middot; Aug 2024 – Jul 2026</div></div>
+ <div><h1>Expense Reimbursement</h1>
+ <div class="sub">Shared household &amp; child-related expenses &middot; 8792 W Fairway Dr, Baton Rouge &middot; Aug 2024 – Jul 2026</div></div>
  <div class="matter"><b>Pearson v. Pearson</b><br>No. 236951 · Family Court, EBR Parish<br>Updated __UPDATED__<br><span class="conf">Confidential · For Settlement</span></div>
 </div></header>
 <div id="mbar"><div><div class="l" id="mbarlbl">Net due to Ned</div><div class="v" id="mbarval">$__NET__</div></div><a href="#submit">Upload / Dispute</a></div>
 <div class="wrap">
-<div class="hero"><div><div class="lbl" id="bannerlbl">Net Amount Due to Ned</div><div class="note" id="crednote">__CREDITNOTE__</div><div class="balrow" id="balrow" style="display:none"></div></div><div class="right"><b id="bignum" onclick="document.getElementById('ledgerbtn').click()" style="cursor:pointer;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:6px;" title="View Ledger History">$__NET__</b><a id="emailbtn" class="emailbtn" href="#">&#9993;&nbsp;Email this out</a><a id="copylinkbtn" class="emailbtn" href="#" onclick="copyShareLink(); return false;" style="margin-left:8px;background:rgba(255,255,255,0.1)">&#128279;&nbsp;Copy Link</a><br><a id="ledgerbtn" class="emailbtn" href="#" style="background:#4b5563;margin-top:6px;width:100%">&#128196;&nbsp;View Ledger History</a></div></div>
+<div class="hero"><div><div class="lbl" id="bannerlbl">Net Amount Due to Ned</div><div class="note" id="crednote">__CREDITNOTE__</div><div class="balrow" id="balrow" style="display:none"></div></div><div class="right"><b id="bignum">$__NET__</b><a id="emailbtn" class="emailbtn" href="#">&#9993;&nbsp;Email this out</a></div></div>
 <div class="stats" id="statstrip"></div>
 <div id="statdetail"></div>
 <h2>Expense Categories</h2>
@@ -201,148 +201,20 @@ footer .rule{height:1px;background:linear-gradient(90deg,transparent,var(--line)
 </div>
 <h2>Documents</h2>
 <div class="card"><div class="docs">
-<a class="doc" href="Reimbursement_Statement.pdf" target="_blank" download><b>Itemized Statement</b><span>Every charge by date</span></a>
-<a class="doc" href="Reimbursement_Cover_Letter.pdf" target="_blank" download><b>Cover Letter</b><span>Summary &amp; terms</span></a>
-<a class="doc" href="Amounts_Paid_For_Jane.pdf" target="_blank" download><b>Additional Amounts (Vehicle &amp; Insurance)</b><span>Yukon Denali + insurance chart</span></a>
+<a class="doc" href="Reimbursement_Statement.pdf" target="_blank"><b>Itemized Statement</b><span>Every charge by date</span></a>
+<a class="doc" href="Reimbursement_Cover_Letter.pdf" target="_blank"><b>Cover Letter</b><span>Summary &amp; terms</span></a>
+<a class="doc" href="Amounts_Paid_For_Lindsey.pdf" target="_blank"><b>Additional Amounts (Vehicle &amp; Insurance)</b><span>Yukon Denali + insurance chart</span></a>
+__PROOFVOLS__
 </div></div>
 <div class="note">Mortgage amounts come from Assurance Financial payment notifications; Venmo-paid items from official monthly Venmo statements. Originals available on request. Informational, for settlement discussion.</div>
 <footer>Prepared from source documents &middot; Reimbursement Manager</footer></div>
-
-<!-- Ledger Modal -->
-<div id="ledgerModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:999;padding:20px;overflow-y:auto;">
-    <div style="background:#fff;max-width:800px;margin:20px auto;border-radius:12px;padding:24px;box-shadow:0 10px 25px rgba(0,0,0,0.2);">
-        <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #cbd5e1;padding-bottom:12px;margin-bottom:20px;">
-            <h2 style="margin:0;">Statement of Account (Running Ledger)</h2>
-            <button onclick="document.getElementById('ledgerModal').style.display='none'" style="background:none;border:none;font-size:1.5rem;cursor:pointer;">&times;</button>
-        </div>
-        <table style="width:100%;border-collapse:collapse;font-size:0.9rem;">
-            <thead>
-                <tr style="background:#f1f5f9;text-align:left;color:#475569;">
-                    <th style="padding:10px;border-bottom:1px solid #cbd5e1;">Date</th>
-                    <th style="padding:10px;border-bottom:1px solid #cbd5e1;">Description</th>
-                    <th style="padding:10px;border-bottom:1px solid #cbd5e1;text-align:right;">Charge / Payment</th>
-                    <th style="padding:10px;border-bottom:1px solid #cbd5e1;text-align:right;">Running Balance</th>
-                </tr>
-            </thead>
-            <tbody id="ledgerbody">
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<!-- Chat Modal -->
-<div id="chatModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:1000;padding:20px;overflow-y:auto;">
-    <div style="background:#fff;max-width:500px;margin:40px auto;border-radius:12px;padding:24px;box-shadow:0 10px 25px rgba(0,0,0,0.2);display:flex;flex-direction:column;max-height:80vh;">
-        <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #cbd5e1;padding-bottom:12px;margin-bottom:16px;">
-            <h2 style="margin:0;font-size:1.1rem;">Item Discussion</h2>
-            <button onclick="document.getElementById('chatModal').style.display='none'" style="background:none;border:none;font-size:1.5rem;cursor:pointer;">&times;</button>
-        </div>
-        <div id="chatdesc" style="font-size:0.85rem;color:#64748b;margin-bottom:16px;"></div>
-        <div id="chatmsgs" style="flex:1;overflow-y:auto;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:12px;margin-bottom:16px;min-height:200px;">
-        </div>
-        <div style="display:flex;gap:8px;">
-            <input type="text" id="chatinput" placeholder="Type a message..." style="flex:1;padding:10px;border:1px solid #cbd5e1;border-radius:6px;font-size:0.9rem;">
-            <button id="chatsend" style="background:#2563eb;color:#fff;border:none;padding:10px 16px;border-radius:6px;font-weight:600;cursor:pointer;">Send</button>
-        </div>
-    </div>
-</div>
-
 <script>
 const D=__DATA__;const P=".";
 const money=v=>'$'+v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
-document.title='Divorce Ledger Reimbursements — '+money(D.net);
-
-document.getElementById('ledgerbtn').addEventListener('click', function(e) {
-    e.preventDefault();
-    const tbody = document.getElementById('ledgerbody');
-    if (D.ledger) {
-        tbody.innerHTML = D.ledger.map(function(item) {
-            let clr = item.amount < 0 ? '#10b981' : '#000';
-            return '<tr>'
-                + '<td style="padding:10px;border-bottom:1px solid #e2e8f0;color:#64748b;">'+item.date+'</td>'
-                + '<td style="padding:10px;border-bottom:1px solid #e2e8f0;font-weight:500;">'+item.desc+(item.src ? '<div style="margin-top:4px">' + srcCell(item.src) + '</div>' : '')+'</td>'
-                + '<td style="padding:10px;border-bottom:1px solid #e2e8f0;text-align:right;color:'+clr+'">'+(item.amount>0?money(item.amount):money(item.amount))+'</td>'
-                + '<td style="padding:10px;border-bottom:1px solid #e2e8f0;text-align:right;font-weight:700;">'+money(item.balance)+'</td>'
-                + '</tr>';
-        }).join('');
-    }
-    document.getElementById('ledgerModal').style.display = 'block';
-});
-
-// Chat Logic
-var currentChatId = null;
-function getShareToken() {
-    var m=location.pathname.match(/\/share\/([^\/]+)/);
-    return m ? m[1] : '';
-}
-function openChat(id) {
-    currentChatId = id;
-    var item = D.items.find(i => i.id === id);
-    document.getElementById('chatdesc').innerText = item.v + ' - ' + money(item.a) + ' on ' + item.d;
-    document.getElementById('chatmsgs').innerHTML = '<div style="text-align:center;color:#94a3b8;font-size:0.85rem;margin-top:20px;">Loading messages...</div>';
-    document.getElementById('chatModal').style.display = 'flex';
-    
-    var token = getShareToken();
-    fetch('/api/comments/' + id + (token ? '?token='+token : ''))
-        .then(r => r.json())
-        .then(data => {
-            renderComments(data);
-        })
-        .catch(e => {
-            document.getElementById('chatmsgs').innerHTML = '<div style="color:red">Failed to load.</div>';
-        });
-}
-function renderComments(data) {
-    var msgs = document.getElementById('chatmsgs');
-    if (!data || !data.length) {
-        msgs.innerHTML = '<div style="text-align:center;color:#94a3b8;font-size:0.85rem;margin-top:20px;">No comments yet. Start the conversation!</div>';
-        return;
-    }
-    msgs.innerHTML = data.map(c => {
-        var isMe = false; // We don't strictly know who is viewing on frontend unless we infer from token
-        var isJane = c.author === 'Lindsey';
-        var align = isJane ? 'flex-end' : 'flex-start';
-        var bg = isJane ? '#e0e7ff' : '#f1f5f9';
-        var bd = isJane ? '#c7d2fe' : '#e2e8f0';
-        return '<div style="align-self:'+align+';background:'+bg+';border:1px solid '+bd+';padding:8px 12px;border-radius:12px;max-width:85%;">'
-             + '<div style="font-size:0.7rem;color:#64748b;margin-bottom:4px;font-weight:600;">'+c.author+' &middot; '+c.timestamp+'</div>'
-             + '<div style="font-size:0.9rem;color:#0f172a;">'+c.text+'</div>'
-             + '</div>';
-    }).join('');
-    msgs.scrollTop = msgs.scrollHeight;
-}
-document.getElementById('chatsend').addEventListener('click', function() {
-    var inp = document.getElementById('chatinput');
-    var txt = inp.value.trim();
-    if (!txt || !currentChatId) return;
-    
-    inp.value = '';
-    inp.disabled = true;
-    document.getElementById('chatsend').disabled = true;
-    
-    var token = getShareToken();
-    fetch('/api/comments/' + currentChatId + (token ? '?token='+token : ''), {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({text: txt})
-    }).then(r=>r.json()).then(res => {
-        inp.disabled = false;
-        document.getElementById('chatsend').disabled = false;
-        if(res.success) {
-            openChat(currentChatId); // Reload
-        } else {
-            alert("Error: " + res.error);
-        }
-    }).catch(e => {
-        inp.disabled = false;
-        document.getElementById('chatsend').disabled = false;
-        alert("Network error.");
-    });
-});
-
+document.title='Pearson Reimbursement — '+money(D.net);
 function srcCell(s){if(!s)return '';
  if(s.t==='exh'){var label=s.rec?'view record':'view bill';
-  return '<a href="'+P+'/proof/'+s.vol+'.pdf#page='+s.pg+'" target="_blank" title="'+(s.doc||'')+'">Exhibit '+s.exh+' — '+label+'</a>'
+  return '<a href="'+P+'/proof/vol'+s.vol+'.pdf#page='+s.pg+'" target="_blank" title="'+(s.doc||'')+'">Exhibit '+s.exh+' — '+label+'</a>'
    +(s.doc?('<div style="color:#8a8fa3;font-size:.7rem;margin-top:2px">'+s.doc+'</div>'):'');}
  if(s.t==='email')return '<span class="badge email">'+s.doc+'</span>';
  if(s.t==='venmo')return '<span class="badge venmo">'+s.doc+'</span>';
@@ -387,7 +259,7 @@ const PAID_EXH=new Set();
    +(d.response?('<div class="a"><b>Ned:</b> '+d.response+'</div>'):'')+'</div>');
  });
 })();
-function itemRow(i){return '<tr'+((PAID.has(i.id)||(i.src&&i.src.t==='exh'&&PAID_EXH.has(i.src.exh)))?' style="background:rgba(16,185,129,0.1)"':'')+'><td data-label="Ref #"><span class="refno">'+(i.ref||'')+'</span></td><td data-label="Date">'+(i.d||'—')+'</td><td data-label="Vendor">'+i.v+'</td><td class="desc" data-label="Description">'+i.desc+'</td><td class="r" data-label="Bill amount">'+money(i.a)+'</td><td class="r" data-label="Her share"><b>'+money(i.h)+'</b></td><td class="src" data-label="Source of truth">'+srcCell(i.src)+'</td><td data-label="">'+statusCell(i)+'<button class="dbtn" onclick="openChat(\''+i.id+'\')" style="color:#4b5563;border-color:#cbd5e1;margin-left:6px">&#128172; Chat</button></td></tr>';}
+function itemRow(i){return '<tr'+((PAID.has(i.id)||(i.src&&i.src.t==='exh'&&PAID_EXH.has(i.src.exh)))?' style="background:#F1F9F3"':'')+'><td data-label="Ref #"><span class="refno">'+(i.ref||'')+'</span></td><td data-label="Date">'+(i.d||'—')+'</td><td data-label="Vendor">'+i.v+'</td><td class="desc" data-label="Description">'+i.desc+'</td><td class="r" data-label="Bill amount">'+money(i.a)+'</td><td class="r" data-label="Her share"><b>'+money(i.h)+'</b></td><td class="src" data-label="Source of truth">'+srcCell(i.src)+'</td><td data-label="">'+statusCell(i)+'</td></tr>';}
 function groupedRows(items){
  // group the category's charges by vendor, with a subtotal header per vendor
  var g={},order=[];
@@ -403,26 +275,11 @@ function groupedRows(items){
  return html;
 }
 const wrap=document.getElementById('cats');
-const docs=document.querySelector('.docs');
-D.cats.forEach(c=>{
-    const items=D.items.filter(i=>i.cat===c.name);
-    var vendors = [...new Set(items.map(i=>i.v))];
-    vendors.sort((a,b) => {
-        var sa = items.filter(i=>i.v===a).reduce((t,x)=>t+x.h, 0);
-        var sb = items.filter(i=>i.v===b).reduce((t,x)=>t+x.h, 0);
-        return sb - sa;
-    });
-    var topV = vendors.slice(0, 3).join(', ');
-    if (vendors.length > 3) topV += '...';
-    if (!topV) topV = 'Source bills';
-    
-    docs.insertAdjacentHTML('beforeend', '<a class="doc" href="proof/'+c.name.replace(/\\W/g,'')+'.pdf" target="_blank" download><b>Proof Pack: '+c.name+'</b><span style="font-size:0.75rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis" title="'+vendors.join(', ')+'">'+topV+'</span></a>');
-    
-    var nv=vendors.length;
-    const card=document.createElement('div');card.className='card'; card.id='cat_'+c.name.replace(/\\W/g,'');
-    card.innerHTML='<div class="cat"><div><div class="nm">'+c.name+'</div><div class="meta">'+c.n+' charge'+(c.n>1?'s':'')+' · '+nv+' vendor'+(nv>1?'s':'')+' · billed '+money(c.billed)+' · her share '+c.basis+'</div></div><div class="rt"><div class="owedwrap"><div class="ol">Lindsey owes</div><div class="owed">'+money(c.owed)+'</div></div><div class="chev">▶</div></div></div><div class="items"><table><thead><tr><th>Ref #</th><th>Date</th><th>Vendor</th><th>Description</th><th class="r">Bill amount</th><th class="r">Her share</th><th>Source of truth</th><th></th></tr></thead><tbody>'+groupedRows(items)+'</tbody></table></div>';
-    card.querySelector('.cat').onclick=()=>card.classList.toggle('open');wrap.appendChild(card);
-});
+D.cats.forEach(c=>{const items=D.items.filter(i=>i.cat===c.name);
+ var nv=new Set(items.map(i=>i.v)).size;
+ const card=document.createElement('div');card.className='card';
+ card.innerHTML='<div class="cat"><div><div class="nm">'+c.name+'</div><div class="meta">'+c.n+' charge'+(c.n>1?'s':'')+' · '+nv+' vendor'+(nv>1?'s':'')+' · billed '+money(c.billed)+' · her share '+c.basis+'</div></div><div class="rt"><div class="owedwrap"><div class="ol">Lindsey owes</div><div class="owed">'+money(c.owed)+'</div></div><div class="chev">▶</div></div></div><div class="items"><table><thead><tr><th>Ref #</th><th>Date</th><th>Vendor</th><th>Description</th><th class="r">Bill amount</th><th class="r">Her share</th><th>Source of truth</th><th></th></tr></thead><tbody>'+groupedRows(items)+'</tbody></table></div>';
+ card.querySelector('.cat').onclick=()=>card.classList.toggle('open');wrap.appendChild(card);});
 
 const ADD=__ADDITIONAL__;
 // ---- executive stat strip with click-to-explain drill-downs ----
@@ -438,7 +295,7 @@ const ADD=__ADDITIONAL__;
             {k:'exh',lab:'Documented exhibits',v:String(exhCount||(D.items||[]).length),cls:''}];
  var strip=document.getElementById('statstrip');
  strip.innerHTML=cells.map(function(c){return '<div class="stat '+c.cls+'" data-k="'+c.k+'"><div class="k">'+c.lab+'</div><div class="v">'+c.v+'</div><div class="more">tap for details ▾</div></div>';}).join('');
- function catRows(showPct){return D.cats.map(function(c){var cid='cat_'+c.name.replace(/\W/g,'');return '<tr><td><a href="#" onclick="var c=document.getElementById(\''+cid+'\');if(c){if(!c.classList.contains(\'open\'))c.querySelector(\'.cat\').click();c.scrollIntoView({behavior:\'smooth\',block:\'start\'});}return false;" style="color:#60a5fa;text-decoration:underline;cursor:pointer">'+c.name+'</a></td><td class="r">'+money(c.billed)+'</td>'+(showPct?'<td class="r">'+c.basis+'</td>':'')+'<td class="r"><b>'+money(c.owed)+'</b></td></tr>';}).join('');}
+ function catRows(showPct){return D.cats.map(function(c){return '<tr><td>'+c.name+'</td><td class="r">'+money(c.billed)+'</td>'+(showPct?'<td class="r">'+c.basis+'</td>':'')+'<td class="r"><b>'+money(c.owed)+'</b></td></tr>';}).join('');}
  function detail(k){
   if(k==='billed')return '<h3>Total billed — '+money(billed)+'</h3><p>The gross total of every bill and invoice in the record, before any split. Lindsey owes only her agreed share of each category — never the full amount. Here is what was billed in each category and her share of it:</p>'
    +'<table><thead><tr><th>Category</th><th class="r">Total billed</th><th class="r">Lindsey’s share</th></tr></thead><tbody>'+catRows(false)+'<tr class="tot"><td>Total</td><td class="r">'+money(billed)+'</td><td class="r">'+money(D.net)+'</td></tr></tbody></table>';
@@ -446,10 +303,9 @@ const ADD=__ADDITIONAL__;
    +'<table><thead><tr><th>Category</th><th class="r">Billed</th><th class="r">Her %</th><th class="r">She owes</th></tr></thead><tbody>'+catRows(true)+'<tr class="tot"><td>NET DUE TO NED</td><td></td><td></td><td class="r">'+money(D.net)+'</td></tr></tbody></table>';
   if(k==='vol'){var rows=(ADD&&ADD.sections)?ADD.sections.map(function(s){return '<tr><td>'+s.name+'</td><td class="r">'+(s.basis||'')+'</td><td class="r"><b>'+money(s.total)+'</b></td></tr>';}).join(''):'';
    return '<h3>Voluntary support — '+money(add)+'</h3><p>Amounts Ned paid on Lindsey’s behalf that are <b>separate from the claim above and NOT added to what she owes</b> — her vehicle loan, its insurance, and her health premium, carried voluntarily to help her re-establish. Shown for the court’s context.</p>'
-   +'<table><thead><tr><th>What Ned carried</th><th class="r">Period</th><th class="r">Total</th></tr></thead><tbody>'+rows+'<tr class="tot"><td>Total voluntary support</td><td></td><td class="r">'+money(add)+'</td></tr></tbody></table>'
-   +'<div style="margin-top:16px"><a class="doc" href="'+(ADD.doc||'Amounts_Paid_For_Lindsey.pdf')+'" target="_blank" download style="display:block;text-align:center;padding:12px;background:rgba(255,255,255,0.05)"><b>View Full Document (Vehicle &amp; Insurance Chart)</b></a></div>';}
-  if(k==='exh')return '<h3>Documented exhibits — '+String(exhCount||(D.items||[]).length)+'</h3><p>Almost every line item is backed by a primary source document (an invoice, a bank statement, or a check). These source documents are compiled into category-specific Proof Packs. You can download the full packets below, or tap any line item in the main view to jump directly to its exact page.</p>'
-   +'<div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap">'+D.cats.map(c=>'<a class="doc" href="proof/'+c.name.replace(/\W/g,'')+'.pdf" target="_blank" download style="flex:1;min-width:120px;text-align:center"><b>'+c.name+'</b></a>').join('')+'</div>';
+   +'<table><thead><tr><th>What Ned carried</th><th class="r">Period</th><th class="r">Total</th></tr></thead><tbody>'+rows+'<tr class="tot"><td>Total voluntary support</td><td></td><td class="r">'+money(add)+'</td></tr></tbody></table>';}
+  if(k==='exh')return '<h3>Documented exhibits — '+exhCount+'</h3><p>Every charge on this page links to proof. Of the '+exhCount+' exhibits, <b>'+reals.size+'</b> are the actual bills, invoices, or receipts, and <b>'+recs.size+'</b> are source records that document a figure taken from a lender or biller statement (the underlying statement available on request). All are viewable in the four proof volumes in the Documents section below.</p>'
+   +'<p style="margin:0"><span class="badge">'+reals.size+' actual bills</span> &nbsp; <span class="badge">'+recs.size+' source records</span> &nbsp; <span class="badge">4 proof volumes</span></p>';
   return '';
  }
  var det=document.getElementById('statdetail'),cur=null;
@@ -475,48 +331,18 @@ if(ADD&&ADD.sections){
 }
 
 (function(){
+ var link='https://nedpearson.github.io/Reimbursements/';
+ var addTotal=(typeof ADD!=='undefined'&&ADD&&ADD.grand_total)?ADD.grand_total:0;
+ var paidT=(typeof SETTLED!=='undefined'&&SETTLED&&SETTLED.paid_total)?SETTLED.paid_total:0;
+ var due=paidT?Math.max(0,Math.round((D.net-paidT)*100)/100):D.net;
+ var subj='Expense Reimbursement — Pearson ('+money(due)+')';
+ var body='The complete expense reimbursement package is here:\n'+link+'\n\n'
+  +((due!==D.net)?('Balance still due: '+money(due)+'  (original '+money(D.net)+' less '+money(paidT)+' already paid)\n'):('Net amount due: '+money(D.net)+'\n'))
+  +(addTotal?('Additional amounts paid on your behalf (vehicle, insurance, health premium, direct payments): '+money(addTotal)+'\n'):'')
+  +'\nOn that page: every charge by category, each line linked to the actual bill, plus the itemized statement, cover letter, and full proof pack — all viewable in the browser, nothing to download. If you believe any charge is wrong, use the Dispute button on that line and attach your proof.\n\nNed';
  var el=document.getElementById('emailbtn');
- if(el) {
-     el.href='#';
-     el.onclick=function(e){
-         e.preventDefault();
-         var due=D.net,paidT=(PAIDBACK&&PAIDBACK.total)?PAIDBACK.total:0;
-         var link='';
-         if(window.location.hostname.indexOf('github.io')!==-1||window.location.hostname.indexOf('pages.dev')!==-1)link=window.location.href.split('#')[0].split('?')[0];
-         else link='https://reimbursements.bridgebox.ai/share/__SHARE_TOKEN__/';
-         var subj='Expense Reimbursement — Pearson ('+money(due)+')';
-         var body='The complete expense reimbursement package is here:\\n'+link+'\\n\\n'
-          +((due!==D.net)?('Balance still due: '+money(due)+'  (original '+money(D.net)+' less '+money(paidT)+' already received)\\n'):'')
-          +'\\nOn that page: every charge by category, each line linked to the actual bill, plus the itemized statement, cover letter, and full proof pack — all viewable in the browser, nothing to download. If you believe any charge is wrong, use the Dispute button next to it.'
-          +'\\n\\n- Ned';
-         navigator.clipboard.writeText('Subject: '+subj+'\\n\\n'+body).then(function(){
-             var old = el.innerHTML;
-             el.innerHTML = '&#10003;&nbsp;Copied to clipboard!';
-             setTimeout(function(){ el.innerHTML = old; }, 2000);
-         });
-     };
- }
+ if(el) el.href='mailto:?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body);
 })();
-
-window.copyShareLink = function() {
- var token = '__SHARE_TOKEN__';
- var link = '';
- if (window.location.hostname.indexOf('github.io') !== -1 || window.location.hostname.indexOf('pages.dev') !== -1) {
-  link = window.location.href.split('#')[0].split('?')[0];
- } else {
-  link = 'https://reimbursements.bridgebox.ai/share/' + token + '/';
- }
- navigator.clipboard.writeText(link).then(function() {
-  var b = document.getElementById('copylinkbtn');
-  var old = b.innerHTML;
-  b.innerHTML = '&#10003; Copied!';
-  b.style.background = '#10b981';
-  setTimeout(function() {
-   b.innerHTML = old;
-   b.style.background = 'rgba(255,255,255,0.1)';
-  }, 2000);
- });
-};
 
 /* ===== mobile sticky-bar sync ===== */
 (function(){
@@ -525,9 +351,10 @@ window.copyShareLink = function() {
  if(val&&document.getElementById('mbarval')) document.getElementById('mbarval').textContent=val.textContent;
 })();
 
-/* ===== Upload & Submit center (Local AI Processing) ===== */
-var FS_STD='/api/submit';        // supports file attachments (redirects)
-var FS_AJAX='/api/submit';  // JSON, text-only (no files)
+/* ===== Upload & Submit center (FormSubmit — no account/key needed) ===== */
+var FORM_EMAIL='__FORM_EMAIL__';
+var FS_STD='https://formsubmit.co/'+FORM_EMAIL;        // supports file attachments (redirects)
+var FS_AJAX='https://formsubmit.co/ajax/'+FORM_EMAIL;  // JSON, text-only (no files)
 var ITEMBYID={}; (D.items||[]).forEach(function(i){ITEMBYID[i.id]=i;});
 var TABMETA={
  dispute:{t:'Dispute a charge',sub:'Tell us which charge is wrong and why. Attach any proof.',needItem:1},
@@ -551,15 +378,6 @@ function renderForm(kind,item){
    +'<label>What was it for?</label><textarea name="Description" placeholder="Describe the expense…"></textarea>';}
  var who=(kind==='expense')?'':'<label>Your name</label><input name="Your_name" placeholder="Your name">';
  var subject=m.t+(ref?(' — '+ref):'')+' — Pearson reimbursement';
- var ctxHTML='';
- if(item){
-     ctxHTML='<div style="background:rgba(255,255,255,0.05); padding:12px; border-radius:8px; margin:12px 0 16px; border:1px solid rgba(255,255,255,0.1)">'
-      +'<div style="font-size:0.75rem; opacity:0.7; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:4px">Item selected</div>'
-      +'<div style="font-weight:600; font-size:0.95rem; color:#fff">' + esc(item.ref || item.id) + '</div>'
-      +'<div style="font-size:0.85rem; color:var(--gold); margin-top:2px">' + esc(item.v) + ' &mdash; ' + money(item.a) + ' (' + money(item.h) + ' your share)</div>'
-      +'</div>'
-      +'<input type="hidden" name="Item_ID" value="'+esc(item.id)+'">';
- }
  host.innerHTML='<form class="form" id="upform" action="'+FS_STD+'" method="POST" enctype="multipart/form-data" accept-charset="UTF-8">'
   +'<input type="hidden" name="_subject" value="'+esc(subject)+'">'
   +'<input type="hidden" name="_captcha" value="false">'
@@ -568,7 +386,6 @@ function renderForm(kind,item){
   +'<input type="text" name="_honey" style="display:none">'
   +'<input type="hidden" name="Type" value="'+kind+'">'
   +'<p style="color:var(--muted);font-size:.9rem;margin-bottom:4px">'+m.sub+'</p>'
-  +ctxHTML
   +fields+who
   +'<label>Attach a file (photo, PDF, screenshot — up to 5 MB)</label>'
   +'<label class="filewrap" id="fw"><div class="fi" id="fi">Tap to choose a file or take a photo</div><div class="fs" id="fs">receipts, statements, checks, screenshots</div>'
@@ -606,14 +423,4 @@ renderForm('dispute',null);
 (function(){var m=location.search.match(/[?&]sent=(\w+)/);if(m){var host=document.getElementById('formhost');
  host.insertAdjacentHTML('afterbegin','<div class="formmsg ok" style="display:block;margin:0 0 12px">✓ Sent to Ned. He’ll review it and the page updates after his next refresh.</div>');
  document.getElementById('submit').scrollIntoView({block:'start'});}})();
-(function(){
-  var h = window.location.hostname;
-  if(h === 'localhost' || h === '127.0.0.1' || h.indexOf('bridgebox.ai') !== -1) {
-    var btn = document.createElement('a');
-    btn.href = '/admin';
-    btn.innerHTML = '&larr; Admin Dashboard';
-    btn.style.cssText = 'position:fixed;bottom:20px;left:20px;background:#1e293b;color:#fff;padding:10px 16px;border-radius:20px;text-decoration:none;font-size:0.9rem;box-shadow:0 4px 12px rgba(0,0,0,0.3);z-index:9999;border:1px solid #334155;font-weight:600;';
-    document.body.appendChild(btn);
-  }
-})();
 </script></body></html>
