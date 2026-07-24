@@ -1,4 +1,11 @@
 {
- "removed": [],
+ "removed": [
+  {
+   "id": "034b5d7847",
+   "label": "C-094 \u00b7 Exhibit 52 \u2014 AT&T Internet 2026-04-22 $125.42",
+   "reason": "dispute upheld",
+   "ts": "2026-07-24T23:46:02Z"
+  }
+ ],
  "denied": []
 }
