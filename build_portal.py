@@ -99,33 +99,43 @@ def build(bills_folder=None, progress=print):
             f=str(r.get('file',''))
             if r['include'] and r.get('in_window',True) and r['category']==cat and f and not f.startswith('(') and not f.lower().endswith('.csv'):
                 if f not in seen: seen.add(f); files.append((cat,f))
-    body=fitz.open(); mapping={}; exh=0
-    for cat,rel in files:
-        path=os.path.join(bills_folder,rel)
-        if not os.path.exists(path): continue
-        try:
-            if rel.lower().endswith(('.png','.jpg','.jpeg')):
-                src=fitz.open('pdf',fitz.open(path).convert_to_pdf())
-            else:
-                try:
-                    src=fitz.open(path)
-                    if len(src)==0 or (src[0].rect.width==400 and not src[0].get_text().strip()): raise ValueError
-                except Exception:
-                    real=_decode_html_embedded_pdf(path)
-                    if not real: continue
-                    src=fitz.open(real)
-            exh+=1; mapping[rel]=dict(exh=exh,cat=cat,page=body.page_count+1,base=os.path.basename(rel))
-            for pi in range(min(2,len(src))):
-                pix=src[pi].get_pixmap(dpi=88); jpg=pix.tobytes('jpeg',jpg_quality=38)
-                pg=body.new_page(width=612,height=792)
-                pg.insert_image(fitz.Rect(20,32,592,772),stream=jpg,keep_proportion=True)
-                pg.insert_text((20,22),f"Exhibit {exh} | {cat} | {os.path.basename(rel)} (p.{pi+1})",fontsize=7,color=(.35,.35,.35))
-        except Exception as e: progress(f"portal: skip {rel}: {e}")
-    # ---- source-record exhibits: one page for every included line WITHOUT a file bill
-    # (mortgage notices, email-sourced utility months, Venmo advances, agreed amounts) so
-    # every "source of truth" on the portal opens a real document. ----
-    mapping_id={}
+    import re
+    # ---- proof volumes by category ----
+    for old in os.listdir(proof):
+        if old.endswith('.pdf'):
+            try: os.remove(os.path.join(proof,old))
+            except OSError: pass   # open somewhere; will be overwritten via temp-swap below
+    from safewrite import write_via_temp
+
+    mapping={}; mapping_id={}; exh=0
     for cat in catorder:
+        cat_files = [rel for c, rel in files if c == cat]
+        body = fitz.open()
+        
+        # 1. Add file exhibits for this category
+        for rel in cat_files:
+            path=os.path.join(bills_folder,rel)
+            if not os.path.exists(path): continue
+            try:
+                if rel.lower().endswith(('.png','.jpg','.jpeg')):
+                    src=fitz.open('pdf',fitz.open(path).convert_to_pdf())
+                else:
+                    try:
+                        src=fitz.open(path)
+                        if len(src)==0 or (src[0].rect.width==400 and not src[0].get_text().strip()): raise ValueError
+                    except Exception:
+                        real=_decode_html_embedded_pdf(path)
+                        if not real: continue
+                        src=fitz.open(real)
+                exh+=1; mapping[rel]=dict(exh=exh,cat=cat,vol=cat,page=body.page_count+1,base=os.path.basename(rel))
+                for pi in range(min(2,len(src))):
+                    pix=src[pi].get_pixmap(dpi=88); jpg=pix.tobytes('jpeg',jpg_quality=38)
+                    pg=body.new_page(width=612,height=792)
+                    pg.insert_image(fitz.Rect(20,32,592,772),stream=jpg,keep_proportion=True)
+                    pg.insert_text((20,22),f"Exhibit {exh} | {cat} | {os.path.basename(rel)} (p.{pi+1})",fontsize=7,color=(.35,.35,.35))
+            except Exception as e: progress(f"portal: skip {rel}: {e}")
+            
+        # 2. Add source-record exhibits for this category
         for r in rows:
             if not (r['include'] and r.get('in_window',True) and r.get('amount') is not None and r.get('her_share') is not None): continue
             if r['category']!=cat: continue
@@ -134,25 +144,18 @@ def build(bills_folder=None, progress=print):
             rid=categorize.item_id(r)
             if rid in mapping_id: continue
             exh+=1
-            mapping_id[rid]=dict(exh=exh,cat=cat,page=body.page_count+1,doc=_origin_short(r))
+            mapping_id[rid]=dict(exh=exh,cat=cat,vol=cat,page=body.page_count+1,doc=_origin_short(r))
             _draw_source_record(body,exh,cat,r)
-    tmp=os.path.join(docs,'_wp.pdf'); body.save(tmp,deflate=True,garbage=4)
-    sz=os.path.getsize(tmp)/1e6; full=fitz.open(tmp); n=full.page_count
-    per=max(1,int(n*2.2/sz)) if sz else n; volmap={}; volno=0; p=0
-    for old in os.listdir(proof):
-        if old.startswith('vol'):
-            try: os.remove(os.path.join(proof,old))
-            except OSError: pass   # open somewhere; will be overwritten via temp-swap below
-    from safewrite import write_via_temp
-    while p<n:
-        volno+=1; end=min(n,p+per); v=fitz.open(); v.insert_pdf(full,from_page=p,to_page=end-1)
-        write_via_temp(os.path.join(proof,f'vol{volno}.pdf'),
-                       lambda tmp,_v=v: _v.save(tmp,deflate=True),progress)
-        for gp in range(p+1,end+1): volmap[gp]=(volno,gp-p)
-        p=end
-    full.close(); os.remove(tmp)
-    fin={rel:dict(exh=m['exh'],cat=m['cat'],vol=volmap[m['page']][0],page=volmap[m['page']][1],base=m['base']) for rel,m in mapping.items()}
-    fin_id={rid:dict(exh=m['exh'],cat=m['cat'],vol=volmap[m['page']][0],page=volmap[m['page']][1],doc=m['doc']) for rid,m in mapping_id.items()}
+
+        if body.page_count > 0:
+            safe_cat_name = re.sub(r'\W', '', cat)
+            write_via_temp(os.path.join(proof, f"{safe_cat_name}.pdf"),
+                           lambda tmp,_b=body: _b.save(tmp,deflate=True,garbage=4),progress)
+        body.close()
+
+    fin={rel:dict(exh=m['exh'],cat=m['cat'],vol=re.sub(r'\W','',m['vol']),page=m['page'],base=m['base']) for rel,m in mapping.items()}
+    fin_id={rid:dict(exh=m['exh'],cat=m['cat'],vol=re.sub(r'\W','',m['vol']),page=m['page'],doc=m['doc']) for rid,m in mapping_id.items()}
+    volno = len([f for f in os.listdir(proof) if f.endswith('.pdf')])
     # ---- portal data ----
     CATS=['Mortgage','Utilities','Pool',"Construction & Home Improvements",'Home Repairs & A/C','Advances to Lindsey','School/Tuition','AT&T Business','Storage','Cleaning','Lawn/Yard','Moving/Household','Labor','Medical/Dental/Vision']
     items=[]; credits=[]
@@ -214,7 +217,26 @@ def build(bills_folder=None, progress=print):
     settled['paid_count']=sum(1 for i in items if i['id'] in paidset)
     settled['item_count']=len(items)
     form_email=str(cfg.get('form_email') or 'nedpearson@gmail.com')
-    html=tpl.replace('__DATA__',json.dumps(data,separators=(',',':'))).replace('__ADDITIONAL__',json.dumps(addl,separators=(',',':'))).replace('__DISPUTES__',json.dumps(disputes,separators=(',',':'))).replace('__PAIDBACK__',json.dumps(paidback,separators=(',',':'))).replace('__SETTLED__',json.dumps(settled,separators=(',',':'))).replace('__FORM_EMAIL__',form_email).replace('__NET__',format(data['net'],',.2f')).replace('__CREDITS__',format(data['credit_total'],',.2f')).replace('__UPDATED__',data['updated'])
+    
+    # ---- running ledger ----
+    ledger = []
+    for i in items:
+        ledger.append(dict(date=i['d'], type='charge', desc=i['v'] + ' - ' + i['desc'], amount=i['h'], id=i['id'], src=i.get('src')))
+    if cfg.get('subtract_payments_to_lindsey'):
+        for c in credits:
+            ledger.append(dict(date=c['d'], type='credit', desc=c['desc'], amount=-c['a'], id=''))
+    for p in paidback.get('payments', []):
+        ledger.append(dict(date=p.get('date', ''), type='payment', desc=p.get('note', 'Payment'), amount=-float(p.get('amount', 0)), id=''))
+    ledger.sort(key=lambda x: x['date'] or '9999-99-99')
+    bal = 0.0
+    for evt in ledger:
+        bal += evt['amount']
+        evt['balance'] = round(bal, 2)
+        evt['amount'] = round(evt['amount'], 2)
+    data['ledger'] = ledger
+
+    share_tok = cfg.get('share_token', '') if 'cfg' in locals() else (json.load(open(app.config['CFG_FILE'])) if 'app' in locals() else json.load(open(os.path.join(HERE, 'config.json')))).get('share_token', '')
+    html=tpl.replace('__DATA__',json.dumps(data,separators=(',',':'))).replace('__ADDITIONAL__',json.dumps(addl,separators=(',',':'))).replace('__DISPUTES__',json.dumps(disputes,separators=(',',':'))).replace('__PAIDBACK__',json.dumps(paidback,separators=(',',':'))).replace('__SETTLED__',json.dumps(settled,separators=(',',':'))).replace('__FORM_EMAIL__',form_email).replace('__NET__',format(data['net'],',.2f')).replace('__CREDITS__',format(data['credit_total'],',.2f')).replace('__UPDATED__',data['updated']).replace('__SHARE_TOKEN__', share_tok)
     from safewrite import write_text, copy_file
     # .nojekyll: serve the docs/ folder exactly as-is (skip GitHub's Jekyll build,
     # which can fail on large sites and take the whole page down with a 404).

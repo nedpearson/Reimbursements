@@ -443,10 +443,10 @@ class App(tk.Tk):
             elif r['id'] in self._paid_state['pending']: stat='Proof submitted'; tag='pending'
             else: stat=''; tag=''
             tv.insert('','end',iid=r['id'],tags=(tag,),
-                      values=(r['date'],r['cat'],r['vendor'][:24],'$%,.2f'%r['amount'],'$%,.2f'%r['share'],stat))
+                      values=(r['date'],r['cat'],r['vendor'][:24],f"${r['amount']:,.2f}",f"${r['share']:,.2f}",stat))
             shown+=1
         paidtot=sum(r['share'] for r in self._paid_rows if r['id'] in self._paid_state['paid'])
-        self.paid_count_lbl.config(text="%d paid · $%,.2f settled"%(len(self._paid_state['paid']),paidtot))
+        self.paid_count_lbl.config(text=f"{len(self._paid_state['paid'])} paid · ${paidtot:,.2f} settled")
     def _paid_set(self,state):
         sel=self.paid_tv.selection()
         if not sel:
@@ -486,7 +486,7 @@ class App(tk.Tk):
             from safewrite import write_via_temp
             write_via_temp(path,lambda tmp: json.dump(data,open(tmp,'w',encoding='utf-8'),indent=1))
             dlg.destroy()
-            messagebox.showinfo("Record Paid Back","Recorded %s.\n\nNow click Generate, then Publish to Web — the portal balance will drop and the payment will show in the Paid Back section."%('$%,.2f'%amt if False else '$'+format(amt,',.2f')))
+            messagebox.showinfo("Record Paid Back",f"Recorded ${amt:,.2f}.\n\nNow click Generate, then Publish to Web — the portal balance will drop and the payment will show in the Paid Back section.")
         bf=tk.Frame(dlg,bg=BG); bf.grid(row=99,column=0,pady=12)
         tk.Button(bf,text="Save Payment",bg=GREEN,fg='white',relief='flat',padx=16,pady=5,command=save).pack(side='left',padx=6)
         tk.Button(bf,text="Cancel",command=dlg.destroy).pack(side='left',padx=6)

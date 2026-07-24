@@ -199,6 +199,7 @@ def build(folder):
 def apply_split(rows):
     sp=CFG['split_percent']; cutoff=CFG.get('date_cutoff')
     biz=[t.lower() for t in CFG.get('exclude_business',[]) if t]
+    exch=CFG.get('exclude_charges',[])
     for r in rows:
         # permanent business exclusion: these vendors are NOT household and never enter the claim
         if biz:
@@ -206,6 +207,13 @@ def apply_split(rows):
             if any(t in hay for t in biz):
                 r['include']=False
                 r['note']=((r.get('note') or '')+' | business expense - excluded (not household)').strip(' |')
+        # specific individual charges Ned has removed (matched by vendor substring + date + amount)
+        for ex in exch:
+            if (str(ex.get('vendor','')).lower() in str(r.get('vendor','')).lower()
+                and (not ex.get('date') or r.get('date')==ex.get('date'))
+                and (ex.get('amount') is None or (r.get('amount') is not None and abs(float(r['amount'])-float(ex['amount']))<0.01))):
+                r['include']=False
+                r['note']=((r.get('note') or '')+' | removed per Ned').strip(' |')
         # a row with no date AND no amount is unusable — send to Review, never the claim
         if r.get('include') and not r.get('date') and not r.get('amount') and r.get('flat_share') is None:
             r['include']=False

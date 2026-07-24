@@ -1,0 +1,16 @@
+REIMBURSEMENT SUMMARY  (generated 2026-07-23)
+============================================================
+AT&T Business           20 items  billed $   2,000.00  @0%  -> $   2,000.00
+Construction & Home Improvements   3 items  billed $  16,500.00  @50%  -> $   8,250.00
+Home Repairs & A/C       2 items  billed $   6,600.00  @50%  -> $   3,300.00
+Labor                    2 items  billed $   3,239.35  @50%  -> $   1,619.68
+Mortgage                25 items  billed $  88,276.61  @50%  -> $  44,138.35
+Moving/Household         1 items  billed $   1,600.00  @80%  -> $   1,280.00
+Pool                     9 items  billed $   3,668.00  @50%  -> $   1,834.00
+School/Tuition          12 items  billed $   1,814.54  @12%  -> $     217.75
+Storage                  4 items  billed $   1,167.75  @50%  -> $     583.88
+Utilities               42 items  billed $   6,902.79  @50%  -> $   3,451.47
+------------------------------------------------------------
+SUBTOTAL she owes                                      -> $   66,675.13
+============================================================
+NET LINDSEY OWES YOU                                   -> $   66,675.13

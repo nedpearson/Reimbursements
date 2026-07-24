@@ -1,3 +1,6 @@
 pymupdf
 openpyxl
 reportlab
+flask
+waitress
+flask-login

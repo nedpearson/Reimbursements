@@ -139,5 +139,14 @@
     "servicargo",
     "servicargo"
   ],
-  "_exclude_business_note": "Vendors/terms that are BUSINESS, never household. Any bill whose vendor/description/file matches one of these is auto-excluded from the reimbursement claim."
+  "_exclude_business_note": "Vendors/terms that are BUSINESS, never household. Any bill whose vendor/description/file matches one of these is auto-excluded from the reimbursement claim.",
+  "exclude_charges": [
+    {
+      "vendor": "Advances to Lindsey",
+      "date": "2025-01-09",
+      "amount": 1386.0,
+      "note": "removed per Ned (C-157)"
+    }
+  ],
+  "_exclude_charges_note": "Specific individual charges removed from the claim by Ned (matched on vendor substring + date + amount)."
 }
