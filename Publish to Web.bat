@@ -4,6 +4,11 @@ cd /d "%~dp0"
 rem --- clear any stale git lock left by an interrupted process (prevents "index.lock exists") ---
 if exist ".git\index.lock" del /f /q ".git\index.lock" 2>nul
 
+rem --- pull any online changes first (e.g. a dispute you Approved/Denied from the email,
+rem which the dispute API commits to docs/overrides.json). --autostash keeps local edits safe. ---
+echo Syncing online updates (approved/denied disputes)...
+git pull --rebase --autostash origin main 2>nul
+
 rem --- SAFETY: tag the current published state as a restore point BEFORE changing anything ---
 rem If the wrong thing gets published, "Undo Last Publish.bat" rolls back to this point.
 for /f "tokens=1-6 delims=/:. " %%a in ("%date% %time%") do set STAMP=%%c%%a%%b-%%d%%e

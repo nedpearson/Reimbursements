@@ -1,0 +1,7 @@
+{
+  "name": "pearson-dispute-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Dispute intake + one-click approve/deny for the Pearson reimbursement portal.",
+  "engines": { "node": "20.x" }
+}

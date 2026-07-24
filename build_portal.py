@@ -85,6 +85,23 @@ def build(bills_folder=None, progress=print):
     os.makedirs(proof,exist_ok=True)
     res=categorize.generate(bills_folder,outdir=os.path.join(HERE,'output'),progress=progress)
     rows=res['rows']
+    # ---- durability: honor live dispute decisions committed to docs/overrides.json.
+    # A charge Ned approved-off via the one-click email is dropped here too, so a PC
+    # rebuild (and the statement/proof PDFs) stay consistent with the live portal. ----
+    try:
+        ovp=os.path.join(HERE,'docs','overrides.json')
+        if os.path.exists(ovp):
+            _ov=json.load(open(ovp,encoding='utf-8'))
+            _rem=set(x.get('id') for x in (_ov.get('removed') or []) if x.get('id'))
+            if _rem:
+                _nr=0
+                for r in rows:
+                    if categorize.item_id(r) in _rem:
+                        r['include']=False
+                        r['note']=((r.get('note') or '')+' | removed via approved dispute').strip(' |'); _nr+=1
+                progress('overrides: %d charge(s) removed via approved dispute'%_nr)
+    except Exception as _e:
+        progress('overrides.json read skipped: %s'%_e)
     try:
         import exports
         exports.export_all(rows,cfg,bills_folder,os.path.join(HERE,'output'),progress=progress)
@@ -217,8 +234,9 @@ def build(bills_folder=None, progress=print):
     settled['paid_count']=sum(1 for i in items if i['id'] in paidset)
     settled['item_count']=len(items)
     form_email=str(cfg.get('form_email') or 'nedpearson@gmail.com')
+    dispute_api=str(cfg.get('dispute_api') or '')
     proofvols=''.join('<a class="doc" href="proof/vol%d.pdf" target="_blank"><b>Proof Pack &mdash; Vol %d</b><span>Source bills &amp; records</span></a>\n'%(k,k) for k in range(1,volno+1))
-    html=tpl.replace('__PROOFVOLS__',proofvols).replace('__DATA__',json.dumps(data,separators=(',',':'))).replace('__ADDITIONAL__',json.dumps(addl,separators=(',',':'))).replace('__DISPUTES__',json.dumps(disputes,separators=(',',':'))).replace('__PAIDBACK__',json.dumps(paidback,separators=(',',':'))).replace('__SETTLED__',json.dumps(settled,separators=(',',':'))).replace('__FORM_EMAIL__',form_email).replace('__NET__',format(data['net'],',.2f')).replace('__CREDITS__',format(data['credit_total'],',.2f')).replace('__UPDATED__',data['updated'])
+    html=tpl.replace('__PROOFVOLS__',proofvols).replace('__DATA__',json.dumps(data,separators=(',',':'))).replace('__ADDITIONAL__',json.dumps(addl,separators=(',',':'))).replace('__DISPUTES__',json.dumps(disputes,separators=(',',':'))).replace('__PAIDBACK__',json.dumps(paidback,separators=(',',':'))).replace('__SETTLED__',json.dumps(settled,separators=(',',':'))).replace('__FORM_EMAIL__',form_email).replace('__DISPUTE_API__',dispute_api).replace('__NET__',format(data['net'],',.2f')).replace('__CREDITS__',format(data['credit_total'],',.2f')).replace('__UPDATED__',data['updated'])
     from safewrite import write_text, copy_file
     # .nojekyll: serve the docs/ folder exactly as-is (skip GitHub's Jekyll build,
     # which can fail on large sites and take the whole page down with a 404).

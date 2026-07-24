@@ -131,6 +131,8 @@
   "att_business_end": "2026-05",
   "user_email": "nedpearson@gmail.com",
   "form_email": "nedpearson@gmail.com",
+  "dispute_api": "",
+  "_dispute_api_note": "Base URL of the deployed Vercel dispute API (e.g. https://pearson-dispute-api.vercel.app). When set, the portal's Dispute button emails Ned one-click Approve/Deny buttons; Approve auto-removes the charge. Leave blank to fall back to plain FormSubmit email. See dispute-api/SETUP.md.",
   "exclude_business": [
     "degraw",
     "interloc",
