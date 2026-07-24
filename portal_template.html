@@ -383,6 +383,7 @@ var FS_STD='https://formsubmit.co/'+FORM_EMAIL;        // supports file attachme
 var FS_AJAX='https://formsubmit.co/ajax/'+FORM_EMAIL;  // JSON, text-only (no files)
 var DISPUTE_API='__DISPUTE_API__';                    // Vercel endpoint for one-click approve/deny disputes
 function apiReady(){return DISPUTE_API && DISPUTE_API.indexOf('__')<0;}
+var GH_REPO='__GH_REPO__';
 var ITEMBYID={}; (D.items||[]).forEach(function(i){ITEMBYID[i.id]=i;});
 var TABMETA={
  dispute:{t:'Dispute a charge',sub:'Tell us which charge is wrong and why. Attach any proof.',needItem:1},
@@ -428,21 +429,28 @@ function renderForm(kind,item){
  document.getElementById('upform').addEventListener('submit',function(ev){
   var f=ev.target, msg=document.getElementById('fmsg'), btn=f.querySelector('.subbtn'), file=fin.files[0];
   if(file&&file.size>5*1048576){ev.preventDefault();msg.className='formmsg err';msg.textContent='That file is over 5 MB — please attach a smaller photo or PDF.';return;}
-  // ---- dispute on a specific charge → actionable one-click email via the API ----
-  if(kind==='dispute' && apiReady() && item){
+  // ---- dispute on a specific charge → email Ned GitHub Approve/Deny decision links ----
+  if(kind==='dispute' && item){
    ev.preventDefault();
    var reason=((f.querySelector('[name="Reason"]')||{}).value)||'';
    var nm=((f.querySelector('[name="Your_name"]')||{}).value)||'';
+   var lbl=itemRef(item);
+   function issueURL(action){
+    var title='[dispute] '+action+' — '+lbl;
+    var body='id: '+item.id+'\nlabel: '+lbl+'\naction: '+action+'\n\nSubmitting this issue will '+(action==='approve'?'REMOVE this charge from the reimbursement.':'KEEP this charge (mark it reviewed).')+' Filed via the portal Dispute button.';
+    return 'https://github.com/'+GH_REPO+'/issues/new?labels=dispute&title='+encodeURIComponent(title)+'&body='+encodeURIComponent(body);
+   }
    btn.disabled=true; btn.textContent='Sending…'; msg.style.display='none';
-   fetch(DISPUTE_API.replace(/\/+$/,'')+'/api/dispute',{method:'POST',headers:{'Content-Type':'application/json'},
-     body:JSON.stringify({id:item.id,label:itemRef(item),date:item.d||'',reason:reason,name:nm})})
+   var payload={_subject:'Dispute filed — '+lbl,_template:'table',Charge:lbl,Reason:reason,From:(nm||'(not given)'),
+     'APPROVE — remove this charge':issueURL('approve'),'DENY — keep this charge':issueURL('deny'),
+     _note:'Open a link, then click the green Submit button on GitHub. Approve auto-removes the charge; the portal updates within ~1 minute.'};
+   fetch(FS_AJAX,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(payload)})
     .then(function(r){return r.json();})
     .then(function(j){
-      if(j&&j.success){ f.reset();
-        msg.className='formmsg ok';
-        msg.textContent='✓ Dispute sent to Ned. He’ll approve or deny it — if approved, this charge comes off automatically.';
-        if(file){ try{var fd=new FormData();fd.append('_subject','Dispute proof — '+itemRef(item));fd.append('_captcha','false');fd.append('Charge',itemRef(item));fd.append('attachment',file);fetch(FS_STD,{method:'POST',body:fd});}catch(e){} }
-      } else { msg.className='formmsg err'; msg.textContent='Could not send: '+((j&&j.message)||'please try again')+'.'; }
+      if(String(j.success)==='true'){ f.reset(); msg.className='formmsg ok';
+        msg.textContent='✓ Dispute sent to Ned. He’ll review it — if approved, this charge comes off automatically.';
+        if(file){ try{var fd=new FormData();fd.append('_subject','Dispute proof — '+lbl);fd.append('_captcha','false');fd.append('Charge',lbl);fd.append('attachment',file);fetch(FS_STD,{method:'POST',body:fd});}catch(e){} }
+      } else { msg.className='formmsg err'; msg.textContent='Could not send: '+(j.message||'please try again')+'.'; }
       btn.disabled=false; btn.textContent='Send to Ned';})
     .catch(function(){ msg.className='formmsg err'; msg.textContent='Network problem — please try again.'; btn.disabled=false; btn.textContent='Send to Ned';});
    return;

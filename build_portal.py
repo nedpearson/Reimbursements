@@ -235,8 +235,9 @@ def build(bills_folder=None, progress=print):
     settled['item_count']=len(items)
     form_email=str(cfg.get('form_email') or 'nedpearson@gmail.com')
     dispute_api=str(cfg.get('dispute_api') or '')
+    gh_repo=str(cfg.get('github_repo') or 'nedpearson/Reimbursements')
     proofvols=''.join('<a class="doc" href="proof/vol%d.pdf" target="_blank"><b>Proof Pack &mdash; Vol %d</b><span>Source bills &amp; records</span></a>\n'%(k,k) for k in range(1,volno+1))
-    html=tpl.replace('__PROOFVOLS__',proofvols).replace('__DATA__',json.dumps(data,separators=(',',':'))).replace('__ADDITIONAL__',json.dumps(addl,separators=(',',':'))).replace('__DISPUTES__',json.dumps(disputes,separators=(',',':'))).replace('__PAIDBACK__',json.dumps(paidback,separators=(',',':'))).replace('__SETTLED__',json.dumps(settled,separators=(',',':'))).replace('__FORM_EMAIL__',form_email).replace('__DISPUTE_API__',dispute_api).replace('__NET__',format(data['net'],',.2f')).replace('__CREDITS__',format(data['credit_total'],',.2f')).replace('__UPDATED__',data['updated'])
+    html=tpl.replace('__PROOFVOLS__',proofvols).replace('__DATA__',json.dumps(data,separators=(',',':'))).replace('__ADDITIONAL__',json.dumps(addl,separators=(',',':'))).replace('__DISPUTES__',json.dumps(disputes,separators=(',',':'))).replace('__PAIDBACK__',json.dumps(paidback,separators=(',',':'))).replace('__SETTLED__',json.dumps(settled,separators=(',',':'))).replace('__FORM_EMAIL__',form_email).replace('__DISPUTE_API__',dispute_api).replace('__GH_REPO__',gh_repo).replace('__NET__',format(data['net'],',.2f')).replace('__CREDITS__',format(data['credit_total'],',.2f')).replace('__UPDATED__',data['updated'])
     from safewrite import write_text, copy_file
     # .nojekyll: serve the docs/ folder exactly as-is (skip GitHub's Jekyll build,
     # which can fail on large sites and take the whole page down with a 404).

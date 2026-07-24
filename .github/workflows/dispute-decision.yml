@@ -1,0 +1,65 @@
+name: Dispute decision
+
+# When Ned clicks Approve/Deny in a dispute email, GitHub opens a pre-filled issue
+# titled "[dispute] approve|deny …". Submitting it fires this workflow, which updates
+# docs/overrides.json so the portal removes (approve) or keeps+marks (deny) the charge.
+#
+# SECURITY: only acts on issues opened by the repository owner. Anyone else opening a
+# look-alike issue is ignored, so the public dispute form cannot trigger a removal.
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  decide:
+    if: startsWith(github.event.issue.title, '[dispute]') && github.event.issue.user.login == github.event.repository.owner.login
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Apply the decision to overrides.json
+        env:
+          TITLE: ${{ github.event.issue.title }}
+          BODY: ${{ github.event.issue.body }}
+        run: python3 .github/scripts/apply_dispute.py
+
+      - name: Commit the change
+        run: |
+          if git diff --quiet -- docs/overrides.json; then
+            echo "No change to overrides.json"; echo "changed=no" >> "$GITHUB_ENV"
+          else
+            git config user.name "dispute-bot"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add docs/overrides.json
+            git commit -m "dispute: ${{ github.event.issue.title }}"
+            git push
+            echo "changed=yes" >> "$GITHUB_ENV"
+          fi
+
+      - name: Comment on and close the issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const changed = process.env.changed === 'yes';
+            const title = context.payload.issue.title;
+            const approve = title.includes('approve');
+            const body = changed
+              ? (approve
+                  ? '✅ Done. This charge has been **removed** from the reimbursement. The live portal and its totals update within ~1 minute.'
+                  : '✔ Recorded. This charge **stays** on the reimbursement and is now marked *reviewed — dispute declined*.')
+              : 'ℹ️ No change was needed (this decision was already recorded).';
+            await github.rest.issues.createComment({
+              owner: context.repo.owner, repo: context.repo.repo,
+              issue_number: context.issue.number, body
+            });
+            await github.rest.issues.update({
+              owner: context.repo.owner, repo: context.repo.repo,
+              issue_number: context.issue.number, state: 'closed'
+            });
