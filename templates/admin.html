@@ -693,7 +693,7 @@
             row.style.cssText = 'display:flex; gap:8px; margin-bottom:8px; align-items:center;';
             row.innerHTML = `
                 <input class="sp-cat" placeholder="Category" value="${cat ? cat.replace(/"/g,'&quot;') : ''}" style="flex:2; padding:8px; border-radius:6px; border:1px solid var(--border); background:rgba(255,255,255,0.03); color:var(--text-main);">
-                <input class="sp-pct" type="number" min="0" max="100" placeholder="%" value="${pct !== undefined ? pct : ''}" style="width:90px; padding:8px; border-radius:6px; border:1px solid var(--border); background:rgba(255,255,255,0.03); color:var(--text-main);">
+                <input class="sp-pct" type="number" min="0" max="100" placeholder="%" value="${pct !== undefined ? pct : ''}" style="width:90px; padding:8px; border-radius:6px; border:1px solid var(--border); background:rgba(255,255,255,0.03); color:var(--text-main);" onfocus="this.select()" onblur="if(this.value!=='')this.value=Math.max(0,Math.min(100,Number(this.value)||0))">
                 <button class="btn" style="padding:6px 10px; font-size:12px; background:#7f1d1d;" onclick="this.parentElement.remove()">Remove</button>
             `;
             document.getElementById('splitPercentRows').appendChild(row);
@@ -729,8 +729,8 @@
             const split_percent = {};
             document.querySelectorAll('#splitPercentRows > div').forEach(row => {
                 const cat = row.querySelector('.sp-cat').value.trim();
-                const pct = row.querySelector('.sp-pct').value;
-                if (cat && pct !== '') split_percent[cat] = Number(pct);
+                const pctRaw = row.querySelector('.sp-pct').value;
+                if (cat && pctRaw !== '') split_percent[cat] = Math.max(0, Math.min(100, Number(pctRaw) || 0));
             });
             const exclude_business = Array.from(document.querySelectorAll('#excludeBusinessRows .ex-vendor'))
                 .map(i => i.value.trim()).filter(Boolean);
