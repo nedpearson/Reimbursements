@@ -4,3 +4,5 @@ reportlab
 flask
 waitress
 flask-login
+google-generativeai
+requests
