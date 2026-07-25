@@ -3,7 +3,7 @@ import json
 import traceback
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, flash, jsonify, send_file
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-from werkzeug.security import check_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 import categorize
 import build_portal
 import google.generativeai as genai
@@ -30,6 +30,18 @@ def load_users():
         with open(path, 'r') as f:
             return json.load(f)
     return {}
+
+def save_users(users):
+    path = os.path.join(os.path.dirname(__file__), 'users.json')
+    with open(path, 'w', encoding='utf-8') as f:
+        json.dump(users, f, indent=2)
+
+# Roles that can be created or assigned through /api/users. 'admin' is deliberately
+# excluded -- there is no code path, via this API, that can ever mint a second admin
+# account. Only the account already in users.json as role "admin" can approve/deny
+# disputes (enforced in /api/disputes below); every account created here is
+# view-and-dispute-only, no matter what a client sends.
+ALLOWED_CREATE_ROLES = {'viewer'}
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -327,6 +339,72 @@ def api_disputes():
             json.dump(data, f, indent=2)
             
         return jsonify({"success": True})
+
+@app.route('/api/users', methods=['GET'])
+@login_required
+def api_users_list():
+    if current_user.role != 'admin':
+        return jsonify({"error": "Unauthorized"}), 403
+    users = load_users()
+    return jsonify({"users": [{"username": u, "role": d.get('role')} for u, d in users.items()]})
+
+@app.route('/api/users', methods=['POST'])
+@login_required
+def api_users_create():
+    if current_user.role != 'admin':
+        return jsonify({"error": "Unauthorized"}), 403
+    data = request.json or {}
+    username = (data.get('username') or '').strip()
+    password = data.get('password') or ''
+    role = data.get('role') or 'viewer'
+    if not username or not password:
+        return jsonify({"error": "Username and password are required"}), 400
+    if len(password) < 8:
+        return jsonify({"error": "Password must be at least 8 characters"}), 400
+    if role not in ALLOWED_CREATE_ROLES:
+        return jsonify({"error": "Only view-only accounts can be created here"}), 400
+    users = load_users()
+    if username in users:
+        return jsonify({"error": "That username already exists"}), 400
+    users[username] = {"password_hash": generate_password_hash(password), "role": role}
+    save_users(users)
+    return jsonify({"success": True})
+
+@app.route('/api/users/<username>', methods=['PATCH'])
+@login_required
+def api_users_update(username):
+    if current_user.role != 'admin':
+        return jsonify({"error": "Unauthorized"}), 403
+    users = load_users()
+    if username not in users:
+        return jsonify({"error": "Not found"}), 404
+    if users[username].get('role') == 'admin':
+        return jsonify({"error": "The admin account can't be changed here"}), 400
+    data = request.json or {}
+    if data.get('password'):
+        if len(data['password']) < 8:
+            return jsonify({"error": "Password must be at least 8 characters"}), 400
+        users[username]['password_hash'] = generate_password_hash(data['password'])
+    if data.get('role'):
+        if data['role'] not in ALLOWED_CREATE_ROLES:
+            return jsonify({"error": "Only the view-only role is allowed here"}), 400
+        users[username]['role'] = data['role']
+    save_users(users)
+    return jsonify({"success": True})
+
+@app.route('/api/users/<username>', methods=['DELETE'])
+@login_required
+def api_users_delete(username):
+    if current_user.role != 'admin':
+        return jsonify({"error": "Unauthorized"}), 403
+    users = load_users()
+    if username not in users:
+        return jsonify({"error": "Not found"}), 404
+    if users[username].get('role') == 'admin':
+        return jsonify({"error": "The admin account can't be removed"}), 400
+    del users[username]
+    save_users(users)
+    return jsonify({"success": True})
 
 @app.route('/api/submit', methods=['POST'])
 def api_submit():
