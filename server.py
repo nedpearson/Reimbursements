@@ -79,11 +79,21 @@ def index():
 def portal_redir():
     return redirect(url_for('portal'))
 
+ADMIN_LINK_HTML = '<a href="/admin" style="position:fixed;top:14px;right:14px;z-index:9999;background:#1a1540;color:#fff;padding:8px 16px;border-radius:20px;font:600 13px Inter,Arial,sans-serif;text-decoration:none;box-shadow:0 4px 12px rgba(0,0,0,.35)">\u2699 Admin</a>'
+
 @app.route('/portal/')
 @login_required
 def portal():
-    # Serve the generated index.html
-    return send_from_directory(app.config['DOCS_FOLDER'], 'index.html')
+    # Serve the generated index.html. Admins get a small floating link back to
+    # /admin injected on the way out -- nobody else's login (or the public share
+    # link) ever sees it, since this only runs for an authenticated admin request.
+    path = os.path.join(app.config['DOCS_FOLDER'], 'index.html')
+    if current_user.role != 'admin':
+        return send_from_directory(app.config['DOCS_FOLDER'], 'index.html')
+    with open(path, 'r', encoding='utf-8') as f:
+        html = f.read()
+    html = html.replace('</header>', ADMIN_LINK_HTML + '</header>', 1)
+    return html
 
 @app.route('/portal/<path:filename>')
 @login_required
@@ -405,6 +415,75 @@ def api_users_delete(username):
     del users[username]
     save_users(users)
     return jsonify({"success": True})
+
+SETTINGS_KEYS = [
+    'ned_name', 'lindsey_name', 'case_surname',
+    'property_address', 'date_range', 'case_number', 'court_name',
+    'form_email', 'gemini_api_key',
+    'split_percent', 'exclude_business',
+]
+
+@app.route('/api/config', methods=['GET'])
+@login_required
+def api_config_get():
+    if current_user.role != 'admin':
+        return jsonify({"error": "Unauthorized"}), 403
+    try:
+        with open(app.config['CFG_FILE'], 'r') as f:
+            cfg = json.load(f)
+    except Exception:
+        cfg = {}
+    out = {k: cfg.get(k) for k in SETTINGS_KEYS}
+    out['share_token'] = cfg.get('share_token', '')
+    return jsonify(out)
+
+@app.route('/api/config', methods=['POST'])
+@login_required
+def api_config_post():
+    if current_user.role != 'admin':
+        return jsonify({"error": "Unauthorized"}), 403
+    data = request.json or {}
+    try:
+        with open(app.config['CFG_FILE'], 'r') as f:
+            cfg = json.load(f)
+    except Exception:
+        cfg = {}
+    if 'split_percent' in data:
+        sp = data['split_percent']
+        if not isinstance(sp, dict):
+            return jsonify({"error": "split_percent must be an object"}), 400
+        for k, v in sp.items():
+            try:
+                num = float(v)
+            except (TypeError, ValueError):
+                return jsonify({"error": f"Split % for {k} must be a number"}), 400
+            if num < 0 or num > 100:
+                return jsonify({"error": f"Split % for {k} must be between 0 and 100"}), 400
+    if 'exclude_business' in data and not isinstance(data['exclude_business'], list):
+        return jsonify({"error": "exclude_business must be a list"}), 400
+    for k in SETTINGS_KEYS:
+        if k in data:
+            cfg[k] = data[k]
+    with open(app.config['CFG_FILE'], 'w', encoding='utf-8') as f:
+        json.dump(cfg, f, indent=2)
+    return jsonify({"success": True})
+
+@app.route('/api/regenerate_share_token', methods=['POST'])
+@login_required
+def api_regenerate_share_token():
+    if current_user.role != 'admin':
+        return jsonify({"error": "Unauthorized"}), 403
+    import secrets
+    try:
+        with open(app.config['CFG_FILE'], 'r') as f:
+            cfg = json.load(f)
+    except Exception:
+        cfg = {}
+    new_token = 't_' + secrets.token_urlsafe(16)
+    cfg['share_token'] = new_token
+    with open(app.config['CFG_FILE'], 'w', encoding='utf-8') as f:
+        json.dump(cfg, f, indent=2)
+    return jsonify({"success": True, "share_token": new_token})
 
 @app.route('/api/submit', methods=['POST'])
 def api_submit():
