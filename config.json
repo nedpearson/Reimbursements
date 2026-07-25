@@ -150,5 +150,7 @@
       "note": "removed per Ned (C-157)"
     }
   ],
-  "_exclude_charges_note": "Specific individual charges removed from the claim by Ned (matched on vendor substring + date + amount)."
+  "_exclude_charges_note": "Specific individual charges removed from the claim by Ned (matched on vendor substring + date + amount).",
+  "share_token": "t_v1asW2_GNHL6kFlAsxXnrg",
+  "gemini_api_key": ""
 }
