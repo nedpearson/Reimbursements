@@ -233,6 +233,38 @@ td{border-top-color:#322f60}
 footer{color:#8b8fc4}
 .emailbtn{background:#fff;color:#1c7a46}
 
+/* ===== COST OF WAITING (settlement urgency section; remove this block + cow-section div to revert) ===== */
+.cow-banner{background:linear-gradient(135deg,#7a1f2b 0%,#a3293a 100%);color:#fff;border-radius:16px;padding:24px 26px;margin:18px 0;box-shadow:0 10px 30px rgba(163,41,58,.28);position:relative;overflow:hidden}
+.cow-banner::after{content:"";position:absolute;right:-40px;bottom:-60px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.06)}
+.cow-banner .lbl{font-size:.72rem;letter-spacing:.13em;text-transform:uppercase;opacity:.92;font-weight:700}
+.cow-banner h3{font-family:'Source Serif 4',Georgia,serif;font-size:1.4rem;font-weight:700;margin:6px 0 10px;line-height:1.3;position:relative;z-index:1}
+.cow-banner .note{font-size:.88rem;color:rgba(255,255,255,.92);max-width:640px;line-height:1.6;position:relative;z-index:1}
+.cow-ticker{display:flex;align-items:baseline;gap:10px;margin-top:16px;flex-wrap:wrap;position:relative;z-index:1}
+.cow-ticker .tval{font-family:'Source Serif 4',Georgia,serif;font-size:2.3rem;font-weight:700;font-variant-numeric:tabular-nums}
+.cow-ticker .tlbl{font-size:.76rem;opacity:.85;text-transform:uppercase;letter-spacing:.08em;max-width:260px;line-height:1.5}
+.cow-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0}
+.cow-stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow)}
+.cow-stat .k{font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.cow-stat .v{font-family:'Source Serif 4',Georgia,serif;font-size:1.35rem;font-weight:700;color:var(--navy);margin-top:3px;font-variant-numeric:tabular-nums}
+.cow-stat.warn .v{color:#e05a5a}
+.cow-stat.offer .v{color:#3ec27a}
+.cow-table{width:100%;border-collapse:collapse;font-size:.88rem;margin:4px 0 18px;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.cow-table th{background:#2b2864;color:#cdd2fb;text-align:left;padding:10px 14px;font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;font-weight:700}
+.cow-table td{padding:10px 14px;border-top:1px solid var(--line);font-variant-numeric:tabular-nums;color:var(--ink)}
+.cow-table td.r,.cow-table th.r{text-align:right}
+.cow-compare{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:8px 0 18px}
+.cow-col{border-radius:14px;padding:18px 20px;border:1px solid var(--line)}
+.cow-col.settle{background:rgba(62,194,122,.10);border-color:rgba(62,194,122,.35)}
+.cow-col.wait{background:rgba(224,90,90,.10);border-color:rgba(224,90,90,.35)}
+.cow-col h4{font-family:'Source Serif 4',Georgia,serif;font-size:1.05rem;margin-bottom:8px}
+.cow-col.settle h4{color:#3ec27a}.cow-col.wait h4{color:#e05a5a}
+.cow-col ul{margin:0 0 0 18px;font-size:.86rem;line-height:1.7;color:var(--ink)}
+.cow-offer{background:linear-gradient(135deg,#1c7a46 0%,#249256 100%);color:#fff;border-radius:16px;padding:22px 26px;margin:6px 0 22px;box-shadow:0 10px 30px rgba(28,122,70,.25);display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}
+.cow-offer .lbl{font-size:.72rem;letter-spacing:.13em;text-transform:uppercase;font-weight:700;opacity:.92}
+.cow-offer .amt{font-family:'Source Serif 4',Georgia,serif;font-size:2.1rem;font-weight:700}
+.cow-offer .note{font-size:.84rem;opacity:.94;max-width:420px;margin-top:4px}
+.cow-note{color:var(--muted);font-size:.78rem;line-height:1.6;margin:0 2px 24px}
+@media(max-width:680px){.cow-stats{grid-template-columns:1fr}.cow-compare{grid-template-columns:1fr}.cow-ticker .tval{font-size:1.8rem}.cow-offer{padding:20px}}
 </style></head><body>
 <header><div class="wrap hd">
  <div class="seal">P</div>
@@ -245,6 +277,69 @@ footer{color:#8b8fc4}
 <div class="hero"><div><div class="lbl" id="bannerlbl">Net Amount Due to Ned</div><div class="note" id="crednote">__CREDITNOTE__</div><div class="balrow" id="balrow" style="display:none"></div></div><div class="right"><b id="bignum">$__NET__</b><a id="emailbtn" class="emailbtn" href="#" onclick="openEmailModal();return false;">&#9993;&nbsp;Email this out</a></div></div>
 <div class="stats" id="statstrip"></div>
 <div id="statdetail"></div>
+<div class="cow-banner">
+ <div class="lbl">Cost of Waiting</div>
+ <h3>Every month this stays unsettled, her deficit grows</h3>
+ <div class="note">8792 W Fairway Dr costs roughly $6,610/month to carry. Lindsey's half is $3,305/month &mdash; accruing whether or not the house is listed or sold. The longer this goes unresolved, the larger the amount she ultimately owes.</div>
+ <div class="cow-ticker">
+  <div><div class="tval" id="cowTicker">$0.00</div><div class="tlbl">accruing this month, illustrative &middot; based on her $3,305/mo carrying-cost share</div></div>
+ </div>
+</div>
+<div class="cow-stats">
+ <div class="cow-stat warn"><div class="k">Her Monthly Carrying-Cost Share</div><div class="v">$3,305</div></div>
+ <div class="cow-stat warn"><div class="k">Documented Claim To Date</div><div class="v">$__NET__</div></div>
+ <div class="cow-stat offer"><div class="k">Ned's Settlement Offer</div><div class="v">$130,000</div></div>
+</div>
+<table class="cow-table">
+ <thead><tr><th>If this stays unresolved for</th><th class="r">Added carrying cost (her share)</th></tr></thead>
+ <tbody>
+  <tr><td>1 more month</td><td class="r">$3,305</td></tr>
+  <tr><td>3 more months</td><td class="r">$9,915</td></tr>
+  <tr><td>6 more months</td><td class="r">$19,830</td></tr>
+  <tr><td>12 more months</td><td class="r">$39,660</td></tr>
+ </tbody>
+</table>
+<div class="cow-compare">
+ <div class="cow-col settle">
+  <h4>Settle now &mdash; $130,000</h4>
+  <ul>
+   <li>$130,000 cash to her, now</li>
+   <li>Full documented claim (currently $__NET__ and rising) is forgiven</li>
+   <li>Preserves the 2.4% mortgage rate &mdash; worth roughly $13,000/yr vs. today's rates</li>
+   <li>No further carrying-cost accrual and no further legal costs</li>
+  </ul>
+ </div>
+ <div class="cow-col wait">
+  <h4>Keep waiting</h4>
+  <ul>
+   <li>$3,305/month in carrying costs continues to accrue on her side</li>
+   <li>The full documented claim ($__NET__ and growing) remains payable</li>
+   <li>Risk of losing the 2.4% rate preservation entirely</li>
+   <li>Continued legal and administrative costs for both sides</li>
+  </ul>
+ </div>
+</div>
+<div class="cow-offer">
+ <div><div class="lbl">Ned's Offer</div><div class="amt">$130,000 now</div><div class="note">Instead of paying back the full claim &mdash; settled today, in full, no further accrual.</div></div>
+ <a href="#submit" class="emailbtn" style="color:#1c7a46">Discuss This Offer</a>
+</div>
+<div class="cow-note">Figures above reflect documented expenses and agreed household carrying-cost estimates as of the date shown at the top of this page. The monthly ticker is an illustrative real-time accrual based on the $3,305/month carrying-cost share, not a running historical total. Presented for settlement discussion purposes only; not an admission as to any specific amount owed.</div>
+<script>
+(function(){
+ var RATE = 3305/30.44/86400; // her 50% share, dollars per second
+ var el = document.getElementById('cowTicker');
+ var start = (typeof performance!=='undefined'&&performance.now)?performance.now():0;
+ function fmt(v){return '$'+v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+ function tick(){
+  var now=(typeof performance!=='undefined'&&performance.now)?performance.now():start;
+  var elapsed=(now-start)/1000;
+  if(el) el.textContent=fmt(elapsed*RATE);
+ }
+ tick();
+ setInterval(tick,200);
+})();
+</script>
+
 <h2>Expense Categories</h2>
 <div class="subhead">Tap any category to see every charge — each line links to the actual bill or a source record.</div>
 <div id="cats"></div>
