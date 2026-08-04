@@ -1,6 +1,10 @@
 {
   "nedpearson@gmail.com": {
-    "password_hash": "scrypt:32768:8:1$wwEukNyY5A5EqdF2$4695f279df8f2481b6396eb90f6ad58af9123f15646329ea9bb5e959d8e9d018284a1b27c489cab0a0c0fbecd4562bc6b2cecc3a4d020df05530f28eb51ce9e7",
+    "password_hash": "scrypt:32768:8:1$uRdOnGo9UPOL5nnv$2744b80fb77a10c3eeeba0f1c5ac99039e3932f4c16d0027acc91ee38c0a62a8957979df8f60c99a9fe47fbf59bedc5c81ac19e200a1a96f5dc8b18f0cc72628",
     "role": "admin"
+  },
+  "lindseypearson1@gmail.com": {
+    "password_hash": "scrypt:32768:8:1$B31v7nDgfk2aGHUy$6141bb05e66f1b94e70ddc2fc02caa910f159a0b3fa8dfe0f59880b16cca7873cd03bbca30ea69635aeb9dc54493251d117e24b2e71a69a67d9878875fe6c7cf",
+    "role": "viewer"
   }
 }
