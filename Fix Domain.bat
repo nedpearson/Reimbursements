@@ -1,0 +1,3 @@
+@echo off
+echo Requesting admin to clean the hosts file (approve the Windows prompt)...
+powershell -NoProfile -Command "Add-Type -AssemblyName System.Windows.Forms; Start-Process powershell -Verb RunAs -ArgumentList '-NoProfile -ExecutionPolicy Bypass -File \"%~dp0Remove_Hosts.ps1\"'"

@@ -196,29 +196,13 @@ def build(bills_folder=None, progress=print):
               basis=('flat $100/mo' if c=='AT&T Business' else ('12%' if c in ('School/Tuition','Medical/Dental/Vision') else ('100%' if c=='Advances to Lindsey' else ('80%' if c=='Moving/Household' else '50%'))))) for c in CATS if c in cats],
         items=items, credits=sorted(credits,key=lambda x:x['d']))
     tpl=open(os.path.join(HERE,'portal_template.html'),encoding='utf-8').read()
-    # Settings-driven names & case info. Defaults match the original hardcoded text,
-    # so this is a no-op until someone changes a value in Admin > Settings. The name
-    # swap runs on the raw static template -- before any bill/vendor data is inserted
-    # below -- so it can never touch real ledger data, only the document's own copy.
-    ned_name=str(cfg.get('ned_name') or 'Ned')
-    lindsey_name=str(cfg.get('lindsey_name') or 'Lindsey')
-    case_surname=str(cfg.get('case_surname') or 'Pearson')
-    tpl=tpl.replace('Ned', ned_name).replace('Lindsey', lindsey_name).replace('Pearson', case_surname)
-    property_address=str(cfg.get('property_address') or '8792 W Fairway Dr, Baton Rouge')
-    date_range=str(cfg.get('date_range') or 'Aug 2024 – Jul 2026')
-    case_number=str(cfg.get('case_number') or 'No. 236951')
-    court_name=str(cfg.get('court_name') or 'Family Court, EBR Parish')
-    tpl=tpl.replace('8792 W Fairway Dr, Baton Rouge', property_address)
-    tpl=tpl.replace('Aug 2024 – Jul 2026', date_range)
-    tpl=tpl.replace('No. 236951', case_number)
-    tpl=tpl.replace('Family Court, EBR Parish', court_name)
     addl={}
     ap=os.path.join(HERE,'additional.json')
     if os.path.exists(ap):
         addl=json.load(open(ap,encoding='utf-8'))
     subtract=bool(cfg.get('subtract_payments_to_lindsey'))
-    tpl=tpl.replace('__CREDITNOTE__', (('after $__CREDITS__ already paid to %s is credited'%lindsey_name) if subtract else ('includes the direct payments/advances %s made to %s — see the Advances category below'%(ned_name,lindsey_name))))
-    tpl=tpl.replace('__CREDITSTITLE__', (('Credits — amounts %s already paid %s (subtracted)'%(ned_name,lindsey_name)) if subtract else ('Payments %s made to %s — settled separate expenses (NOT subtracted)'%(ned_name,lindsey_name))))
+    tpl=tpl.replace('__CREDITNOTE__', ('after $__CREDITS__ already paid to Lindsey is credited' if subtract else 'includes the direct payments/advances Ned made to Lindsey — see the Advances category below'))
+    tpl=tpl.replace('__CREDITSTITLE__', ('Credits — amounts Ned already paid Lindsey (subtracted)' if subtract else 'Payments Ned made to Lindsey — settled separate expenses (NOT subtracted)'))
     disputes={'items':[]}
     dp=os.path.join(HERE,'disputes.json')
     if os.path.exists(dp):

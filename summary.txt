@@ -1,16 +1,19 @@
-REIMBURSEMENT SUMMARY  (generated 2026-07-23)
+REIMBURSEMENT SUMMARY  (generated 2026-08-11)
 ============================================================
-AT&T Business           20 items  billed $   2,000.00  @0%  -> $   2,000.00
+AT&T Business           22 items  billed $   2,200.00  @0%  -> $   2,200.00
+Advances to Lindsey     19 items  billed $   4,754.29  @100%  -> $   4,754.29
+Cleaning                 5 items  billed $   2,109.75  @50%  -> $   1,054.88
 Construction & Home Improvements   3 items  billed $  16,500.00  @50%  -> $   8,250.00
 Home Repairs & A/C       2 items  billed $   6,600.00  @50%  -> $   3,300.00
 Labor                    2 items  billed $   3,239.35  @50%  -> $   1,619.68
-Mortgage                25 items  billed $  88,276.61  @50%  -> $  44,138.35
-Moving/Household         1 items  billed $   1,600.00  @80%  -> $   1,280.00
-Pool                     9 items  billed $   3,668.00  @50%  -> $   1,834.00
-School/Tuition          12 items  billed $   1,814.54  @12%  -> $     217.75
-Storage                  4 items  billed $   1,167.75  @50%  -> $     583.88
-Utilities               42 items  billed $   6,902.79  @50%  -> $   3,451.47
+Lawn/Yard                4 items  billed $     700.00  @50%  -> $     350.00
+Mortgage                22 items  billed $  76,523.39  @50%  -> $  38,261.74
+Moving/Household         3 items  billed $   2,000.00  @80%  -> $   1,600.00
+Pool                    24 items  billed $  10,574.00  @50%  -> $   5,287.00
+School/Tuition          22 items  billed $  36,738.54  @12%  -> $   4,408.63
+Storage                 11 items  billed $   3,256.23  @50%  -> $   1,628.15
+Utilities               82 items  billed $  16,353.31  @50%  -> $   8,176.79
 ------------------------------------------------------------
-SUBTOTAL she owes                                      -> $   66,675.13
+SUBTOTAL she owes                                      -> $   80,891.16
 ============================================================
-NET LINDSEY OWES YOU                                   -> $   66,675.13
+NET LINDSEY OWES YOU                                   -> $   80,891.16

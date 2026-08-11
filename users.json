@@ -1,10 +1,10 @@
 {
-    "nedpearson@gmail.com": {
-        "password_hash": "scrypt:32768:8:1$wwEukNyY5A5EqdF2$4695f279df8f2481b6396eb90f6ad58af9123f15646329ea9bb5e959d8e9d018284a1b27c489cab0a0c0fbecd4562bc6b2cecc3a4d020df05530f28eb51ce9e7",
-        "role": "admin"
-    },
-    "viewer": {
-        "password_hash": "scrypt:32768:8:1$0K77ZJkkqmRGGbOa$f6883d2df91994d0874de13d691502a93e324b142b8aa7bd580399a94618947a5bc029e3ea20491c88a7d69e3de5125f0d40efa67a1591443b2867601b88245a",
-        "role": "viewer"
-    }
+  "nedpearson@gmail.com": {
+    "password_hash": "scrypt:32768:8:1$UmnE3WCTTEYkQRT4$493fc52ce00d6e906aaea9e0eae551d639958cc2c81ce4787a7279905ab3328e301b9e87a5bd8404cd3fc08307ae44f06b59885ba9252de82b957c54b1c34e93",
+    "role": "admin"
+  },
+  "lindseypearson1@gmail.com": {
+    "password_hash": "scrypt:32768:8:1$m0Wo4KDomyijYGUE$967b4307e4cb5c1f00ba938f0a101b87381207e75b3c4254bfc9eac6c172a444f732e85f322e6274aee865513ae15545a25e91fc02ac0f1b42deef0c6bdf7832",
+    "role": "viewer"
+  }
 }

@@ -1,0 +1,52 @@
+=== gh auth status ===
+github.com
+  ✓ Logged in to github.com account nedpearson (keyring)
+  - Active account: true
+  - Git operations protocol: https
+  - Token: gho_************************************
+  - Token scopes: 'gist', 'read:org', 'repo'
+=== repos (name / visibility / updated) === 
+nedpearson/Reimbursements		private	2026-07-25T00:52:06Z
+nedpearson/WindowWorldAssistant		public	2026-07-25T00:41:31Z
+nedpearson/RobertsEnterprises-FamousAI		private	2026-07-21T02:33:00Z
+nedpearson/RobertsEnterprises		public	2026-07-20T23:58:55Z
+nedpearson/TranslationApp		public	2026-07-19T03:49:59Z
+nedpearson/Bridgebox.ai		public	2026-07-03T06:01:21Z
+nedpearson/WindowWorldSandbox6_9		public	2026-06-21T05:43:13Z
+nedpearson/PersonalAssistant		public	2026-06-12T20:21:35Z
+nedpearson/WindowWorld		public	2026-06-09T01:11:11Z
+nedpearson/Claude-Window-World-		private	2026-06-04T01:13:42Z
+nedpearson/smart-voice-family		public	2026-05-24T23:27:53Z
+nedpearson/InstagramProduct		public	2026-05-13T02:32:17Z
+nedpearson/Astari		public	2026-05-09T00:57:12Z
+nedpearson/WindowWorldR		public	2026-05-06T01:48:16Z
+nedpearson/MeasurementApp		public	2026-05-02T22:57:03Z
+nedpearson/Divorce-Ledger-AI		public	2026-04-29T01:28:09Z
+nedpearson/BridgeBoxVoice		public	2026-04-28T01:37:01Z
+nedpearson/FedexInvoiceing		public	2026-04-26T01:57:53Z
+nedpearson/KidTrendRadar		public	2026-04-25T04:43:21Z
+nedpearson/Fedex		public	2026-04-24T02:55:35Z
+nedpearson/ProjectLaunchReal		public	2026-04-16T02:22:37Z
+nedpearson/Copilot-KidTrendRadar		private	2026-04-07T02:48:11Z
+nedpearson/New-Pearson_Nexus_AI	Repository created 1/31/26	public	2026-04-06T23:49:24Z
+nedpearson/BridgeBox_Family_Law		public	2026-04-06T18:30:59Z
+nedpearson/DavidWadeMarine		public	2026-03-29T01:02:17Z
+nedpearson/Servicargo		public	2026-03-25T15:48:49Z
+nedpearson/Forensic_CPA_AI	A Deep Forensic Dive Into Your Finances	public	2026-03-24T17:57:36Z
+nedpearson/BridgeBox		private	2026-03-24T01:48:23Z
+nedpearson/PlainSpeakAI		public	2026-03-19T14:28:40Z
+nedpearson/FriendlyPowerSports		public	2026-03-19T04:24:33Z
+nedpearson/Roberts-Enterprise		public	2026-03-11T18:46:01Z
+nedpearson/CoachPerfect		public	2026-02-22T07:31:40Z
+nedpearson/career-scout	Newest 2/5/2026	public	2026-02-20T18:11:58Z
+nedpearson/DocumentPresentationResearch_Assistant		public	2026-02-19T21:04:03Z
+nedpearson/DocmentIntelligence		public	2026-02-19T17:33:54Z
+nedpearson/Document_Intelligence_AI		public	2026-02-18T23:00:08Z
+nedpearson/LocalProgramControlCenter	All Local Apps Run on this	public	2026-02-18T21:09:37Z
+nedpearson/DivorceAI		public	2026-02-17T23:07:36Z
+nedpearson/Pearson_Nexus_AI_NEW		public	2026-02-14T21:49:40Z
+nedpearson/JobTracker		public	2026-02-14T21:49:33Z
+nedpearson/PayrollandSalesTracker		public	2026-02-14T21:05:08Z
+=== which repos have server.py at root === 
+HAS server.py: nedpearson/Reimbursements 
+DONE 

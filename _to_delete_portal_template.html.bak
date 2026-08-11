@@ -42,20 +42,6 @@ header::after{content:"";position:absolute;right:-80px;top:-80px;width:320px;hei
 .emailbtn{display:inline-flex;align-items:center;gap:6px;background:#fff;color:var(--green);font-weight:700;
  border:none;border-radius:11px;padding:12px 18px;text-decoration:none;font-size:.92rem;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.12)}
 .emailbtn:hover{background:#f0fbf4}
-.emlmodal{display:none;position:fixed;inset:0;background:rgba(10,14,30,.55);z-index:9999;align-items:center;justify-content:center;padding:20px}
-.emlmodal.show{display:flex}
-.emlbox{background:#fff;color:#1c2340;border-radius:14px;padding:26px 28px;max-width:460px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,.35)}
-.emlbox h3{font-family:'Source Serif 4',Georgia,serif;font-size:1.2rem;margin-bottom:6px;color:var(--navy)}
-.emlbox p.sub{font-size:.85rem;color:var(--muted);margin-bottom:16px}
-.emlbox label{display:block;font-size:.78rem;font-weight:700;color:var(--navy2);margin:14px 0 5px;text-transform:uppercase;letter-spacing:.04em}
-.emlbox input[type=text]{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:.92rem;box-sizing:border-box}
-.emlbox .radiorow{display:flex;flex-direction:column;gap:8px;font-size:.86rem}
-.emlbox .radiorow label{display:flex;align-items:center;gap:8px;font-weight:500;text-transform:none;letter-spacing:0;color:#2b3444;margin:0}
-.emlbtns{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}
-.emlbtns button{padding:10px 18px;border-radius:9px;border:none;font-weight:700;cursor:pointer;font-size:.88rem}
-.emlcancel{background:#eef1f7;color:#42506b}
-.emlsend{background:var(--green);color:#fff}
-.emlerr{color:#b3261e;font-size:.8rem;margin-top:6px;display:none}
 /* ---------- stat strip ---------- */
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0 8px}
 .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow)}
@@ -74,16 +60,6 @@ header::after{content:"";position:absolute;right:-80px;top:-80px;width:320px;hei
 .sd .tot td{font-weight:700;color:var(--navy);border-top:2px solid #cdd8ee;background:#F4F6FB}
 .sd .close{float:right;color:var(--muted);cursor:pointer;font-size:.78rem;font-weight:600}
 .sd .close:hover{color:var(--navy)}
-.sd tr.catrow{cursor:pointer}
-.sd tr.catrow:hover td{background:rgba(127,127,127,.09)}
-.sd tr.catrow .chev{display:inline-block;margin-right:6px;font-size:.72rem}
-.sd tr.catrow.open .chev{transform:rotate(90deg);color:var(--navy2)}
-.sd tr.catdrill{display:none}
-.sd tr.catrow.open+tr.catdrill{display:table-row}
-.sd tr.catdrill>td{padding:10px 4px 14px}
-.sd .subtbl{font-size:.78rem;box-shadow:none}
-.sd .subtbl th{font-size:.62rem;padding:7px 10px}
-.sd .subtbl td{padding:7px 10px}
 /* ---------- section headings ---------- */
 h2{font-family:'Source Serif 4',Georgia,serif;color:var(--navy);font-size:1.28rem;font-weight:700;margin:34px 2px 12px;letter-spacing:.005em}
 .subhead{color:var(--muted);font-size:.9rem;margin:-6px 2px 10px}
@@ -242,7 +218,7 @@ footer{color:#8b8fc4}
 </div></header>
 <div id="mbar"><div><div class="l" id="mbarlbl">Net due to Ned</div><div class="v" id="mbarval">$__NET__</div></div><a href="#submit">Upload / Dispute</a></div>
 <div class="wrap">
-<div class="hero"><div><div class="lbl" id="bannerlbl">Net Amount Due to Ned</div><div class="note" id="crednote">__CREDITNOTE__</div><div class="balrow" id="balrow" style="display:none"></div></div><div class="right"><b id="bignum">$__NET__</b><a id="emailbtn" class="emailbtn" href="#" onclick="openEmailModal();return false;">&#9993;&nbsp;Email this out</a></div></div>
+<div class="hero"><div><div class="lbl" id="bannerlbl">Net Amount Due to Ned</div><div class="note" id="crednote">__CREDITNOTE__</div><div class="balrow" id="balrow" style="display:none"></div></div><div class="right"><b id="bignum">$__NET__</b><a id="emailbtn" class="emailbtn" href="#">&#9993;&nbsp;Email this out</a></div></div>
 <div class="stats" id="statstrip"></div>
 <div id="statdetail"></div>
 <h2>Expense Categories</h2>
@@ -274,26 +250,6 @@ __PROOFVOLS__
 </div></div>
 <div class="note">Mortgage amounts come from Assurance Financial payment notifications; Venmo-paid items from official monthly Venmo statements. Originals available on request. Informational, for settlement discussion.</div>
 <footer>Prepared from source documents &middot; Reimbursement Manager</footer></div>
-<div class="emlmodal" id="emailModal">
- <div class="emlbox">
-  <h3>Email this out</h3>
-  <p class="sub">Send the reimbursement package link to whoever needs it &mdash; separate multiple addresses with a comma.</p>
-  <label for="emlTo">To</label>
-  <input type="text" id="emlTo" placeholder="lindsey@email.com, lawyer@firm.com">
-  <label for="emlAmount">Amount to state in this email</label>
-  <input type="text" id="emlAmount" inputmode="decimal" placeholder="e.g. 45000 &mdash; never auto-filled, type the figure for this email">
-  <label>Link to send</label>
-  <div class="radiorow">
-   <label><input type="radio" name="emlLink" value="login" checked> Portal login (recommended &mdash; they sign in with the account you created)</label>
-   <label id="emlShareOpt" style="display:none"><input type="radio" name="emlLink" value="share"> No-login share link</label>
-  </div>
-  <div class="emlerr" id="emlErr"></div>
-  <div class="emlbtns">
-   <button class="emlcancel" type="button" onclick="closeEmailModal()">Cancel</button>
-   <button class="emlsend" type="button" onclick="doSendEmail()">Open in my email app</button>
-  </div>
- </div>
-</div>
 <script>
 const D=__DATA__;const P=".";
 /* ===== live overrides: charges removed (approved) or kept (denied) via dispute one-click.
@@ -407,13 +363,7 @@ const ADD=__ADDITIONAL__;
             {k:'exh',lab:'Documented exhibits',v:String(exhCount||(D.items||[]).length),cls:''}];
  var strip=document.getElementById('statstrip');
  strip.innerHTML=cells.map(function(c){return '<div class="stat '+c.cls+'" data-k="'+c.k+'"><div class="k">'+c.lab+'</div><div class="v">'+c.v+'</div><div class="more">tap for details ▾</div></div>';}).join('');
- function catRows(showPct){return D.cats.map(function(c){
-  var items=D.items.filter(function(i){return i.cat===c.name;});
-  var colspan=showPct?4:3;
-  var head='<tr class="catrow"><td><span class="chev">▶</span> '+c.name+'</td><td class="r">'+money(c.billed)+'</td>'+(showPct?'<td class="r">'+c.basis+'</td>':'')+'<td class="r"><b>'+money(c.owed)+'</b></td></tr>';
-  var body='<tr class="catdrill"><td colspan="'+colspan+'"><table class="subtbl"><thead><tr><th>Ref #</th><th>Date</th><th>Vendor</th><th>Description</th><th class="r">Bill amount</th><th class="r">Her share</th><th>Source of truth</th><th></th></tr></thead><tbody>'+groupedRows(items)+'</tbody></table></td></tr>';
-  return head+body;
- }).join('');}
+ function catRows(showPct){return D.cats.map(function(c){return '<tr><td>'+c.name+'</td><td class="r">'+money(c.billed)+'</td>'+(showPct?'<td class="r">'+c.basis+'</td>':'')+'<td class="r"><b>'+money(c.owed)+'</b></td></tr>';}).join('');}
  function detail(k){
   if(k==='billed')return '<h3>Total billed — '+money(billed)+'</h3><p>The gross total of every bill and invoice in the record, before any split. Lindsey owes only her agreed share of each category — never the full amount. Here is what was billed in each category and her share of it:</p>'
    +'<table><thead><tr><th>Category</th><th class="r">Total billed</th><th class="r">Lindsey’s share</th></tr></thead><tbody>'+catRows(false)+'<tr class="tot"><td>Total</td><td class="r">'+money(billed)+'</td><td class="r">'+money(D.net)+'</td></tr></tbody></table>';
@@ -432,7 +382,6 @@ const ADD=__ADDITIONAL__;
   cur=k;det.innerHTML='<div class="sd"><span class="close">✕ close</span>'+detail(k)+'</div>';
   strip.querySelectorAll('.stat').forEach(function(s){s.classList.toggle('active',s.getAttribute('data-k')===k);});
   det.querySelector('.close').onclick=function(){show(k);};
-  det.querySelectorAll('.catrow').forEach(function(row){row.onclick=function(){row.classList.toggle('open');};});
   det.scrollIntoView({behavior:'smooth',block:'nearest'});
  }
  strip.querySelectorAll('.stat').forEach(function(s){s.onclick=function(){show(s.getAttribute('data-k'));};});
@@ -449,43 +398,19 @@ if(ADD&&ADD.sections){
  aw.insertAdjacentHTML('beforeend','<div class="note">Full detail &amp; chart: <a href="'+ADD.doc+'" target="_blank">Voluntary Support Provided (Vehicle &amp; Insurance)</a>. Underlying GM Financial / GEICO / health-plan statements available on request.</div>');
 }
 
-var EMAILLINKS={login:location.origin+'/login',share:''};
-(function(){ // best-effort: pick up the no-login share link if we're logged in as admin (fails silently otherwise)
- fetch('/api/config').then(function(r){return r.ok?r.json():null;}).then(function(cfg){
-   if(cfg&&cfg.share_token){ EMAILLINKS.share=location.origin+'/share/'+cfg.share_token+'/';
-     var opt=document.getElementById('emlShareOpt'); if(opt) opt.style.display='flex'; }
- }).catch(function(){});
-})();
-function emailBody(link,statedAmount){
+(function(){
+ var link='https://nedpearson.github.io/Reimbursements/';
  var addTotal=(typeof ADD!=='undefined'&&ADD&&ADD.grand_total)?ADD.grand_total:0;
- return {
-  subj:'Expense Reimbursement — Pearson ('+money(statedAmount)+')',
-  body:'The complete expense reimbursement package is here:\n'+link+'\n\n'
-   +'Amount due: '+money(statedAmount)+'\n'
-   +(addTotal?('Additional amounts paid on your behalf (vehicle, insurance, health premium, direct payments): '+money(addTotal)+'\n'):'')
-   +'\nOn that page: every charge by category, each line linked to the actual bill, plus the itemized statement, cover letter, and full proof pack — all viewable in the browser, nothing to download. If you believe any charge is wrong, use the Dispute button on that line and attach your proof.\n\nNed'
- };
-}
-function openEmailModal(){document.getElementById('emlErr').style.display='none';document.getElementById('emlTo').value='';document.getElementById('emlAmount').value='';document.getElementById('emailModal').classList.add('show');document.getElementById('emlTo').focus();}
-function closeEmailModal(){document.getElementById('emailModal').classList.remove('show');}
-function doSendEmail(){
- var e=document.getElementById('emlErr');
- var to=document.getElementById('emlTo').value.trim();
- if(!to){e.textContent='Enter at least one email address.';e.style.display='block';return;}
- // The amount is never auto-filled from the calculated net due -- you type the figure
- // for this specific email every time, so a full/whole-claim number can never go out
- // by default or by accident.
- var amtRaw=document.getElementById('emlAmount').value.trim().replace(/[^0-9.]/g,'');
- var amt=parseFloat(amtRaw);
- if(!amtRaw||isNaN(amt)||amt<=0){e.textContent='Enter the amount to state in this email.';e.style.display='block';return;}
- e.style.display='none';
- var toClean=to.split(',').map(function(s){return s.trim();}).filter(Boolean).join(',');
- var which=(document.querySelector('input[name="emlLink"]:checked')||{}).value||'login';
- var link=(which==='share'&&EMAILLINKS.share)?EMAILLINKS.share:EMAILLINKS.login;
- var eb=emailBody(link,amt);
- window.location.href='mailto:'+toClean+'?subject='+encodeURIComponent(eb.subj)+'&body='+encodeURIComponent(eb.body);
- closeEmailModal();
-}
+ var paidT=(typeof SETTLED!=='undefined'&&SETTLED&&SETTLED.paid_total)?SETTLED.paid_total:0;
+ var due=paidT?Math.max(0,Math.round((D.net-paidT)*100)/100):D.net;
+ var subj='Expense Reimbursement — Pearson ('+money(due)+')';
+ var body='The complete expense reimbursement package is here:\n'+link+'\n\n'
+  +((due!==D.net)?('Balance still due: '+money(due)+'  (original '+money(D.net)+' less '+money(paidT)+' already paid)\n'):('Net amount due: '+money(D.net)+'\n'))
+  +(addTotal?('Additional amounts paid on your behalf (vehicle, insurance, health premium, direct payments): '+money(addTotal)+'\n'):'')
+  +'\nOn that page: every charge by category, each line linked to the actual bill, plus the itemized statement, cover letter, and full proof pack — all viewable in the browser, nothing to download. If you believe any charge is wrong, use the Dispute button on that line and attach your proof.\n\nNed';
+ var el=document.getElementById('emailbtn');
+ if(el) el.href='mailto:?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body);
+})();
 
 /* ===== mobile sticky-bar sync ===== */
 (function(){
@@ -531,7 +456,6 @@ function renderForm(kind,item){
   +'<input type="hidden" name="_next" value="'+esc(pageURL()+'?sent='+kind)+'">'
   +'<input type="text" name="_honey" style="display:none">'
   +'<input type="hidden" name="Type" value="'+kind+'">'
-  +(item?('<input type="hidden" name="Item_ID" value="'+esc(item.id)+'"><input type="hidden" name="Item_Label" value="'+esc(ref)+'">'):'')
   +'<p style="color:var(--muted);font-size:.9rem;margin-bottom:4px">'+m.sub+'</p>'
   +fields+who
   +'<label>Attach a file (photo, PDF, screenshot — up to 5 MB)</label>'
@@ -547,26 +471,27 @@ function renderForm(kind,item){
  document.getElementById('upform').addEventListener('submit',function(ev){
   var f=ev.target, msg=document.getElementById('fmsg'), btn=f.querySelector('.subbtn'), file=fin.files[0];
   if(file&&file.size>5*1048576){ev.preventDefault();msg.className='formmsg err';msg.textContent='That file is over 5 MB — please attach a smaller photo or PDF.';return;}
-  // ---- dispute on a specific charge → tracked directly in Ned's Admin dashboard ----
+  // ---- dispute on a specific charge → email Ned GitHub Approve/Deny decision links ----
   if(kind==='dispute' && item){
    ev.preventDefault();
    var reason=((f.querySelector('[name="Reason"]')||{}).value)||'';
    var nm=((f.querySelector('[name="Your_name"]')||{}).value)||'';
    var lbl=itemRef(item);
+   function issueURL(action){
+    var title='[dispute] '+action+' — '+lbl;
+    var body='id: '+item.id+'\nlabel: '+lbl+'\naction: '+action+'\n\nSubmitting this issue will '+(action==='approve'?'REMOVE this charge from the reimbursement.':'KEEP this charge (mark it reviewed).')+' Filed via the portal Dispute button.';
+    return 'https://github.com/'+GH_REPO+'/issues/new?labels=dispute&title='+encodeURIComponent(title)+'&body='+encodeURIComponent(body);
+   }
    btn.disabled=true; btn.textContent='Sending…'; msg.style.display='none';
-   var fd=new FormData();
-   fd.append('Type','dispute');
-   fd.append('Item_ID', item.id);
-   fd.append('Item_Label', lbl);
-   fd.append('Reason', reason);
-   fd.append('Your_name', nm);
-   fd.append('_ajax','1');
-   if(file) fd.append('attachment', file);
-   fetch('/api/submit',{method:'POST',body:fd})
+   var payload={_subject:'Dispute filed — '+lbl,_template:'table',Charge:lbl,Reason:reason,From:(nm||'(not given)'),
+     'APPROVE — remove this charge':issueURL('approve'),'DENY — keep this charge':issueURL('deny'),
+     _note:'Open a link, then click the green Submit button on GitHub. Approve auto-removes the charge; the portal updates within ~1 minute.'};
+   fetch(FS_AJAX,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(payload)})
     .then(function(r){return r.json();})
     .then(function(j){
       if(String(j.success)==='true'){ f.reset(); msg.className='formmsg ok';
-        msg.textContent='✓ Dispute filed — it’s now tracked in Ned’s dashboard for review, and he’ll be notified by email. If he accepts it, this charge is credited automatically.';
+        msg.textContent='✓ Dispute sent to Ned. He’ll review it — if approved, this charge comes off automatically.';
+        if(file){ try{var fd=new FormData();fd.append('_subject','Dispute proof — '+lbl);fd.append('_captcha','false');fd.append('Charge',lbl);fd.append('attachment',file);fetch(FS_STD,{method:'POST',body:fd});}catch(e){} }
       } else { msg.className='formmsg err'; msg.textContent='Could not send: '+(j.message||'please try again')+'.'; }
       btn.disabled=false; btn.textContent='Send to Ned';})
     .catch(function(){ msg.className='formmsg err'; msg.textContent='Network problem — please try again.'; btn.disabled=false; btn.textContent='Send to Ned';});

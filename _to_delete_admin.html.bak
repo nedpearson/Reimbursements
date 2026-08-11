@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Divorce Ledger</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --surface: rgba(30, 41, 59, 0.7);
+            --border: rgba(255, 255, 255, 0.08);
+            --primary: #3b82f6;
+            --success: #10b981;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+
+        body {
+            background: radial-gradient(circle at top left, #1e1b4b, var(--bg-color));
+            min-height: 100vh;
+            color: var(--text-main);
+        }
+        
+        .navbar {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar h1 {
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(to right, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            margin-left: 24px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover { color: white; }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 24px;
+        }
+
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--primary), #4f46e5);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:hover { transform: translateY(-1px); box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.4); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .btn-success { background: linear-gradient(135deg, #059669, #10b981); }
+        .btn-success:hover { box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.4); }
+
+        .card {
+            background: var(--surface);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 16px 24px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        tr:last-child td { border-bottom: none; }
+        
+        tr:hover { background: rgba(255, 255, 255, 0.02); }
+
+        .checkbox-cell { width: 50px; }
+        
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-paid { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+        .badge-pending { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+
+        #toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--surface);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 1000;
+        }
+        
+        #toast.show { transform: translateY(0); opacity: 1; }
+
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>Divorce Ledger Admin</h1>
+        <div class="nav-links">
+            <a href="/portal" target="_blank">View Portal</a>
+            <a href="/logout">Sign Out</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px;">
+            <div>
+                <h2 style="font-size: 24px; font-weight: 700; margin-bottom: 8px;">Ledger Items</h2>
+                <p style="color: var(--text-muted);">Manage reimbursements and regenerate the portal.</p>
+                {% if share_token %}
+                <div style="margin-top: 16px; padding: 12px; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 8px; display: inline-block;">
+                    <span style="color: var(--text-muted); font-size: 14px; font-weight: 600; margin-right: 8px;">Shareable Link (No Login Required):</span>
+                    <a href="/share/{{ share_token }}/" target="_blank" style="color: #60a5fa; font-family: monospace; font-size: 14px; text-decoration: none;">https://reimbursements.bridgebox.ai/share/{{ share_token }}/</a>
+                </div>
+                {% endif %}
+            </div>
+            <div style="display: flex; gap: 12px;">
+                <button class="btn btn-success" onclick="markSelected('paid')">Mark Paid</button>
+                <button class="btn" onclick="generatePortal()" id="generateBtn">Regenerate Portal</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="checkbox-cell"><input type="checkbox" id="selectAll" onclick="toggleAll()"></th>
+                        <th>Date</th>
+                        <th>Category</th>
+                        <th>Vendor</th>
+                        <th>Amount</th>
+                        <th>Share</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in rows %}
+                    {% set iid = row.id %}
+                    <tr>
+                        <td><input type="checkbox" class="row-checkbox" value="{{ iid }}"></td>
+                        <td>{{ row.date or '—' }}</td>
+                        <td>{{ row.category }}</td>
+                        <td style="max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ row.vendor }}">{{ row.vendor }}</td>
+                        <td>{% if row.amount is not none %}${{ "%.2f"|format(row.amount) }}{% else %}-{% endif %}</td>
+                        <td>${{ "%.2f"|format(row.her_share|default(0)) }}</td>
+                        <td>
+                            {% if iid in settled.paid %}
+                                <span class="badge badge-paid">PAID ✓</span>
+                            {% elif iid in settled.pending %}
+                                <span class="badge badge-pending">Pending</span>
+                            {% else %}
+                                <span style="color: var(--text-muted); font-size: 13px;">—</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div style="margin-top: 40px; display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px;">
+            <div>
+                <h2 style="font-size: 24px; font-weight: 700; margin-bottom: 8px;">Disputes Management</h2>
+                <p style="color: var(--text-muted);">Track and respond to disputes submitted by Lindsey.</p>
+            </div>
+            <div>
+                <button class="btn" onclick="addNewDispute()">+ Record New Dispute</button>
+            </div>
+        </div>
+        
+        <div class="card">
+            <table id="disputesTable">
+                <thead>
+                    <tr>
+                        <th>Item ID / Description</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Lindsey's Claim</th>
+                        <th>Your Response</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="disputesBody">
+                    <tr><td colspan="6" style="text-align:center; color:var(--text-muted);">Loading disputes...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Dispute Resolution Modal -->
+    <div id="disputeModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:2000; align-items:center; justify-content:center;">
+        <div style="background:#fff; width:600px; max-width:90%; border-radius:12px; padding:24px; box-shadow:0 20px 40px rgba(0,0,0,0.2);">
+            <h2 style="margin-top:0; margin-bottom:8px;" id="dmTitle">Resolve Dispute</h2>
+            <div style="font-size:14px; color:var(--text-muted); margin-bottom:20px;" id="dmItem">Item ID</div>
+            
+            <div style="background:#f8fafc; padding:12px; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:16px;">
+                <div style="font-size:12px; font-weight:600; color:#64748b; text-transform:uppercase; margin-bottom:4px;">Lindsey's Claim</div>
+                <div id="dmClaim" style="font-size:14px;"></div>
+            </div>
+            
+            <div style="background:rgba(59,130,246,0.05); padding:12px; border-radius:8px; border:1px solid rgba(59,130,246,0.2); margin-bottom:16px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                    <div style="font-size:12px; font-weight:600; color:#2563eb; text-transform:uppercase;">AI Draft Response</div>
+                    <button class="btn" style="padding:4px 8px; font-size:12px; background:#eff6ff; color:#2563eb; border:1px solid #bfdbfe;" onclick="useAIDraft()">Use Draft</button>
+                </div>
+                <div id="dmAIDraft" style="font-size:14px; color:#1e40af;"></div>
+            </div>
+            
+            <div style="margin-bottom:16px;">
+                <label style="display:block; font-size:12px; font-weight:600; margin-bottom:4px;">Status</label>
+                <select id="dmStatus" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1;">
+                    <option value="review">Reviewing</option>
+                    <option value="accepted">Accepted (Credit Lindsey for this item)</option>
+                    <option value="declined">Declined</option>
+                    <option value="resolved">Resolved</option>
+                </select>
+            </div>
+            
+            <div style="margin-bottom:24px;">
+                <label style="display:block; font-size:12px; font-weight:600; margin-bottom:4px;">Your Final Response</label>
+                <textarea id="dmResponse" rows="4" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; resize:vertical;"></textarea>
+            </div>
+            
+            <div style="display:flex; justify-content:flex-end; gap:12px;">
+                <button class="btn" style="background:#fff; color:#475569; border:1px solid #cbd5e1;" onclick="closeDisputeModal()">Cancel</button>
+                <button class="btn btn-success" onclick="saveDisputeModal()">Save & Resolve</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <script>
+        let allDisputes = { items: [] };
+
+        async function loadDisputes() {
+            try {
+                const res = await fetch('/api/disputes');
+                allDisputes = await res.json();
+                renderDisputes();
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function renderDisputes() {
+            const tbody = document.getElementById('disputesBody');
+            if (!allDisputes.items || allDisputes.items.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No disputes on record.</td></tr>';
+                return;
+            }
+            let html = '';
+            allDisputes.items.forEach((d, idx) => {
+                let badgeClass = 'badge-pending';
+                if (d.status === 'accepted') badgeClass = 'badge-paid';
+                if (d.status === 'declined') badgeClass = 'badge-pending'; // Or a red badge, but pending is okay for now
+                if (d.status === 'resolved') badgeClass = 'badge-paid';
+                
+                html += `<tr>
+                    <td><strong>${d.item || ''}</strong></td>
+                    <td><span class="badge ${badgeClass}">${d.status || 'review'}</span></td>
+                    <td>${d.date || ''}</td>
+                    <td><div style="font-size:13px; max-width:200px; overflow:hidden; text-overflow:ellipsis;" title="${(d.her_claim||'').replace(/"/g, '&quot;')}">${d.her_claim || ''}</div></td>
+                    <td><div style="font-size:13px; max-width:200px; overflow:hidden; text-overflow:ellipsis;" title="${(d.response||'').replace(/"/g, '&quot;')}">${d.response || ''}</div></td>
+                    <td>
+                        <button class="btn" style="padding: 4px 8px; font-size:12px;" onclick="resolveDispute(${idx})">Respond / Resolve</button>
+                    </td>
+                </tr>`;
+            });
+            tbody.innerHTML = html;
+        }
+
+        async function saveDisputes() {
+            try {
+                const res = await fetch('/api/disputes', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(allDisputes)
+                });
+                if (res.ok) {
+                    showToast('Disputes saved. Please regenerate portal for changes to appear live.');
+                    renderDisputes();
+                } else {
+                    showToast('Failed to save disputes.', true);
+                }
+            } catch (e) {
+                showToast('Error: ' + e.message, true);
+            }
+        }
+
+        function addNewDispute() {
+            const item = prompt("Enter the Item ID or description (from Lindsey's email):");
+            if (!item) return;
+            const claim = prompt("Enter Lindsey's claim/reason:");
+            if (claim === null) return;
+            
+            if (!allDisputes.items) allDisputes.items = [];
+            const d = new Date();
+            const dateStr = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+            
+            allDisputes.items.push({
+                item: item,
+                status: 'review',
+                date: dateStr,
+                her_claim: claim,
+                proof: '',
+                response: ''
+            });
+            saveDisputes();
+        }
+
+        let currentDisputeIdx = -1;
+
+        function resolveDispute(idx) {
+            currentDisputeIdx = idx;
+            const d = allDisputes.items[idx];
+            
+            document.getElementById('dmItem').textContent = 'Item: ' + (d.item || 'Unknown');
+            document.getElementById('dmClaim').textContent = d.her_claim || 'No claim text provided.';
+            
+            // Extract AI Draft if prefixed
+            let aiDraft = '';
+            let existingResp = d.response || '';
+            if (existingResp.startsWith('[AI DRAFT]')) {
+                aiDraft = existingResp.replace('[AI DRAFT]', '').trim();
+                existingResp = '';
+            } else if (existingResp === '') {
+                aiDraft = 'No AI draft available.';
+            }
+            
+            document.getElementById('dmAIDraft').textContent = aiDraft;
+            document.getElementById('dmStatus').value = d.status || 'review';
+            document.getElementById('dmResponse').value = existingResp;
+            
+            document.getElementById('disputeModal').style.display = 'flex';
+        }
+        
+        function useAIDraft() {
+            const draft = document.getElementById('dmAIDraft').textContent;
+            if (draft && draft !== 'No AI draft available.') {
+                document.getElementById('dmResponse').value = draft;
+            }
+        }
+        
+        function closeDisputeModal() {
+            document.getElementById('disputeModal').style.display = 'none';
+            currentDisputeIdx = -1;
+        }
+        
+        async function saveDisputeModal() {
+            if (currentDisputeIdx < 0) return;
+            const d = allDisputes.items[currentDisputeIdx];
+            const oldStatus = d.status;
+            
+            d.status = document.getElementById('dmStatus').value;
+            d.response = document.getElementById('dmResponse').value;
+            
+            // If they just accepted the dispute, automatically mark the item as paid/settled in the backend
+            if (d.status === 'accepted' && oldStatus !== 'accepted' && d.item) {
+                try {
+                    await fetch('/api/mark_paid', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ iids: [d.item], state: 'paid' })
+                    });
+                } catch(e) {
+                    console.error("Failed to auto-mark paid", e);
+                }
+            }
+            
+            closeDisputeModal();
+            saveDisputes();
+        }
+
+        // Load disputes on init
+        document.addEventListener('DOMContentLoaded', loadDisputes);
+
+        function showToast(message, isError=false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.borderLeft = isError ? '4px solid #ef4444' : '4px solid #10b981';
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 4000);
+        }
+
+        function toggleAll() {
+            const selectAll = document.getElementById('selectAll').checked;
+            document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = selectAll);
+        }
+
+        async function markSelected(state) {
+            const checkboxes = document.querySelectorAll('.row-checkbox:checked');
+            const iids = Array.from(checkboxes).map(cb => cb.value);
+            
+            if (iids.length === 0) {
+                showToast('Please select at least one item.', true);
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/mark_paid', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ iids, state })
+                });
+                if (res.ok) {
+                    showToast('Items updated successfully.');
+                    setTimeout(() => window.location.reload(), 1000);
+                } else {
+                    showToast('Failed to update items.', true);
+                }
+            } catch (e) {
+                showToast('Error: ' + e.message, true);
+            }
+        }
+
+        async function generatePortal() {
+            const btn = document.getElementById('generateBtn');
+            btn.disabled = true;
+            btn.textContent = 'Generating... (This may take a minute)';
+            
+            try {
+                const res = await fetch('/api/generate', { method: 'POST' });
+                const data = await res.json();
+                
+                if (res.ok && data.success) {
+                    showToast('Portal regenerated successfully! You can now view it.');
+                } else {
+                    showToast('Error: ' + (data.error || 'Unknown error'), true);
+                    if (data.trace) console.error(data.trace);
+                }
+            } catch (e) {
+                showToast('Network error: ' + e.message, true);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Regenerate Portal';
+            }
+        }
+    </script>
+</body>
+</html>

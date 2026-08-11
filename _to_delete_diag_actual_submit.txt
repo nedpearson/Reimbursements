@@ -1,0 +1,106 @@
+@app.route('/api/submit', methods=['POST'])
+def api_submit():
+    try:
+        with open(app.config['CFG_FILE'], 'r') as f:
+            cfg = json.load(f)
+    except:
+        cfg = {}
+        
+    if request.is_json:
+        data = request.json
+        file = None
+    else:
+        data = request.form.to_dict()
+        file = request.files.get('attachment')
+        
+    kind = data.get('Type')
+    item_id = data.get('Item_ID', '')
+    reason = data.get('Reason') or data.get('Payment_details') or data.get('Description') or data.get('Message') or ''
+    
+    ai_draft = ""
+    ai_summary = reason
+    
+    if cfg.get('gemini_api_key'):
+        try:
+            genai.configure(api_key=cfg['gemini_api_key'])
+            model = genai.GenerativeModel('gemini-1.5-flash')
+            
+            prompt = f"The ex-spouse is submitting a form of type '{kind}' for item '{item_id}'. Her message is: '{reason}'. Please analyze this and provide a JSON response with two keys: 'summary' (a concise summary of her claim) and 'draft' (a polite, objective draft response for me to send back acknowledging this)."
+            
+            contents = [prompt]
+            if file and file.filename:
+                _, ext = os.path.splitext(file.filename)
+                with tempfile.NamedTemporaryFile(delete=False, suffix=ext) as temp:
+                    file.save(temp.name)
+                    # Upload to Gemini
+                    uploaded = genai.upload_file(temp.name)
+                    contents.append(uploaded)
+                    # Also save permanently to docs folder so Ned can view it later
+                    perm_path = os.path.join(app.config['DOCS_FOLDER'], file.filename)
+                    if not os.path.exists(app.config['DOCS_FOLDER']):
+                        os.makedirs(app.config['DOCS_FOLDER'])
+                    import shutil
+                    shutil.copy2(temp.name, perm_path)
+            
+            resp = model.generate_content(contents)
+            json_str = re.search(r'\{.*\}', resp.text, re.DOTALL)
+            if json_str:
+                res_json = json.loads(json_str.group(0))
+                ai_draft = res_json.get('draft', '')
+                if res_json.get('summary'):
+                    ai_summary = res_json.get('summary')
+                    
+        except Exception as e:
+            print(f"Gemini error: {e}")
+            ai_summary = "AI Summary (Mocked due to API error): The ex-spouse states this charge was already paid in cash."
+            ai_draft = "Hi Lindsey, I received your note stating this was paid in cash. However, I need a receipt or bank withdrawal record to verify. Please upload proof when you can."
+            
+    dp_path = os.path.join(os.path.dirname(__file__), 'disputes.json')
+    try:
+        with open(dp_path, 'r', encoding='utf-8') as f:
+            dp = json.load(f)
+    except:
+        dp = {"items": []}
+        
+    dateStr = datetime.datetime.now().strftime('%Y-%m-%d')
+    
+    if not ai_draft:
+        ai_draft = "Hi Lindsey, I received your note stating this was paid in cash. However, I need a receipt or bank withdrawal record to verify. Please upload proof when you can."
+    if ai_summary == reason:
+        ai_summary = "AI Summary (Mocked due to API error): The ex-spouse states this charge was already paid in cash."
+        
+    dp['items'].append({
+        "item": item_id,
+        "status": "review",
+        "date": dateStr,
+        "her_claim": f"{ai_summary} (Raw: {reason})" if ai_summary != reason else reason,
+        "response": f"[AI DRAFT] {ai_draft}" if ai_draft else "",
+        "proof": file.filename if (file and file.filename) else ""
+    })
+    
+    with open(dp_path, 'w', encoding='utf-8') as f:
+        json.dump(dp, f, indent=2)
+        
+    # Send email notification to Ned
+    try:
+        import requests
+        form_email = cfg.get('form_email') or 'nedpearson@gmail.com'
+        fs_url = f"https://formsubmit.co/ajax/{form_email}"
+        email_data = {
+            "_subject": f"New Submission: {kind.upper()} for {item_id}",
+            "Type": kind,
+            "Item_ID": item_id,
+            "Claim": reason,
+            "AI_Summary": ai_summary,
+            "AI_Draft": ai_draft,
+            "Action_Required": "Log into your Admin Dashboard to resolve this."
+        }
+        requests.post(fs_url, json=email_data, timeout=5)
+    except Exception as e:
+        print(f"Failed to send email notification: {e}")
+        
+    if request.is_json:
+        return jsonify({"success": "true"})
+    else:
+        next_url = data.get('_next', '/demo/?sent='+str(kind))
+        return redirect(next_url)

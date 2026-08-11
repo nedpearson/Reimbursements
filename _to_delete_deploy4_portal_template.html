@@ -280,8 +280,6 @@ __PROOFVOLS__
   <p class="sub">Send the reimbursement package link to whoever needs it &mdash; separate multiple addresses with a comma.</p>
   <label for="emlTo">To</label>
   <input type="text" id="emlTo" placeholder="lindsey@email.com, lawyer@firm.com">
-  <label for="emlAmount">Amount to state in this email</label>
-  <input type="text" id="emlAmount" inputmode="decimal" placeholder="e.g. 45000 &mdash; never auto-filled, type the figure for this email">
   <label>Link to send</label>
   <div class="radiorow">
    <label><input type="radio" name="emlLink" value="login" checked> Portal login (recommended &mdash; they sign in with the account you created)</label>
@@ -456,33 +454,27 @@ var EMAILLINKS={login:location.origin+'/login',share:''};
      var opt=document.getElementById('emlShareOpt'); if(opt) opt.style.display='flex'; }
  }).catch(function(){});
 })();
-function emailBody(link,statedAmount){
+function emailBody(link){
  var addTotal=(typeof ADD!=='undefined'&&ADD&&ADD.grand_total)?ADD.grand_total:0;
+ var paidT=(typeof SETTLED!=='undefined'&&SETTLED&&SETTLED.paid_total)?SETTLED.paid_total:0;
+ var due=paidT?Math.max(0,Math.round((D.net-paidT)*100)/100):D.net;
  return {
-  subj:'Expense Reimbursement — Pearson ('+money(statedAmount)+')',
+  subj:'Expense Reimbursement — Pearson ('+money(due)+')',
   body:'The complete expense reimbursement package is here:\n'+link+'\n\n'
-   +'Amount due: '+money(statedAmount)+'\n'
+   +((due!==D.net)?('Balance still due: '+money(due)+'  (original '+money(D.net)+' less '+money(paidT)+' already paid)\n'):('Net amount due: '+money(D.net)+'\n'))
    +(addTotal?('Additional amounts paid on your behalf (vehicle, insurance, health premium, direct payments): '+money(addTotal)+'\n'):'')
    +'\nOn that page: every charge by category, each line linked to the actual bill, plus the itemized statement, cover letter, and full proof pack — all viewable in the browser, nothing to download. If you believe any charge is wrong, use the Dispute button on that line and attach your proof.\n\nNed'
  };
 }
-function openEmailModal(){document.getElementById('emlErr').style.display='none';document.getElementById('emlTo').value='';document.getElementById('emlAmount').value='';document.getElementById('emailModal').classList.add('show');document.getElementById('emlTo').focus();}
+function openEmailModal(){document.getElementById('emlErr').style.display='none';document.getElementById('emlTo').value='';document.getElementById('emailModal').classList.add('show');document.getElementById('emlTo').focus();}
 function closeEmailModal(){document.getElementById('emailModal').classList.remove('show');}
 function doSendEmail(){
- var e=document.getElementById('emlErr');
  var to=document.getElementById('emlTo').value.trim();
- if(!to){e.textContent='Enter at least one email address.';e.style.display='block';return;}
- // The amount is never auto-filled from the calculated net due -- you type the figure
- // for this specific email every time, so a full/whole-claim number can never go out
- // by default or by accident.
- var amtRaw=document.getElementById('emlAmount').value.trim().replace(/[^0-9.]/g,'');
- var amt=parseFloat(amtRaw);
- if(!amtRaw||isNaN(amt)||amt<=0){e.textContent='Enter the amount to state in this email.';e.style.display='block';return;}
- e.style.display='none';
+ if(!to){var e=document.getElementById('emlErr');e.textContent='Enter at least one email address.';e.style.display='block';return;}
  var toClean=to.split(',').map(function(s){return s.trim();}).filter(Boolean).join(',');
  var which=(document.querySelector('input[name="emlLink"]:checked')||{}).value||'login';
  var link=(which==='share'&&EMAILLINKS.share)?EMAILLINKS.share:EMAILLINKS.login;
- var eb=emailBody(link,amt);
+ var eb=emailBody(link);
  window.location.href='mailto:'+toClean+'?subject='+encodeURIComponent(eb.subj)+'&body='+encodeURIComponent(eb.body);
  closeEmailModal();
 }
@@ -531,7 +523,6 @@ function renderForm(kind,item){
   +'<input type="hidden" name="_next" value="'+esc(pageURL()+'?sent='+kind)+'">'
   +'<input type="text" name="_honey" style="display:none">'
   +'<input type="hidden" name="Type" value="'+kind+'">'
-  +(item?('<input type="hidden" name="Item_ID" value="'+esc(item.id)+'"><input type="hidden" name="Item_Label" value="'+esc(ref)+'">'):'')
   +'<p style="color:var(--muted);font-size:.9rem;margin-bottom:4px">'+m.sub+'</p>'
   +fields+who
   +'<label>Attach a file (photo, PDF, screenshot — up to 5 MB)</label>'
@@ -547,26 +538,27 @@ function renderForm(kind,item){
  document.getElementById('upform').addEventListener('submit',function(ev){
   var f=ev.target, msg=document.getElementById('fmsg'), btn=f.querySelector('.subbtn'), file=fin.files[0];
   if(file&&file.size>5*1048576){ev.preventDefault();msg.className='formmsg err';msg.textContent='That file is over 5 MB — please attach a smaller photo or PDF.';return;}
-  // ---- dispute on a specific charge → tracked directly in Ned's Admin dashboard ----
+  // ---- dispute on a specific charge → email Ned GitHub Approve/Deny decision links ----
   if(kind==='dispute' && item){
    ev.preventDefault();
    var reason=((f.querySelector('[name="Reason"]')||{}).value)||'';
    var nm=((f.querySelector('[name="Your_name"]')||{}).value)||'';
    var lbl=itemRef(item);
+   function issueURL(action){
+    var title='[dispute] '+action+' — '+lbl;
+    var body='id: '+item.id+'\nlabel: '+lbl+'\naction: '+action+'\n\nSubmitting this issue will '+(action==='approve'?'REMOVE this charge from the reimbursement.':'KEEP this charge (mark it reviewed).')+' Filed via the portal Dispute button.';
+    return 'https://github.com/'+GH_REPO+'/issues/new?labels=dispute&title='+encodeURIComponent(title)+'&body='+encodeURIComponent(body);
+   }
    btn.disabled=true; btn.textContent='Sending…'; msg.style.display='none';
-   var fd=new FormData();
-   fd.append('Type','dispute');
-   fd.append('Item_ID', item.id);
-   fd.append('Item_Label', lbl);
-   fd.append('Reason', reason);
-   fd.append('Your_name', nm);
-   fd.append('_ajax','1');
-   if(file) fd.append('attachment', file);
-   fetch('/api/submit',{method:'POST',body:fd})
+   var payload={_subject:'Dispute filed — '+lbl,_template:'table',Charge:lbl,Reason:reason,From:(nm||'(not given)'),
+     'APPROVE — remove this charge':issueURL('approve'),'DENY — keep this charge':issueURL('deny'),
+     _note:'Open a link, then click the green Submit button on GitHub. Approve auto-removes the charge; the portal updates within ~1 minute.'};
+   fetch(FS_AJAX,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(payload)})
     .then(function(r){return r.json();})
     .then(function(j){
       if(String(j.success)==='true'){ f.reset(); msg.className='formmsg ok';
-        msg.textContent='✓ Dispute filed — it’s now tracked in Ned’s dashboard for review, and he’ll be notified by email. If he accepts it, this charge is credited automatically.';
+        msg.textContent='✓ Dispute sent to Ned. He’ll review it — if approved, this charge comes off automatically.';
+        if(file){ try{var fd=new FormData();fd.append('_subject','Dispute proof — '+lbl);fd.append('_captcha','false');fd.append('Charge',lbl);fd.append('attachment',file);fetch(FS_STD,{method:'POST',body:fd});}catch(e){} }
       } else { msg.className='formmsg err'; msg.textContent='Could not send: '+(j.message||'please try again')+'.'; }
       btn.disabled=false; btn.textContent='Send to Ned';})
     .catch(function(){ msg.className='formmsg err'; msg.textContent='Network problem — please try again.'; btn.disabled=false; btn.textContent='Send to Ned';});

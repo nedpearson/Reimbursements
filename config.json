@@ -29,7 +29,7 @@
       "amount": 3538.62,
       "recurring_monthly": {
         "start": "2024-08",
-        "end": "2026-07"
+        "end": "2026-04"
       },
       "amount_schedule": [
         {
@@ -44,7 +44,7 @@
         },
         {
           "start": "2026-03",
-          "end": "2026-07",
+          "end": "2026-04",
           "amount": 3917.74
         }
       ]
@@ -129,6 +129,8 @@
   "last_folder": "C:\\Users\\nedpe\\Desktop\\House Bills",
   "output_dir": "output",
   "att_business_end": "2026-05",
+  "utilities_end": "2026-04",
+  "mortgage_end": "2026-04",
   "user_email": "nedpearson@gmail.com",
   "form_email": "nedpearson@gmail.com",
   "dispute_api": "",
@@ -150,5 +152,7 @@
       "note": "removed per Ned (C-157)"
     }
   ],
-  "_exclude_charges_note": "Specific individual charges removed from the claim by Ned (matched on vendor substring + date + amount)."
+  "_exclude_charges_note": "Specific individual charges removed from the claim by Ned (matched on vendor substring + date + amount).",
+  "share_token": "t_v1asW2_GNHL6kFlAsxXnrg",
+  "gemini_api_key": ""
 }

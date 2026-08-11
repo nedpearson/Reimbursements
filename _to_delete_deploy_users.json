@@ -1,0 +1,6 @@
+{
+  "nedpearson@gmail.com": {
+    "password_hash": "scrypt:32768:8:1$wwEukNyY5A5EqdF2$4695f279df8f2481b6396eb90f6ad58af9123f15646329ea9bb5e959d8e9d018284a1b27c489cab0a0c0fbecd4562bc6b2cecc3a4d020df05530f28eb51ce9e7",
+    "role": "admin"
+  }
+}

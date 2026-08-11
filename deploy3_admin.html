@@ -200,7 +200,6 @@
                         <th>Vendor</th>
                         <th>Amount</th>
                         <th>Share</th>
-                        <th>Source of Truth</th>
                         <th>Status</th>
                     </tr>
                 </thead>
@@ -214,13 +213,6 @@
                         <td style="max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ row.vendor }}">{{ row.vendor }}</td>
                         <td>{% if row.amount is not none %}${{ "%.2f"|format(row.amount) }}{% else %}-{% endif %}</td>
                         <td>${{ "%.2f"|format(row.her_share|default(0)) }}</td>
-                        <td>
-                            {% if row.file and row.file != '(duplicate file)' and not row.file.startswith('(') %}
-                                <a href="/raw_bill/{{ row.file }}" target="_blank" style="color: #60a5fa; text-decoration: underline;" title="{{ row.file }}">View Bill</a>
-                            {% else %}
-                                <span style="color: var(--text-muted); font-size: 13px;">No file</span>
-                            {% endif %}
-                        </td>
                         <td>
                             {% if iid in settled.paid %}
                                 <span class="badge badge-paid">PAID ✓</span>
@@ -439,7 +431,7 @@
                 if (d.status === 'resolved') badgeClass = 'badge-paid';
                 
                 html += `<tr>
-                    <td><strong>${(d.item_label || d.item || '').replace(/</g,'&lt;')}</strong>${d.proof ? ' &middot; <a href="/portal/proofs/'+encodeURIComponent(d.proof)+'" target="_blank" style="font-size:12px">view proof</a>' : ''}</td>
+                    <td><strong>${d.item || ''}</strong></td>
                     <td><span class="badge ${badgeClass}">${d.status || 'review'}</span></td>
                     <td>${d.date || ''}</td>
                     <td><div style="font-size:13px; max-width:200px; overflow:hidden; text-overflow:ellipsis;" title="${(d.her_claim||'').replace(/"/g, '&quot;')}">${d.her_claim || ''}</div></td>
@@ -497,7 +489,7 @@
             currentDisputeIdx = idx;
             const d = allDisputes.items[idx];
             
-            document.getElementById('dmItem').textContent = 'Item: ' + (d.item_label || d.item || 'Unknown');
+            document.getElementById('dmItem').textContent = 'Item: ' + (d.item || 'Unknown');
             document.getElementById('dmClaim').textContent = d.her_claim || 'No claim text provided.';
             
             // Extract AI Draft if prefixed
@@ -701,7 +693,7 @@
             row.style.cssText = 'display:flex; gap:8px; margin-bottom:8px; align-items:center;';
             row.innerHTML = `
                 <input class="sp-cat" placeholder="Category" value="${cat ? cat.replace(/"/g,'&quot;') : ''}" style="flex:2; padding:8px; border-radius:6px; border:1px solid var(--border); background:rgba(255,255,255,0.03); color:var(--text-main);">
-                <input class="sp-pct" type="number" min="0" max="100" placeholder="%" value="${pct !== undefined ? pct : ''}" style="width:90px; padding:8px; border-radius:6px; border:1px solid var(--border); background:rgba(255,255,255,0.03); color:var(--text-main);" onfocus="this.select()" onblur="if(this.value!=='')this.value=Math.max(0,Math.min(100,Number(this.value)||0))">
+                <input class="sp-pct" type="number" min="0" max="100" placeholder="%" value="${pct !== undefined ? pct : ''}" style="width:90px; padding:8px; border-radius:6px; border:1px solid var(--border); background:rgba(255,255,255,0.03); color:var(--text-main);">
                 <button class="btn" style="padding:6px 10px; font-size:12px; background:#7f1d1d;" onclick="this.parentElement.remove()">Remove</button>
             `;
             document.getElementById('splitPercentRows').appendChild(row);
@@ -737,8 +729,8 @@
             const split_percent = {};
             document.querySelectorAll('#splitPercentRows > div').forEach(row => {
                 const cat = row.querySelector('.sp-cat').value.trim();
-                const pctRaw = row.querySelector('.sp-pct').value;
-                if (cat && pctRaw !== '') split_percent[cat] = Math.max(0, Math.min(100, Number(pctRaw) || 0));
+                const pct = row.querySelector('.sp-pct').value;
+                if (cat && pct !== '') split_percent[cat] = Number(pct);
             });
             const exclude_business = Array.from(document.querySelectorAll('#excludeBusinessRows .ex-vendor'))
                 .map(i => i.value.trim()).filter(Boolean);

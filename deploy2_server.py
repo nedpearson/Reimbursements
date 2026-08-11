@@ -4,7 +4,6 @@ import traceback
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, flash, jsonify, send_file
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
-from werkzeug.utils import secure_filename
 import categorize
 import build_portal
 import google.generativeai as genai
@@ -229,21 +228,6 @@ def demo_file(filename):
     if os.path.exists(os.path.join(demo_docs_dir, basename)):
         return send_from_directory(demo_docs_dir, basename)
     return send_file(os.path.join(os.path.dirname(__file__), 'demo.pdf'), mimetype='application/pdf')
-
-@app.route('/raw_bill/<path:filename>')
-@login_required
-def raw_bill(filename):
-    if current_user.role != 'admin':
-        return "Unauthorized", 403
-    try:
-        with open(app.config['CFG_FILE'], 'r') as f:
-            cfg = json.load(f)
-    except:
-        return "Not found", 404
-    folder = cfg.get('last_folder')
-    if not folder or not os.path.exists(folder):
-        return "Folder not found", 404
-    return send_from_directory(folder, filename)
 
 @app.route('/admin')
 @login_required
@@ -518,31 +502,7 @@ def api_submit():
         
     kind = data.get('Type')
     item_id = data.get('Item_ID', '')
-    item_label = data.get('Item_Label') or item_id
     reason = data.get('Reason') or data.get('Payment_details') or data.get('Description') or data.get('Message') or ''
-
-    # Save any attached proof permanently -- independent of whether AI drafting is
-    # configured below -- so a viewer's documentation is never silently dropped.
-    # Saved under docs/proofs/ so it's reachable at /portal/proofs/<name> (admin
-    # login) the same way the other portal documents are served.
-    proof_filename = ''
-    temp_path = None
-    if file and file.filename:
-        try:
-            _, ext = os.path.splitext(file.filename)
-            tmp = tempfile.NamedTemporaryFile(delete=False, suffix=ext)
-            file.save(tmp.name)
-            tmp.close()
-            temp_path = tmp.name
-            proofs_dir = os.path.join(app.config['DOCS_FOLDER'], 'proofs')
-            if not os.path.exists(proofs_dir):
-                os.makedirs(proofs_dir)
-            import shutil
-            safe_name = f"{int(datetime.datetime.now().timestamp())}_{secure_filename(file.filename)}"
-            shutil.copy2(temp_path, os.path.join(proofs_dir, safe_name))
-            proof_filename = safe_name
-        except Exception as e:
-            print(f"Failed to save proof file: {e}")
     
     ai_draft = ""
     ai_summary = reason
@@ -552,13 +512,22 @@ def api_submit():
             genai.configure(api_key=cfg['gemini_api_key'])
             model = genai.GenerativeModel('gemini-1.5-flash')
             
-            prompt = f"The ex-spouse is submitting a form of type '{kind}' for item '{item_label}'. Her message is: '{reason}'. Please analyze this and provide a JSON response with two keys: 'summary' (a concise summary of her claim) and 'draft' (a polite, objective draft response for me to send back acknowledging this)."
+            prompt = f"The ex-spouse is submitting a form of type '{kind}' for item '{item_id}'. Her message is: '{reason}'. Please analyze this and provide a JSON response with two keys: 'summary' (a concise summary of her claim) and 'draft' (a polite, objective draft response for me to send back acknowledging this)."
             
             contents = [prompt]
-            if temp_path:
-                # Re-upload the already-saved proof copy to Gemini for analysis.
-                uploaded = genai.upload_file(temp_path)
-                contents.append(uploaded)
+            if file and file.filename:
+                _, ext = os.path.splitext(file.filename)
+                with tempfile.NamedTemporaryFile(delete=False, suffix=ext) as temp:
+                    file.save(temp.name)
+                    # Upload to Gemini
+                    uploaded = genai.upload_file(temp.name)
+                    contents.append(uploaded)
+                    # Also save permanently to docs folder so Ned can view it later
+                    perm_path = os.path.join(app.config['DOCS_FOLDER'], file.filename)
+                    if not os.path.exists(app.config['DOCS_FOLDER']):
+                        os.makedirs(app.config['DOCS_FOLDER'])
+                    import shutil
+                    shutil.copy2(temp.name, perm_path)
             
             resp = model.generate_content(contents)
             json_str = re.search(r'\{.*\}', resp.text, re.DOTALL)
@@ -589,12 +558,11 @@ def api_submit():
         
     dp['items'].append({
         "item": item_id,
-        "item_label": item_label,
         "status": "review",
         "date": dateStr,
         "her_claim": f"{ai_summary} (Raw: {reason})" if ai_summary != reason else reason,
         "response": f"[AI DRAFT] {ai_draft}" if ai_draft else "",
-        "proof": proof_filename
+        "proof": file.filename if (file and file.filename) else ""
     })
     
     with open(dp_path, 'w', encoding='utf-8') as f:
@@ -606,7 +574,7 @@ def api_submit():
         form_email = cfg.get('form_email') or 'nedpearson@gmail.com'
         fs_url = f"https://formsubmit.co/ajax/{form_email}"
         email_data = {
-            "_subject": f"New Submission: {kind.upper()} for {item_label}",
+            "_subject": f"New Submission: {kind.upper()} for {item_id}",
             "Type": kind,
             "Item_ID": item_id,
             "Claim": reason,
@@ -618,7 +586,7 @@ def api_submit():
     except Exception as e:
         print(f"Failed to send email notification: {e}")
         
-    if request.is_json or data.get('_ajax'):
+    if request.is_json:
         return jsonify({"success": "true"})
     else:
         next_url = data.get('_next', '/demo/?sent='+str(kind))

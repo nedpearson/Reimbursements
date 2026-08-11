@@ -1,0 +1,3 @@
+@echo off
+echo Requesting admin to update your PC's DNS (approve the Windows prompt)...
+powershell -NoProfile -Command "Start-Process powershell -Verb RunAs -ArgumentList '-NoProfile -ExecutionPolicy Bypass -File \"%~dp0Fix_DNS_Server.ps1\"'"

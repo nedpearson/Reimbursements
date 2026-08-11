@@ -1,0 +1,35 @@
+=== default resolver ===
+*** unifi.localdomain can't find reimbursements.bridgebox.ai: Non-existent domain
+Server:  unifi.localdomain
+Address:  192.168.20.1
+
+ 
+=== via Cloudflare 1.1.1.1 === 
+Non-authoritative answer:
+Server:  one.one.one.one
+Address:  1.1.1.1
+
+Name:    8mi6l74x.up.railway.app
+Address:  69.46.46.52
+Aliases:  reimbursements.bridgebox.ai
+
+ 
+=== via Google 8.8.8.8 === 
+Non-authoritative answer:
+Server:  dns.google
+Address:  8.8.8.8
+
+Name:    8mi6l74x.up.railway.app
+Address:  69.46.46.52
+Aliases:  reimbursements.bridgebox.ai
+
+ 
+=== current DNS servers === 
+   Primary Dns Suffix  . . . . . . . : 
+   Connection-specific DNS Suffix  . : 
+   Connection-specific DNS Suffix  . : 
+   Connection-specific DNS Suffix  . : 
+   DNS Servers . . . . . . . . . . . : 192.168.20.1
+   Connection-specific DNS Suffix  . : 
+   Connection-specific DNS Suffix  . : 
+DONE 

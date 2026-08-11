@@ -531,7 +531,6 @@ function renderForm(kind,item){
   +'<input type="hidden" name="_next" value="'+esc(pageURL()+'?sent='+kind)+'">'
   +'<input type="text" name="_honey" style="display:none">'
   +'<input type="hidden" name="Type" value="'+kind+'">'
-  +(item?('<input type="hidden" name="Item_ID" value="'+esc(item.id)+'"><input type="hidden" name="Item_Label" value="'+esc(ref)+'">'):'')
   +'<p style="color:var(--muted);font-size:.9rem;margin-bottom:4px">'+m.sub+'</p>'
   +fields+who
   +'<label>Attach a file (photo, PDF, screenshot — up to 5 MB)</label>'
@@ -547,26 +546,27 @@ function renderForm(kind,item){
  document.getElementById('upform').addEventListener('submit',function(ev){
   var f=ev.target, msg=document.getElementById('fmsg'), btn=f.querySelector('.subbtn'), file=fin.files[0];
   if(file&&file.size>5*1048576){ev.preventDefault();msg.className='formmsg err';msg.textContent='That file is over 5 MB — please attach a smaller photo or PDF.';return;}
-  // ---- dispute on a specific charge → tracked directly in Ned's Admin dashboard ----
+  // ---- dispute on a specific charge → email Ned GitHub Approve/Deny decision links ----
   if(kind==='dispute' && item){
    ev.preventDefault();
    var reason=((f.querySelector('[name="Reason"]')||{}).value)||'';
    var nm=((f.querySelector('[name="Your_name"]')||{}).value)||'';
    var lbl=itemRef(item);
+   function issueURL(action){
+    var title='[dispute] '+action+' — '+lbl;
+    var body='id: '+item.id+'\nlabel: '+lbl+'\naction: '+action+'\n\nSubmitting this issue will '+(action==='approve'?'REMOVE this charge from the reimbursement.':'KEEP this charge (mark it reviewed).')+' Filed via the portal Dispute button.';
+    return 'https://github.com/'+GH_REPO+'/issues/new?labels=dispute&title='+encodeURIComponent(title)+'&body='+encodeURIComponent(body);
+   }
    btn.disabled=true; btn.textContent='Sending…'; msg.style.display='none';
-   var fd=new FormData();
-   fd.append('Type','dispute');
-   fd.append('Item_ID', item.id);
-   fd.append('Item_Label', lbl);
-   fd.append('Reason', reason);
-   fd.append('Your_name', nm);
-   fd.append('_ajax','1');
-   if(file) fd.append('attachment', file);
-   fetch('/api/submit',{method:'POST',body:fd})
+   var payload={_subject:'Dispute filed — '+lbl,_template:'table',Charge:lbl,Reason:reason,From:(nm||'(not given)'),
+     'APPROVE — remove this charge':issueURL('approve'),'DENY — keep this charge':issueURL('deny'),
+     _note:'Open a link, then click the green Submit button on GitHub. Approve auto-removes the charge; the portal updates within ~1 minute.'};
+   fetch(FS_AJAX,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(payload)})
     .then(function(r){return r.json();})
     .then(function(j){
       if(String(j.success)==='true'){ f.reset(); msg.className='formmsg ok';
-        msg.textContent='✓ Dispute filed — it’s now tracked in Ned’s dashboard for review, and he’ll be notified by email. If he accepts it, this charge is credited automatically.';
+        msg.textContent='✓ Dispute sent to Ned. He’ll review it — if approved, this charge comes off automatically.';
+        if(file){ try{var fd=new FormData();fd.append('_subject','Dispute proof — '+lbl);fd.append('_captcha','false');fd.append('Charge',lbl);fd.append('attachment',file);fetch(FS_STD,{method:'POST',body:fd});}catch(e){} }
       } else { msg.className='formmsg err'; msg.textContent='Could not send: '+(j.message||'please try again')+'.'; }
       btn.disabled=false; btn.textContent='Send to Ned';})
     .catch(function(){ msg.className='formmsg err'; msg.textContent='Network problem — please try again.'; btn.disabled=false; btn.textContent='Send to Ned';});

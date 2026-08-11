@@ -227,6 +227,15 @@ def apply_split(rows):
         _ae=CFG.get('att_business_end')
         if _ae and r['category']=='AT&T Business' and r.get('date') and r['date'][:7]>_ae:
             r['in_window']=False; r['note']=(r.get('note') or '')+f' | after AT&T end {_ae}'
+            
+        _ue=CFG.get('utilities_end')
+        if _ue and r['category']=='Utilities' and r.get('date') and r['date'][:7]>_ue:
+            r['in_window']=False; r['note']=(r.get('note') or '')+f' | after utilities end {_ue}'
+
+        _me=CFG.get('mortgage_end')
+        if _me and r['category']=='Mortgage' and r.get('date') and r['date'][:7]>_me:
+            r['in_window']=False; r['note']=(r.get('note') or '')+f' | after mortgage end {_me}'
+            
         billable = r['include'] and r['in_window'] and r['amount'] is not None and pct is not None
         from decimal import Decimal, ROUND_HALF_UP
         def _m(v): return float(Decimal(str(v)).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP))
