@@ -17,8 +17,8 @@
     "Advances to Lindsey": 100
   },
   "subtract_payments_to_lindsey": false,
-  "date_cutoff": "2026-06-01",
-  "_date_cutoff_note": "Set to 'YYYY-MM-DD' to exclude older items, or null to include all. Raised to 2026-06-01 per Ned on 2026-08-27 — excludes all charges dated May 2026 or earlier, across every category, from the claim. Reversible: set back to 2024-08-01 (or any earlier date) to restore them.",
+  "date_cutoff": "2024-08-01",
+  "_date_cutoff_note": "Set to 'YYYY-MM-DD' (e.g. 2025-01-10 judgment date) to exclude older items, or null to include all. (Was briefly raised to 2026-06-01 on 2026-08-27, then reverted same day per Ned before the final reimbursement statement was produced.)",
   "treat_all_bills_as_paid": true,
   "_treat_all_note": "When true, tuition INVOICES are counted as paid (deduped); partial-payment receipts of an already-counted invoice are not double-counted.",
   "manual_entries": [
