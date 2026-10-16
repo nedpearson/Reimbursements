@@ -20,14 +20,14 @@
   "date_cutoff": "2024-08-01",
   "_date_cutoff_note": "Set to 'YYYY-MM-DD' (e.g. 2025-01-10 judgment date) to exclude older items, or null to include all. (Was briefly raised to 2026-06-01 on 2026-08-27, then reverted same day per Ned before the final reimbursement statement was produced.)",
   "category_end": {
-    "Mortgage": "2026-05",
-    "Utilities": "2026-05",
-    "Pool": "2026-05",
-    "Lawn/Yard": "2026-05",
-    "Storage": "2026-05",
-    "AT&T Business": "2026-05"
+    "Mortgage": "2026-04",
+    "Utilities": "2026-04",
+    "Pool": "2026-04",
+    "Lawn/Yard": "2026-04",
+    "Storage": "2026-04",
+    "AT&T Business": "2026-04"
   },
-  "_category_end_note": "HOUSE-BILL CUTOFF 2026-06-01 (Ned, 2026-10-15): recurring house bills dated after May 2026 are Ned's alone - Lindsey vacated 8792 W Fairway under the 4/21/2026 ex parte order (belongings removed 5/8/2026) and Ned has exclusive use. Value is the LAST month included (YYYY-MM). Sale-prep work on the co-owned asset (Construction & Home Improvements, Home Repairs & A/C, Labor, sale-prep Cleaning) is deliberately NOT capped - add a category here to cap it.",
+  "_category_end_note": "HOUSE-BILL CUTOFF 5/1/2026 (Ned, 2026-10-16): no mortgage or house/utility bills dated 5/1/2026 or later are claimed - Lindsey vacated under the 4/21/2026 ex parte order; Ned has exclusive use. Value = LAST month included (YYYY-MM). Sale-prep work on the co-owned asset (Construction, Home Repairs & A/C, Labor, sale-prep Cleaning) is not capped.",
   "treat_all_bills_as_paid": true,
   "_treat_all_note": "When true, tuition INVOICES are counted as paid (deduped); partial-payment receipts of an already-counted invoice are not double-counted.",
   "manual_entries": [
@@ -38,7 +38,7 @@
       "amount": 3538.62,
       "recurring_monthly": {
         "start": "2024-08",
-        "end": "2026-05"
+        "end": "2026-04"
       },
       "amount_schedule": [
         {
@@ -53,7 +53,7 @@
         },
         {
           "start": "2026-03",
-          "end": "2026-05",
+          "end": "2026-04",
           "amount": 3917.74
         }
       ]
@@ -860,10 +860,10 @@
   "att_business_flat_per_month": 100.0,
   "last_folder": "C:\\Users\\nedpe\\Desktop\\House Bills",
   "output_dir": "output",
-  "att_business_end": "2026-05",
-  "utilities_end": "2026-05",
-  "mortgage_end": "2026-05",
-  "date_range": "Aug 2024 – Aug 2026",
+  "att_business_end": "2026-04",
+  "utilities_end": "2026-04",
+  "mortgage_end": "2026-04",
+  "date_range": "Aug 2024 – Apr 2026 (house) / Aug 2026 (other)",
   "user_email": "nedpearson@gmail.com",
   "form_email": "nedpearson@gmail.com",
   "dispute_api": "",
