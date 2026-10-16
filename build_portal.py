@@ -173,6 +173,12 @@ def build(bills_folder=None, progress=print):
                        lambda tmp,_v=v: _v.save(tmp,deflate=True),progress)
         for gp in range(p+1,end+1): volmap[gp]=(volno,gp-p)
         p=end
+    # ---- court submission (captioned accounting + exhibit index + all exhibits, one PDF) ----
+    try:
+        import court_pdf
+        court_pdf.build(rows,cfg,mapping,mapping_id,full,os.path.join(HERE,'output'),docs,progress)
+    except Exception as _e:
+        progress('court package skipped: %s'%_e)
     full.close(); os.remove(tmp)
     fin={rel:dict(exh=m['exh'],cat=m['cat'],vol=volmap[m['page']][0],page=volmap[m['page']][1],base=m['base']) for rel,m in mapping.items()}
     fin_id={rid:dict(exh=m['exh'],cat=m['cat'],vol=volmap[m['page']][0],page=volmap[m['page']][1],doc=m['doc']) for rid,m in mapping_id.items()}
