@@ -116,7 +116,8 @@ def build_proof_pack(rows,bills_folder,out,progress=None):
                     if not real: continue
                     src=fitz.open(real)
             exh+=1; index.append((exh,cat,os.path.basename(rel),body.page_count+1))
-            for pi in range(min(2,len(src))):
+            _maxp=len(src) if rel.replace('\\','/').lower().startswith('_sources/') else min(2,len(src))
+            for pi in range(min(_maxp,16)):
                 pix=src[pi].get_pixmap(dpi=110)
                 jpg=pix.tobytes('jpeg',jpg_quality=60)
                 pg=body.new_page(width=612,height=792)

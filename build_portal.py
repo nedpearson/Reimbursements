@@ -135,7 +135,9 @@ def build(bills_folder=None, progress=print):
                     if not real: continue
                     src=fitz.open(real)
             exh+=1; mapping[rel]=dict(exh=exh,cat=cat,page=body.page_count+1,base=os.path.basename(rel))
-            for pi in range(min(2,len(src))):
+            # documents attached to specific lines (_sources/) are shown in full; scanned bills: first 2 pages
+            _maxp=len(src) if rel.replace('\\','/').lower().startswith('_sources/') else min(2,len(src))
+            for pi in range(min(_maxp,16)):
                 pix=src[pi].get_pixmap(dpi=88); jpg=pix.tobytes('jpeg',jpg_quality=38)
                 pg=body.new_page(width=612,height=792)
                 pg.insert_image(fitz.Rect(20,32,592,772),stream=jpg,keep_proportion=True)
