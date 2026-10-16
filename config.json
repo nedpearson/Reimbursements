@@ -19,6 +19,15 @@
   "subtract_payments_to_lindsey": false,
   "date_cutoff": "2024-08-01",
   "_date_cutoff_note": "Set to 'YYYY-MM-DD' (e.g. 2025-01-10 judgment date) to exclude older items, or null to include all. (Was briefly raised to 2026-06-01 on 2026-08-27, then reverted same day per Ned before the final reimbursement statement was produced.)",
+  "category_end": {
+    "Mortgage": "2026-05",
+    "Utilities": "2026-05",
+    "Pool": "2026-05",
+    "Lawn/Yard": "2026-05",
+    "Storage": "2026-05",
+    "AT&T Business": "2026-05"
+  },
+  "_category_end_note": "HOUSE-BILL CUTOFF 2026-06-01 (Ned, 2026-10-15): recurring house bills dated after May 2026 are Ned's alone - Lindsey vacated 8792 W Fairway under the 4/21/2026 ex parte order (belongings removed 5/8/2026) and Ned has exclusive use. Value is the LAST month included (YYYY-MM). Sale-prep work on the co-owned asset (Construction & Home Improvements, Home Repairs & A/C, Labor, sale-prep Cleaning) is deliberately NOT capped - add a category here to cap it.",
   "treat_all_bills_as_paid": true,
   "_treat_all_note": "When true, tuition INVOICES are counted as paid (deduped); partial-payment receipts of an already-counted invoice are not double-counted.",
   "manual_entries": [
@@ -29,7 +38,7 @@
       "amount": 3538.62,
       "recurring_monthly": {
         "start": "2024-08",
-        "end": "2026-04"
+        "end": "2026-05"
       },
       "amount_schedule": [
         {
@@ -44,7 +53,7 @@
         },
         {
           "start": "2026-03",
-          "end": "2026-04",
+          "end": "2026-05",
           "amount": 3917.74
         }
       ]
@@ -84,10 +93,11 @@
     },
     {
       "vendor": "Helm Paint (Hager Painting)",
-      "category": "Labor",
-      "description": "Paint for sale-prep painting \u2014 Helm Paint receipt PR040983, 6/20/2026 (receipt on file: Misc/HelmPaint_PR040983.jpg)",
+      "category": "Construction & Home Improvements",
+      "description": "Paint for sale-prep painting \u2014 Helm Paint receipt PR040983, 6/20/2026",
       "amount": 139.35,
       "date": "2026-06-20",
+      "source": "Misc/HelmPaint_PR040983.jpg",
       "_helm": true
     },
     {
@@ -96,6 +106,7 @@
       "description": "Returned-check late charges $205 + NSF fee $20 (Notice 1/7/25, addressed to both Gerald & Lindsey Pearson; $3,675.19 check returned)",
       "amount": 225.0,
       "date": "2025-01-07",
+      "source": "Misc/SourceRecord_Assurance_ReturnedCheck_2025-01-07.pdf",
       "_retfee": true
     },
     {
@@ -104,6 +115,7 @@
       "description": "A/C repair work on the house \u2014 paid cash $3,000 (Chase withdrawal slip 9/25/25, memo 'Landon Haynes AC work')",
       "amount": 3000.0,
       "date": "2025-09-25",
+      "source": "Misc/SourceRecord_Chase_Withdrawal_AC_2025-09-25.pdf",
       "_acwork": true
     },
     {
@@ -146,15 +158,44 @@
       "amount": 82.44,
       "date": "2026-07-10",
       "_stm_app_fee": true
+    },
+    {
+      "vendor": "St. Jude School (FACTS)",
+      "category": "School/Tuition",
+      "description": "St. Jude 2026-27 \u2014 Enrollment fee (Linen). New Student Information, 7/29/2026.",
+      "amount": 295.00,
+      "date": "2026-07-29",
+      "source": "_sources/School/StJude_2026-07.pdf",
+      "_stjude": true
+    },
+    {
+      "vendor": "St. Jude School (FACTS)",
+      "category": "School/Tuition",
+      "description": "St. Jude 2026-27 \u2014 Ancillary fees, security + technology (Linen). New Student Information, 7/29/2026.",
+      "amount": 460.00,
+      "date": "2026-07-29",
+      "source": "_sources/School/StJude_2026-07.pdf",
+      "_stjude": true
+    },
+    {
+      "vendor": "St. Jude School (FACTS)",
+      "category": "School/Tuition",
+      "description": "St. Jude 2026-27 \u2014 Tuition (Linen). New Student Information, 7/29/2026.",
+      "amount": 7810.00,
+      "date": "2026-07-29",
+      "source": "_sources/School/StJude_2026-07.pdf",
+      "_stjude": true
     }
   ],
-  "_manual_note": "Items with no bill/PDF in the folder. 'recurring_monthly' expands to one line per month (dated the 1st).",
+  "_manual_note": "Items with no bill/PDF in the folder. 'recurring_monthly' expands to one line per month (dated the 1st). 'source' = file in the bills folder shown as that line's exhibit (never re-parsed as a bill).",
+  "line_sources": [],
+  "_line_sources_note": "Attach a real document to a line that was built without one (mortgage notices, email-sourced bills). Each: {vendor substring, date, amount, file}. Files live under <bills folder>/_sources/ and are never re-parsed as bills.",
   "att_business_flat_per_month": 100.0,
   "last_folder": "C:\\Users\\nedpe\\Desktop\\House Bills",
   "output_dir": "output",
   "att_business_end": "2026-05",
-  "utilities_end": "2026-04",
-  "mortgage_end": "2026-04",
+  "utilities_end": "2026-05",
+  "mortgage_end": "2026-05",
   "user_email": "nedpearson@gmail.com",
   "form_email": "nedpearson@gmail.com",
   "dispute_api": "",

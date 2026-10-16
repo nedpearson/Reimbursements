@@ -77,9 +77,15 @@ def build(folder):
             rows.append(r)
     SUPERSEDED={'venmo _ eli pearson.pdf','venmo _ lions lawncare.pdf'}
     OWN_OUTPUT=('reimbursement_','amounts_paid_for_lindsey')   # our own generated documents
+    # files that back a manual_entries 'source' are exhibits for THAT line - never re-ingested
+    MANUAL_SRC={str(me.get('source','')).replace('\\','/').lower() for me in CFG.get('manual_entries',[]) if me.get('source')}
     for p in files:
         if 'studyville' in os.path.basename(p).lower():
             continue
+        if os.path.relpath(p,folder).replace('\\','/').lower() in MANUAL_SRC:
+            continue
+        if '/_sources/' in ('/'+os.path.relpath(p,folder).replace('\\','/').lower()+'/'):
+            continue  # _sources/ = documents attached to specific lines, not bills to parse
         if os.path.basename(p).lower() in SUPERSEDED:
             continue  # replaced by full Venmo CSV statements
         if os.path.basename(p).lower().startswith(OWN_OUTPUT):
@@ -214,6 +220,16 @@ def apply_split(rows):
                 and (ex.get('amount') is None or (r.get('amount') is not None and abs(float(r['amount'])-float(ex['amount']))<0.01))):
                 r['include']=False
                 r['note']=((r.get('note') or '')+' | removed per Ned').strip(' |')
+        # attach a real document to a line that was built without one (mortgage notices,
+        # email-sourced bills, agreed amounts): config 'line_sources' = list of
+        # {vendor substring, date, amount, file} -> the file becomes that line's exhibit.
+        if str(r.get('file','')).startswith('(') or not r.get('file'):
+            for ls in CFG.get('line_sources',[]):
+                if (str(ls.get('vendor','')).lower() in str(r.get('vendor','')).lower()
+                    and (not ls.get('date') or r.get('date')==ls.get('date'))
+                    and (ls.get('amount') is None or (r.get('amount') is not None and abs(float(r['amount'])-float(ls['amount']))<0.01))):
+                    r['file']=ls['file']
+                    r['note']=((r.get('note') or '')+' | document attached').strip(' |'); break
         # a row with no date AND no amount is unusable — send to Review, never the claim
         if r.get('include') and not r.get('date') and not r.get('amount') and r.get('flat_share') is None:
             r['include']=False
@@ -224,18 +240,20 @@ def apply_split(rows):
             r['in_window']=True
         pct=sp.get(r['category'])
         r['pct']=pct
-        _ae=CFG.get('att_business_end')
-        if _ae and r['category']=='AT&T Business' and r.get('date') and r['date'][:7]>_ae:
-            r['in_window']=False; r['note']=(r.get('note') or '')+f' | after AT&T end {_ae}'
-            
-        _ue=CFG.get('utilities_end')
-        if _ue and r['category']=='Utilities' and r.get('date') and r['date'][:7]>_ue:
-            r['in_window']=False; r['note']=(r.get('note') or '')+f' | after utilities end {_ue}'
+        # ---- per-category END month (YYYY-MM, inclusive). config 'category_end' is the
+        # general mechanism; the legacy att_business_end / utilities_end / mortgage_end
+        # keys still work as fallbacks. Used for the 2026-06-01 house-bill cutoff:
+        # Lindsey vacated 8792 W Fairway (ex parte order 4/21/2026, belongings removed
+        # 5/8/2026) and Ned has exclusive use, so recurring HOUSE bills after May 2026
+        # are his alone. Sale-prep work on the co-owned asset is NOT capped here. ----
+        _cend=dict(CFG.get('category_end') or {})
+        for _k,_c in (('att_business_end','AT&T Business'),('utilities_end','Utilities'),('mortgage_end','Mortgage')):
+            if CFG.get(_k) and _c not in _cend: _cend[_c]=CFG[_k]
+        _e=_cend.get(r['category'])
+        if _e and r.get('date') and r['date'][:7]>_e:
+            r['in_window']=False
+            r['note']=(r.get('note') or '')+f" | after {r['category']} end {_e} (house-bill cutoff 2026-06-01: Lindsey vacated, Ned has exclusive use)"
 
-        _me=CFG.get('mortgage_end')
-        if _me and r['category']=='Mortgage' and r.get('date') and r['date'][:7]>_me:
-            r['in_window']=False; r['note']=(r.get('note') or '')+f' | after mortgage end {_me}'
-            
         billable = r['include'] and r['in_window'] and r['amount'] is not None and pct is not None
         from decimal import Decimal, ROUND_HALF_UP
         def _m(v): return float(Decimal(str(v)).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP))

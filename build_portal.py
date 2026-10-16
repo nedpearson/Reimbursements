@@ -108,9 +108,12 @@ def build(bills_folder=None, progress=print):
     except Exception as _e:
         progress('exports refresh skipped: %s'%_e)
     # ---- proof volumes ----
-    catorder=[]; files=[]; seen=set()
-    for r in rows:
-        if r['category'] not in catorder: catorder.append(r['category'])
+    # Exhibits follow the statement/portal order (category display order, then ref C-###)
+    # so Exhibit numbers read in the same sequence as the claim — not file-scan order.
+    _pos={c:i for i,c in enumerate(categorize.DISPLAY_CATS)}
+    catorder=sorted({r['category'] for r in rows}, key=lambda c: _pos.get(c,99))
+    rows=sorted(rows, key=lambda r:(_pos.get(r['category'],99), r.get('ref') or 'Z', r.get('date') or ''))
+    files=[]; seen=set()
     for cat in catorder:
         for r in rows:
             f=str(r.get('file',''))
