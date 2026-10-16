@@ -794,6 +794,66 @@
       "date": "2025-05-20",
       "amount": 137.49,
       "file": "_sources/Utilities/BRWater_8792Fairway_acct2506_Jan-May2025_bills.pdf"
+    },
+    {
+      "vendor": "Sarah Lyons",
+      "date": "2026-04-27",
+      "amount": 150.0,
+      "file": "_sources/Venmo/VenmoStatement_April_2026_C-229.pdf"
+    },
+    {
+      "vendor": "Sarah Lyons",
+      "date": "2026-04-28",
+      "amount": 250.0,
+      "file": "_sources/Venmo/VenmoStatement_April_2026_C-230.pdf"
+    },
+    {
+      "vendor": "Fran Fleniken",
+      "date": "2025-08-04",
+      "amount": 120.0,
+      "file": "_sources/Venmo/VenmoStatement_August_2025_(2)_C-182.pdf"
+    },
+    {
+      "vendor": "Lions Lawncare",
+      "date": "2025-06-13",
+      "amount": 140.0,
+      "file": "_sources/Venmo/VenmoStatement_June_2025_(1)_C-224.pdf"
+    },
+    {
+      "vendor": "Holly Rains",
+      "date": "2025-03-07",
+      "amount": 180.25,
+      "file": "_sources/Venmo/VenmoStatement_March_2025_(1)_C-223.pdf"
+    },
+    {
+      "vendor": "Alex Shivor",
+      "date": "2026-03-29",
+      "amount": 60.0,
+      "file": "_sources/Venmo/VenmoStatement_March_2026_C-227.pdf"
+    },
+    {
+      "vendor": "Lions Lawncare",
+      "date": "2025-11-18",
+      "amount": 300.0,
+      "file": "_sources/Venmo/VenmoStatement_November_2025_(1)_C-225.pdf"
+    },
+    {
+      "vendor": "Lions Lawncare",
+      "date": "2025-11-19",
+      "amount": 200.0,
+      "file": "_sources/Venmo/VenmoStatement_November_2025_(1)_C-226.pdf"
+    },
+    {
+      "vendor": "Ali Fisher",
+      "date": "2024-10-09",
+      "amount": 154.5,
+      "file": "_sources/Venmo/VenmoStatement_October_2024_(1)_C-219.pdf"
+    },
+    {
+      "vendor": "Ali Fisher",
+      "date": "2024-10-29",
+      "amount": 275.0,
+      "file": "_sources/Venmo/VenmoStatement_October_2024_(1)_C-220.pdf"
     }
   ],
   "_line_sources_note": "Attach a real document to a line that was built without one (mortgage notices, email-sourced bills). Each: {vendor substring, date, amount, file}. Files live under <bills folder>/_sources/ and are never re-parsed as bills.",

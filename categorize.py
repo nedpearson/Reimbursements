@@ -223,7 +223,7 @@ def apply_split(rows):
         # attach a real document to a line that was built without one (mortgage notices,
         # email-sourced bills, agreed amounts): config 'line_sources' = list of
         # {vendor substring, date, amount, file} -> the file becomes that line's exhibit.
-        if str(r.get('file','')).startswith('(') or not r.get('file'):
+        if str(r.get('file','')).startswith('(') or not r.get('file') or str(r.get('file','')).lower().endswith('.csv'):
             for ls in CFG.get('line_sources',[]):
                 if (str(ls.get('vendor','')).lower() in str(r.get('vendor','')).lower()
                     and (not ls.get('date') or r.get('date')==ls.get('date'))
